@@ -1,14 +1,17 @@
-import { BaseParams, OauthPlatform } from "../../src/api/controllers/oauth"
 import { mock, when, anything, instance } from "ts-mockito"
 import { OAuth2 } from "oauth"
+import {
+  BaseParams,
+  OauthPlatform,
+} from "../../src/api/interfaces/OauthPlatform"
 
 const oauth2Mock = mock(OAuth2)
 
 when(oauth2Mock.getAuthorizeUrl(anything())).thenReturn(
-  "http://localhost:3002/authorize"
+  "http://localhost:3002/authorize",
 )
 when(
-  oauth2Mock.getOAuthAccessToken(anything(), anything(), anything())
+  oauth2Mock.getOAuthAccessToken(anything(), anything(), anything()),
 ).thenCall((_, __, cb: Function) => {
   cb(null, "accessToken", "refreshToken", {})
 })

@@ -1,19 +1,19 @@
+import mongoose from "mongoose"
+import { StatusCodes } from "http-status-codes"
 import UserModel from "../src/api/models/UserModel"
 import PlatformModel from "../src/api/models/PlatformModel"
-import mongoose from "mongoose"
 import config from "../src/config"
 import { platforms } from "../src/api/controllers/oauth"
 import { mockPlatform } from "./mocks/mockPlatform"
 import request from "supertest"
 import app from "../src/app"
 import UserTestUtils from "./util/userFunctions"
-import { StatusCodes } from "http-status-codes"
 
 describe("OAuthRouter", () => {
   let token: string
   let user
   beforeAll(async () => {
-    platforms["mock"] = mockPlatform
+    platforms.mock = mockPlatform
     await mongoose.connect(config.test_db_uri)
     await UserModel.deleteMany({})
     await PlatformModel.deleteMany({})
@@ -80,5 +80,8 @@ describe("OAuthRouter", () => {
       .query({ code: "code", state: "state" })
 
     expect(response.status).toBe(StatusCodes.CREATED)
+    const platform = await PlatformModel.findOne({})
+    expect(platform).toBeDefined()
+    expect(platform?.token).toBe("accessToken")
   })
 })

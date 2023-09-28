@@ -40,5 +40,5 @@
       "typescript": {}
     }
   },
-  "ignorePatterns": ["**/*.mjs"]
+  "ignorePatterns": ["**/*.mjs", "**/*.js", "test/**"]
 }

@@ -1,11 +1,12 @@
 import express from "express"
-require("express-async-errors")
-import notFound from "./api/middleware/notFound"
-import errorHandler from "./api/middleware/errorHandler"
 import morgan from "morgan"
 import cors from "cors"
 import helmet from "helmet"
+import notFound from "./api/middleware/notFound"
+import errorHandler from "./api/middleware/errorHandler"
 import { restApi } from "./api"
+
+require("express-async-errors")
 
 const app = express()
 
