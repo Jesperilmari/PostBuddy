@@ -18,17 +18,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'pnpm'
       - name: Setup pnpm and install dependencies
         uses: pnpm/action-setup@v2
         with:
           version: 8
           run_install: |
             - recursive: true
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'pnpm'
       - name: 'Lint'
         run: pnpm lint
 
@@ -37,35 +37,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'pnpm'
       - name: Setup pnpm and install dependencies
         uses: pnpm/action-setup@v2
         with:
           version: 8
           run_install: |
             - recursive: true
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'pnpm'
       - name: 'Run tests'
         run: pnpm test
 
   notify:
-    if: always()
+    if: ${{ always() }}
     name: Notify about pull request
     needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
       - name: Everything succeeded
-        if: success()
+        if: ${{ success() }}
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
           details: New pull request, (lint and test passed)
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Something failed
-        if: failure()
+        if: ${{ failure() }}
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
