@@ -4,9 +4,6 @@
     "jest": true
   },
   "parser": "@typescript-eslint/parser",
-  //   "parserOptions": {
-  //     "project": ["./tsconfig.json"]
-  //   },
   "extends": "airbnb",
   "plugins": ["import", "@typescript-eslint", "prettier"],
   "rules": {
@@ -27,7 +24,7 @@
     ],
     "no-use-before-define": "off",
     "no-unused-vars": [
-      "error", // or "error"
+      "error",
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
