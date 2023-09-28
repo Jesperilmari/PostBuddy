@@ -1,7 +1,7 @@
 import { Router } from "express"
+import cookieParser from "cookie-parser"
 import { connectPlatform, handleCallback } from "../controllers/oauth"
 import checkAuth from "../middleware/checkAuth"
-import cookieParser from "cookie-parser"
 
 const oauthRouter = Router()
 

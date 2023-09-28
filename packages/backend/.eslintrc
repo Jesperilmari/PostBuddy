@@ -1,37 +1,47 @@
 {
-	"root": true,
-	"env": {
-		"jest": true
-	},
-	"parser": "@typescript-eslint/parser",
-	"parserOptions": {
-		"project": ["./packages/backend/tsconfig.json"]
-	},
-	"extends": "airbnb",
-	"plugins": ["import", "@typescript-eslint", "prettier"],
-	"rules": {
-		"no-console": 0,
-		"comma-dangle": 0,
-		"no-underscore-dangle": 0,
-		"no-param-reassign": 0,
-		"no-return-assign": 0,
-		"camelcase": 0,
-		"import/extensions": 0,
-		"@typescript-eslint/no-redeclare": 0,
-		"prettier/prettier": [
-			"error",
-			{
-				"singleQuote": true
-			}
-		]
-	},
-	"settings": {
-		"import/parsers": {
-			"@typescript-eslint/parser": [".ts", ".tsx"]
-		},
-		"import/resolver": {
-			"typescript": {}
-		}
-	},
-	"ignorePatterns": ["**/*.mjs"]
+  "root": true,
+  "env": {
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  //   "parserOptions": {
+  //     "project": ["./tsconfig.json"]
+  //   },
+  "extends": "airbnb",
+  "plugins": ["import", "@typescript-eslint", "prettier"],
+  "rules": {
+    "comma-dangle": 0,
+    "semi": "off",
+    "quotes": "off",
+    "no-underscore-dangle": 0,
+    "no-param-reassign": 0,
+    "no-return-assign": 0,
+    "camelcase": 0,
+    "import/extensions": 0,
+    "@typescript-eslint/no-redeclare": 0,
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false
+      }
+    ],
+    "no-use-before-define": "off",
+    "no-unused-vars": [
+      "error", // or "error"
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "ignorePatterns": ["**/*.mjs"]
 }

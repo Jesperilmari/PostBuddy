@@ -12,6 +12,7 @@ const logLevelColors: Record<LogLevel, chalk.Chalk> = {
 export function log(level: LogLevel, ...messages: any[]) {
   if (process.env.NODE_ENV !== "test") {
     const color = logLevelColors[level]
+    // eslint-disable-next-line no-console
     console.log(color(`[${level}]`), ...messages)
   }
 }
