@@ -1,12 +1,13 @@
+/* eslint-disable import/first */
+/* eslint-disable import/newline-after-import */
 import express from "express"
+require("express-async-errors")
 import morgan from "morgan"
 import cors from "cors"
 import helmet from "helmet"
 import notFound from "./api/middleware/notFound"
 import errorHandler from "./api/middleware/errorHandler"
 import { restApi } from "./api"
-
-require("express-async-errors")
 
 const app = express()
 

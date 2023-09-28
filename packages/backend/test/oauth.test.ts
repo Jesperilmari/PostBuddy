@@ -13,7 +13,7 @@ describe("OAuthRouter", () => {
   let token: string
   let user
   beforeAll(async () => {
-    platforms.mock = mockPlatform
+    platforms["mock"] = mockPlatform
     await mongoose.connect(config.test_db_uri)
     await UserModel.deleteMany({})
     await PlatformModel.deleteMany({})

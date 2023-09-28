@@ -30,7 +30,8 @@
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "operator-linebreak": "off"
   },
   "settings": {
     "import/parsers": {
