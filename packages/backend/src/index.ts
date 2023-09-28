@@ -1,11 +1,13 @@
-import express from 'express';
+import app from "./app"
+import config from "./config"
+import connectDb from "./util/db"
+import { info } from "./util/logger"
 
-const app = express();
+async function main() {
+  await connectDb()
+  app.listen(config.port, () => {
+    info(`Server listening on port http://localhost:${config.port}`)
+  })
+}
 
-app.get('/', (_req, res) => {
-  res.send('Hello World!');
-});
-
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+main()

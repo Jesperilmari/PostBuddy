@@ -1,0 +1,42 @@
+import { OAuth2 } from "oauth"
+import config from "../../../../config"
+import { OauthPlatform, BaseParams } from "../../../interfaces/OauthPlatform"
+
+interface TwitterParams extends BaseParams {}
+
+const basicToken = Buffer.from(
+  `${config.twitter_client_id}:${config.twitter_client_secret}`,
+).toString("base64")
+
+const customHeaders = {
+  Authorization: `Basic ${basicToken}`,
+}
+
+const twitterParams: TwitterParams = {
+  kind: "twitter",
+  client_id: config.twitter_client_id,
+  response_type: "code",
+  redirect_uri: `${config.api_base_url}/callback/twitter`,
+  scope: "tweet.write offline.access",
+  state: "asdf",
+  code_challenge: "asdf",
+  code_challenge_method: "plain",
+}
+
+const oauthClient = new OAuth2(
+  config.twitter_client_id,
+  config.twitter_client_secret,
+  "",
+  "https://twitter.com/i/oauth2/authorize",
+  "https://api.twitter.com/2/oauth2/token",
+  customHeaders,
+)
+
+const twitter: OauthPlatform<TwitterParams> = {
+  oauthClient,
+  redirectUrl: twitterParams.redirect_uri,
+  authorizeUrl: oauthClient.getAuthorizeUrl(twitterParams),
+  params: twitterParams,
+}
+
+export default twitter
