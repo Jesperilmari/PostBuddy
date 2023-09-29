@@ -7,11 +7,15 @@ import cors from "cors"
 import helmet from "helmet"
 import notFound from "./api/middleware/notFound"
 import errorHandler from "./api/middleware/errorHandler"
-import { restApi } from "./api"
+import { restApi, useGraphql } from "./api"
 
 const app = express()
 
-app.use(helmet())
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+)
 app.use(cors())
 
 if (process.env.NODE_ENV !== "test") {
@@ -27,8 +31,10 @@ app.get("/", (_req, res) => {
 // Rest api
 app.use("/api/v1", restApi)
 
-// TODO: add graphql api router here
-
-app.use(notFound, errorHandler)
+// eslint-disable-next-line
+;(async () => {
+  await useGraphql("/graphql", app)
+  app.use(notFound, errorHandler)
+})()
 
 export default app

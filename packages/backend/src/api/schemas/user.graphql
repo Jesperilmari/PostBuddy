@@ -1,0 +1,30 @@
+type User {
+  id: ID!
+  username: String!
+  name: String!
+  email: String!
+}
+
+input UserInput {
+  username: String!
+  name: String!
+  email: String!
+  password: String!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
+type Query {
+  users: [User]!
+  user(id: ID!): User
+}
+
+type Mutation {
+  updateUser(user: UserInput!): User!
+  deleteUser: User!
+  login(usernameOrEmail: String!, password: String!): AuthResponse!
+  register(user: UserInput!): User!
+}

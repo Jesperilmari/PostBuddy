@@ -31,7 +31,8 @@
         "caughtErrorsIgnorePattern": "^_"
       }
     ],
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "indent": "off"
   },
   "settings": {
     "import/parsers": {
