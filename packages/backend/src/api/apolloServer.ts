@@ -5,6 +5,7 @@ import {
 } from "@apollo/server/plugin/landingPage/default"
 import { expressMiddleware } from "@apollo/server/express4"
 import { makeExecutableSchema } from "@graphql-tools/schema"
+import { Express } from "express"
 import resolvers from "./resolvers"
 import typeDefs from "./schemas"
 import { info } from "../util/logger"
@@ -15,25 +16,29 @@ const schema = makeExecutableSchema({
   resolvers,
 })
 
-const landingPage =
-  process.env.NODE_ENV === "production"
-    ? ApolloServerPluginLandingPageProductionDefault({ embed: true as false })
-    : ApolloServerPluginLandingPageLocalDefault()
-
-export default async function createServerMiddleware() {
+/**
+ * Creates an ApolloServer instance and mounts it on the Express app on the given path.
+ */
+export default async function useGraphql(path: string, app: Express) {
   const server = new ApolloServer<PBContext>({
     schema,
     introspection: true,
-    plugins: [landingPage],
+    plugins: [
+      process.env.NODE_ENV === "production"
+        ? ApolloServerPluginLandingPageProductionDefault({
+            embed: true as false,
+          })
+        : ApolloServerPluginLandingPageLocalDefault(),
+    ],
     includeStacktraceInErrorResponses: false,
   })
   await server.start()
-  info("Apollo server started")
-  return expressMiddleware(server, {
-    // eslint-disable-next-line no-unused-vars
-    context: async ({ req }) => {
+  info("Apollo graphql server started")
+  const middleware = expressMiddleware(server, {
+    context: async () => {
       const ctx = {} as PBContext
       return ctx
     },
   })
+  app.use(path, middleware)
 }
