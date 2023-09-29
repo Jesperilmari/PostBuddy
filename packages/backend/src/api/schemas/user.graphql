@@ -26,5 +26,5 @@ type Mutation {
   updateUser(user: UserInput!): User!
   deleteUser: User!
   login(usernameOrEmail: String!, password: String!): AuthResponse!
-  register(user: UserInput!): User!
+  register(user: UserInput!): AuthResponse!
 }

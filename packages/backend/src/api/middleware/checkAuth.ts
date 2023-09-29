@@ -1,19 +1,16 @@
 import jwt from "jsonwebtoken"
-import UserModel from "../models/UserModel"
 import { Request, Response, NextFunction } from "express"
 import { Maybe } from "true-myth"
-import APIError from "../classes/APIError"
 import { StatusCodes } from "http-status-codes"
+import APIError from "../classes/APIError"
+import UserModel from "../models/UserModel"
 import config from "../../config"
-
-interface TokenPayload {
-  id: string
-}
+import TokenPayload from "../interfaces/TokenPayload"
 
 export default async function checkAuth(
   req: Request,
   _: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const token = getToken(req)
   if (token.isNothing) {

@@ -76,6 +76,9 @@ importers:
       true-myth:
         specifier: ^7.1.0
         version: 7.1.0
+      validator:
+        specifier: ^13.11.0
+        version: 13.11.0
     devDependencies:
       '@types/bcrypt':
         specifier: ^5.0.0
@@ -113,6 +116,9 @@ importers:
       '@types/supertest':
         specifier: ^2.0.13
         version: 2.0.13
+      '@types/validator':
+        specifier: ^13.11.2
+        version: 13.11.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.6.0
         version: 6.6.0(@typescript-eslint/parser@6.6.0)(eslint@8.49.0)(typescript@5.2.2)
@@ -1909,6 +1915,10 @@ packages:
     resolution: {integrity: sha512-Vc/5/pRwSC055fU7Wu8erTj4gLpID9SdG2zRMuqaHLni3GTsrJ8gyB6MbFZZGLW6vQaGPhiUWRB6uWglv87MEg==}
     dependencies:
       '@types/superagent': 4.1.19
+    dev: true
+
+  /@types/validator@13.11.2:
+    resolution: {integrity: sha512-nIKVVQKT6kGKysnNt+xLobr+pFJNssJRi2s034wgWeFBUx01fI8BeHTW2TcRp7VcFu9QCYG8IlChTuovcm0oKQ==}
     dev: true
 
   /@types/webidl-conversions@7.0.1:
@@ -6301,6 +6311,11 @@ packages:
       '@types/istanbul-lib-coverage': 2.0.4
       convert-source-map: 1.9.0
     dev: true
+
+  /validator@13.11.0:
+    resolution: {integrity: sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==}
+    engines: {node: '>= 0.10'}
+    dev: false
 
   /value-or-promise@1.0.12:
     resolution: {integrity: sha512-Z6Uz+TYwEqE7ZN50gwn+1LCVo9ZVrpxRPOhOLnncYkY1ZzOYtrX8Fwf/rFktZ8R5mJms6EZf5TqNOMeZmnPq9Q==}

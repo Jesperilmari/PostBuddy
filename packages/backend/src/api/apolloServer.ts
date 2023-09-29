@@ -10,6 +10,7 @@ import resolvers from "./resolvers"
 import typeDefs from "./schemas"
 import { info } from "../util/logger"
 import PBContext from "./interfaces/PBContext"
+import authenticate from "../util/authenticate"
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -35,9 +36,9 @@ export default async function useGraphql(path: string, app: Express) {
   await server.start()
   info("Apollo graphql server started")
   const middleware = expressMiddleware(server, {
-    context: async () => {
-      const ctx = {} as PBContext
-      return ctx
+    context: async ({ req }) => {
+      const userId = authenticate(req).map((p) => p.id)
+      return { req, userId }
     },
   })
   app.use(path, middleware)
