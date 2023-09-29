@@ -7,6 +7,7 @@ async function main() {
   await connectDb()
   app.listen(config.port, () => {
     info(`Server listening on port http://localhost:${config.port}`)
+    info(`Graphql sandbox: http://localhost:${config.port}/graphql`)
   })
 }
 
