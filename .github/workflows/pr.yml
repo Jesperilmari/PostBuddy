@@ -13,48 +13,26 @@ env:
   TEST_DB_URI: ${{ secrets.TEST_DB_URI }}
 
 jobs:
-  lint:
-    name: 'Lint files'
+  lint_and_test:
+    name: 'Lint and test'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup pnpm and install dependencies
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: |
-            - recursive: true
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-          cache: 'pnpm'
       - name: 'Lint'
-        run: pnpm lint
-
-  test:
-    name: 'Test'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup pnpm and install dependencies
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: |
-            - recursive: true
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'pnpm'
-      - name: 'Run tests'
-        run: pnpm test
+        run: |
+          npm install --prefix ./packages/backend
+          npm run lint --prefix ./packages/backend && npm run test --prefix ./packages/backend
+          npm install --prefix ./packages/frontend
+          npm run lint --prefix ./packages/frontend
 
   notify:
     if: ${{ always() }}
     name: Notify about pull request
-    needs: [lint, test]
+    needs: [lint_and_test]
     runs-on: ubuntu-latest
     steps:
       - name: Everything succeeded
