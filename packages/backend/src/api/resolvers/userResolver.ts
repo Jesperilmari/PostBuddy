@@ -27,7 +27,7 @@ export default {
         user,
       }
     },
-    register: async (_: User, user: UserInput) => {
+    register: async (_: User, { user }: { user: UserInput }) => {
       const result = await UserModel.register(user)
       const created = result.unwrapOrElse(raise) as User
       return {
