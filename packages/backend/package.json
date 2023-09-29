@@ -26,6 +26,7 @@
     "@types/passport-jwt": "^3.0.10",
     "@types/passport-local": "^1.0.36",
     "@types/supertest": "^2.0.13",
+    "@types/validator": "^13.11.2",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.0.0",
     "esbuild": "^0.19.2",
@@ -62,6 +63,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "true-myth": "^7.1.0"
+    "true-myth": "^7.1.0",
+    "validator": "^13.11.0"
   }
 }

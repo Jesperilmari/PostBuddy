@@ -32,7 +32,9 @@
       }
     ],
     "operator-linebreak": "off",
-    "indent": "off"
+    "indent": "off",
+    "implicit-arrow-linebreak": "off",
+    "object-curly-newline": "off"
   },
   "settings": {
     "import/parsers": {
