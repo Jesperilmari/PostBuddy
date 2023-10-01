@@ -9,19 +9,21 @@ import { Express } from "express"
 import resolvers from "./resolvers"
 import typeDefs from "./schemas"
 import { info } from "../util/logger"
-import PBContext from "./interfaces/PBContext"
-import authenticate from "../util/authenticate"
+import { BaseContext } from "./interfaces/PBContext"
+import authDirectiveTransformer from "../util/directives"
 
-const schema = makeExecutableSchema({
+const executableSchema = makeExecutableSchema({
   typeDefs,
   resolvers,
 })
+
+const schema = authDirectiveTransformer(executableSchema, "auth")
 
 /**
  * Creates an ApolloServer instance and mounts it on the Express app on the given path.
  */
 export default async function useGraphql(path: string, app: Express) {
-  const server = new ApolloServer<PBContext>({
+  const server = new ApolloServer<BaseContext>({
     schema,
     introspection: true,
     plugins: [
@@ -36,10 +38,7 @@ export default async function useGraphql(path: string, app: Express) {
   await server.start()
   info("Apollo graphql server started")
   const middleware = expressMiddleware(server, {
-    context: async ({ req }) => {
-      const userId = authenticate(req).map((p) => p.id)
-      return { req, userId }
-    },
+    context: async ({ req }) => ({ req }),
   })
   app.use(path, middleware)
 }

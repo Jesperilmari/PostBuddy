@@ -1,5 +1,5 @@
 import { Maybe } from "true-myth"
-import PBContext from "../interfaces/PBContext"
+import { PBContext } from "../interfaces/PBContext"
 import UserModel from "../models/UserModel"
 import { UserInput, LoginArgs, User } from "../interfaces/User"
 import { raise, raiseAuthError } from "../../util/errors"
@@ -11,14 +11,10 @@ export default {
     user: async (_p: User, { id }: { id: string }) => UserModel.findById(id),
   },
   Mutation: {
-    updateUser: async (_p: User, args: UserInput, ctx: PBContext) => {
-      const id = ctx.userId.unwrapOrElse(raiseAuthError)
-      return UserModel.findByIdAndUpdate(id, args, { new: true })
-    },
-    deleteUser: async (_: User, __: {}, ctx: PBContext) => {
-      const id = ctx.userId.unwrapOrElse(raiseAuthError)
-      return UserModel.findByIdAndDelete(id)
-    },
+    updateUser: async (_p: User, args: UserInput, ctx: PBContext) =>
+      UserModel.findByIdAndUpdate(ctx.userId, args, { new: true }),
+    deleteUser: async (_: User, __: {}, ctx: PBContext) =>
+      UserModel.findByIdAndDelete(ctx.userId),
     login: async (_: User, args: LoginArgs) => {
       const result: Maybe<User> = await UserModel.login(args)
       const user = result.unwrapOrElse(raiseAuthError("Login failed"))
@@ -27,12 +23,13 @@ export default {
         user,
       }
     },
-    register: async (_: User, { user }: { user: UserInput }) => {
+    register: async (_: User, { user }: { user: User }) => {
       const result = await UserModel.register(user)
       const created = result.unwrapOrElse(raise) as User
+      const token = generateToken({ id: created._id })
       return {
-        token: generateToken({ id: created._id }),
-        user,
+        token,
+        user: created,
       }
     },
   },

@@ -5,7 +5,7 @@ import config from "../src/config"
 import UserTestUtils from "./util/userFunctions"
 import request from "supertest"
 import app from "../src/app"
-import { allUsers, oneUser, register } from "./queries"
+import { allUsers, login, oneUser, register } from "./queries"
 import { User } from "../src/api/interfaces/User"
 
 describe("UserResolver", () => {
@@ -66,5 +66,25 @@ describe("UserResolver", () => {
     expect(response.body.data.register).toHaveProperty("token")
     expect(response.body.data.register).toHaveProperty("user")
     expect(response.body.data.register.user).toHaveProperty("username")
+  })
+
+  it("should login a user", async () => {
+    const user = {
+      usernameOrEmail: "test",
+      password: "password",
+    }
+
+    const response = await request(app)
+      .post("/graphql")
+      .send({
+        query: login,
+        variables: {
+          ...user,
+        },
+      })
+      .expect(StatusCodes.OK)
+
+    expect(response.body.data.login).toHaveProperty("token")
+    expect(response.body.data.login).toHaveProperty("user")
   })
 })
