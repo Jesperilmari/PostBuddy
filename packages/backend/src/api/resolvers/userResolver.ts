@@ -11,8 +11,16 @@ export default {
     user: async (_p: User, { id }: { id: string }) => UserModel.findById(id),
   },
   Mutation: {
-    updateUser: async (_p: User, args: UserInput, ctx: PBContext) =>
-      UserModel.findByIdAndUpdate(ctx.userId, args, { new: true }),
+    updateUser: async (
+      _p: User,
+      { user }: { user: UserInput },
+      ctx: PBContext,
+    ) => {
+      const u = await UserModel.findByIdAndUpdate(ctx.userId, user, {
+        new: true,
+      })
+      return u
+    },
     deleteUser: async (_: User, __: {}, ctx: PBContext) =>
       UserModel.findByIdAndDelete(ctx.userId),
     login: async (_: User, args: LoginArgs) => {
