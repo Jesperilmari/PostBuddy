@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "pnpm -r --parallel --filter='./packages/*' run dev",
+    "devf": "npm run dev --prefix ./packages/frontend",
     "test": "pnpm --filter='backend' run test",
     "test:all": "pnpm -r --parallel --filter='./packages/*' run test",
     "build:all": "pnpm -r --parallel --filter='./packages/*' run build",

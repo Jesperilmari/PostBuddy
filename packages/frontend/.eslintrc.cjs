@@ -13,6 +13,8 @@ module.exports = {
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
+
     ],
+    'no-explicit-any': 'off',
   },
 }
