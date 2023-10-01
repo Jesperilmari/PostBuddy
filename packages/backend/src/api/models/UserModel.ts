@@ -3,7 +3,7 @@ import { Maybe, Result } from "true-myth"
 import { GraphQLError } from "graphql"
 import validator from "validator"
 import { User, LoginArgs, UserInput } from "../interfaces/User"
-import { correctPassword } from "../../util/password"
+import { correctPassword, createHashedPassword } from "../../util/password"
 
 interface IUserModel extends Model<User> {
   // eslint-disable-next-line
@@ -70,10 +70,14 @@ userSchema.static(
 )
 
 // Register method for creating users
-userSchema.static("register", async function register(user: UserInput): Promise<
+userSchema.static("register", async function register(user: User): Promise<
   Result<User, GraphQLError>
 > {
-  const created = new this(user)
+  const hashedPassword = createHashedPassword(user.password)
+  const created = new this({
+    ...user,
+    password: hashedPassword,
+  })
   const errors = created.validateSync()
   return !errors
     ? Result.ok(await created.save())

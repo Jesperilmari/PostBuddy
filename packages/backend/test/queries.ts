@@ -24,3 +24,23 @@ export const register = `mutation Mutation($user: UserInput!) {
     }
   }
 }`
+
+export const login = `mutation Mutation($usernameOrEmail: String!, $password: String!) {
+  login(usernameOrEmail: $usernameOrEmail, password: $password) {
+    token
+    user {
+      username
+      name
+      id
+      email
+    }
+  }
+}`
+
+export const updateUser = `mutation UpdateUser($user: UserUpdate!) {
+  updateUser(user: $user) {
+    email
+    name
+    username
+  }
+}`

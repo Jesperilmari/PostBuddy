@@ -1,7 +1,9 @@
 import { Request } from "express"
-import { Maybe } from "true-myth"
 
-export default interface PBContext {
+export interface BaseContext {
   req: Request
-  userId: Maybe<string>
+}
+
+export interface PBContext extends BaseContext {
+  userId: string
 }
