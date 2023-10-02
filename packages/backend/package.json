@@ -10,7 +10,8 @@
     "start": "node dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --verbose --randomize",
     "test:cov": "jest --detectOpenHandles --forceExit --verbose --randomize --collectCoverage",
-    "lint": "eslint src/ --ext .ts"
+    "lint": "eslint src/ --ext .ts",
+    "lint:fix": "eslint src/ --ext .ts --fix"
   },
   "keywords": [],
   "author": "",
