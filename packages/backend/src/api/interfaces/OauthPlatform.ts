@@ -16,4 +16,12 @@ export interface OauthPlatform<T extends BaseParams> {
   authorizeUrl: string
   redirectUrl: string
   params: T
+  oauthAccessTokenParams: OauthAccessTokenParams
+}
+
+export interface OauthAccessTokenParams {
+  grant_type: string
+  client_id: string
+  code_verifier: string
+  redirect_uri: string
 }
