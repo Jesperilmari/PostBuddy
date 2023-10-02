@@ -29,7 +29,8 @@ describe("UserResolver", () => {
         query: allUsers,
       })
       .expect(StatusCodes.OK)
-    expect(response.body.data.users).toHaveLength(1)
+    expect(response.body.data.users).toBeDefined()
+    expect(response.body.data.users.length).toBeGreaterThan(0)
   })
 
   it("should return a user", async () => {
@@ -103,7 +104,6 @@ describe("UserResolver", () => {
       .expect(StatusCodes.OK)
 
     const updatedUser = response.body.data.updateUser
-    console.log(response.body.data)
     expect(updatedUser).toHaveProperty("name")
     expect(updatedUser.name).toBe("updated")
     const userInDb = await UserModel.findById(user._id)

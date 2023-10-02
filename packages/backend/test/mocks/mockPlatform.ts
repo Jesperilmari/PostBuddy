@@ -30,4 +30,10 @@ export const mockPlatform: OauthPlatform<BaseParams> = {
     scope: "scope",
     state: "state",
   },
+  oauthAccessTokenParams: {
+    client_id: "client_id",
+    code_verifier: "code_verifier",
+    grant_type: "grant_type",
+    redirect_uri: "redirect_uri",
+  },
 }
