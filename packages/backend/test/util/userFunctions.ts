@@ -1,7 +1,7 @@
 import UserModel from "../../src/api/models/UserModel"
 import jwt from "jsonwebtoken"
 import config from "../../src/config"
-import createHashedPassword from "../../src/util/createHashedPassword"
+import { createHashedPassword } from "../../src/util/password"
 
 namespace UserTestUtils {
   /**
@@ -13,7 +13,7 @@ namespace UserTestUtils {
   export async function createUser(
     username: string = "test",
     password: string = "password",
-    email: string = "test@email.com"
+    email: string = "test@email.com",
   ) {
     return UserModel.create({
       username,
