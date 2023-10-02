@@ -1,0 +1,4 @@
+"""
+Indicates that this field requires authentication to be accessed.
+"""
+directive @auth on FIELD_DEFINITION

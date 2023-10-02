@@ -114,7 +114,7 @@ async function createPlatformConnection<T extends BaseParams>(
   return new Promise<Maybe<Platform>>((resolve) => {
     platform.oauthClient.getOAuthAccessToken(
       code,
-      {},
+      platform.oauthAccessTokenParams,
       async (err, accessToken, refreshToken, _result) => {
         if (err) {
           error("Error getting access token: ", err)

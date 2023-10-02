@@ -1,11 +1,23 @@
-import { model, Schema } from "mongoose"
-import { User } from "../interfaces/User"
+import { model, Schema, Model, Error } from "mongoose"
+import { Maybe, Result } from "true-myth"
+import { GraphQLError } from "graphql"
+import validator from "validator"
+import { User, LoginArgs, UserInput } from "../interfaces/User"
+import { correctPassword, createHashedPassword } from "../../util/password"
 
-const userSchema = new Schema<User>({
+interface IUserModel extends Model<User> {
+  // eslint-disable-next-line
+  login(creds: LoginArgs): Promise<Maybe<User>>
+  // eslint-disable-next-line
+  register(user: UserInput): Promise<Result<User, GraphQLError>>
+}
+
+const userSchema = new Schema<User, IUserModel>({
   username: {
     type: String,
     required: true,
     unique: true,
+    minlength: 3,
   },
   name: {
     type: String,
@@ -15,8 +27,16 @@ const userSchema = new Schema<User>({
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator: (val: string) => validator.isEmail(val),
+      message: (props: { value: string }) =>
+        `${props.value} is not a valid email`,
+    },
   },
-  password: String,
+  password: {
+    type: String,
+    required: true,
+  },
 })
 
 userSchema.set("toJSON", {
@@ -28,6 +48,52 @@ userSchema.set("toJSON", {
   },
 })
 
-const UserModel = model<User>("User", userSchema)
+// Static login method
+userSchema.static(
+  "login",
+  async function login({
+    usernameOrEmail,
+    password,
+  }: LoginArgs): Promise<Maybe<User>> {
+    const user = await this.findOne({
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+    })
+
+    if (!user) {
+      return Maybe.nothing()
+    }
+
+    return correctPassword(password, user.password)
+      ? Maybe.just(user)
+      : Maybe.nothing()
+  },
+)
+
+// Register method for creating users
+userSchema.static("register", async function register(user: User): Promise<
+  Result<User, GraphQLError>
+> {
+  const hashedPassword = createHashedPassword(user.password)
+  const created = new this({
+    ...user,
+    password: hashedPassword,
+  })
+  const errors = created.validateSync()
+  return !errors
+    ? Result.ok(await created.save())
+    : Result.err(new GraphQLError(`Validation failed: ${mapErrors(errors)}`))
+})
+
+/**
+ * Creates a string from ValidationError object
+ * Example: username: required lenght 3
+ */
+function mapErrors({ errors }: Error.ValidationError) {
+  return Object.keys(errors)
+    .map((key) => `${key}: ${errors[key].message}`)
+    .join(" ")
+}
+
+const UserModel = model<User, IUserModel>("User", userSchema)
 
 export default UserModel
