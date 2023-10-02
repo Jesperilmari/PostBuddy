@@ -34,7 +34,8 @@
     "operator-linebreak": "off",
     "indent": "off",
     "implicit-arrow-linebreak": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "no-console": "error"
   },
   "settings": {
     "import/parsers": {
