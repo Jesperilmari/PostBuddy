@@ -13,14 +13,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const loginUrl = 'https://localhost:5173/login';
-
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="">
-        Your Website
+        PostBuddy
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -30,40 +28,23 @@ function Copyright(props: any) {
 
 //checks that the data is valid
 function ChecData(data: FormData){  
-    const first = data.get('firstName') as string;
-    const last = data.get('lastName') as string;
     const email = data.get('email') as string; 
     const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
-    const nametest = new RegExp('^[a-zA-Z]+$');
-    console.log(first, last, email);
-    if(first === ('') || last === ('') || email === ('')){
+    if(email === ('')){
         alert('Please fill in all fields');
         return;
     } 
-    if(!emailRegex.test(email as string)){
+    if(!emailRegex.test(email)){
         alert('Please enter a valid email');
         return;
     }
-    if(!nametest.test(first) || !nametest.test(last)){
-        alert('Please enter a valid name');
-        return;
-    }
-     
-    if (data.get('password') !== data.get('confirmPassword')) {
-        alert('Passwords do not match');
-        return;
-    }
-    if ((data.get('password') as string).length < 5) {
-        alert('Password must be at least 5 characters long');
-        return
-    }
-
+  
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+export default function ResetPassword() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -92,32 +73,14 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Reset password
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
+              <article>
+                <p>Enter your email address below and we will send you a link to reset your password.</p>
+              </article>              
+                <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -127,34 +90,7 @@ export default function SignUp() {
                   autoComplete="email"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Password"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="retype-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive spam and other marketing in my email weekly than you."
-                />
-              </Grid>
+
             </Grid>
             <Button
               type="submit"
@@ -162,12 +98,12 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Send
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href={loginUrl} variant="body2">
-                  Already have an account? Sign in
+                <Link href="http://localhost:5173/login" variant="body2">
+                  Back to sign in
                 </Link>
               </Grid>
             </Grid>

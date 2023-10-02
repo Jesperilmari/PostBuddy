@@ -15,7 +15,7 @@ function LoginPage() {
 function SignUpPage() {
     return (
         <>    
-            <SignUp></SignUp>
+           <SignUp></SignUp>
         </>
        
     );
