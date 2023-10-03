@@ -68,7 +68,6 @@ userSchema.static(
       : Maybe.nothing()
   },
 )
-
 // Register method for creating users
 userSchema.static("register", async function register(user: User): Promise<
   Result<User, GraphQLError>

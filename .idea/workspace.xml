@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b3430a87-822f-4c57-b138-4c0f97a32f6b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/packages/backend/.env.sample" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/apolloServer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/apolloServer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/interfaces/PBContext.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/interfaces/PBContext.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/interfaces/Platform.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/interfaces/Platform.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/interfaces/TokenPayload.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/interfaces/TokenPayload.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/interfaces/User.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/interfaces/User.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/middleware/checkAuth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/middleware/checkAuth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/models/PlatformModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/models/PlatformModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/models/UserModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/models/UserModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/resolvers/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/resolvers/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/resolvers/userResolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/resolvers/userResolver.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/api/routers/oauthRouter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/api/routers/oauthRouter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/backend/src/util/token.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/backend/src/util/token.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2WFYsUKV0Xf3XloE7CBSupVJF5o" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b3430a87-822f-4c57-b138-4c0f97a32f6b" name="Changes" comment="" />
+      <created>1696330002504</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1696330002504</updated>
+      <workItem from="1696330005554" duration="6000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
