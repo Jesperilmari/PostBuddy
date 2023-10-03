@@ -18,22 +18,10 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../reducers/userReducer'
 import { LoginResponse } from '../interfaces'
+import Copyright from '../components/Copyright'
 
 const signupUrl = 'http://localhost:5173/signup'
 const resetPasswordUrl = 'http://localhost:5173/resetpassword'
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 5 }}>
-      {'Copyright © '}
-      <Link color="inherit" href="">
-        PostBuddy
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()

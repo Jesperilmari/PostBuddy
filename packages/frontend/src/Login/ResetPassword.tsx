@@ -1,61 +1,46 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="">
-        PostBuddy
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import * as React from 'react'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import Link from '@mui/material/Link'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import Copyright from '../components/Copyright'
 
 //checks that the data is valid
-function ChecData(data: FormData){  
-    const email = data.get('email') as string; 
-    const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
-    if(email === ('')){
-        alert('Please fill in all fields');
-        return;
-    } 
-    if(!emailRegex.test(email)){
-        alert('Please enter a valid email');
-        return;
-    }
-  
+function ChecData(data: FormData) {
+  const email = data.get('email') as string
+  const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
+  if (email === '') {
+    alert('Please fill in all fields')
+    return
+  }
+  if (!emailRegex.test(email)) {
+    alert('Please enter a valid email')
+    return
+  }
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+const defaultTheme = createTheme()
 
 export default function ResetPassword() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const data = new FormData(event.currentTarget);
-    ChecData(data);
+    const data = new FormData(event.currentTarget)
+    ChecData(data)
     console.log({
       email: data.get('email'),
       password: data.get('password'),
       confirmPass: data.get('confirmPassword'),
-    });
-  };
+    })
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -78,9 +63,11 @@ export default function ResetPassword() {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <article>
-                <p>Enter your email address below and we will send you a link to reset your password.</p>
-              </article>              
-                <Grid item xs={12}>
+                <p>
+                  Enter your email address below and we will send you a link to reset your password.
+                </p>
+              </article>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -90,14 +77,8 @@ export default function ResetPassword() {
                   autoComplete="email"
                 />
               </Grid>
-
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Send
             </Button>
             <Grid container justifyContent="flex-end">
@@ -109,8 +90,8 @@ export default function ResetPassword() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+        <Copyright />
       </Container>
     </ThemeProvider>
-  );
+  )
 }
