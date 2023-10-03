@@ -1,22 +1,29 @@
+scalar Date
+
 type Post {
   id: ID!
   title: String
   description: String!
   platforms: [String]!
   media: String
-  dispatcTime: Date!
+  dispatchTime: Date!
+  postOwner: String!
 }
 
-input createPost{
-
+input CreatePost {
+  title: String
+  description: String!
+  platforms: [String]!
+  media: String
+  dispatchTime: Date!
 }
 
-type Query {  
-  postsByFilter(postName: String, platformName: String): Post[] @auth
+type Query {
+  postsByFilter(postName: String, platformName: String): [Post] @auth
 }
 
 type Mutation {
-  createPost(Post: createPost): Post,
-  deletePost([id: ID]): [Post],
-  editPost(id: ID!): Post
+  createPost(post: CreatePost): Post @auth
+  deletePost(id: [ID!]!): [Post] @auth
+  editPost(id: ID!): Post @auth
 }

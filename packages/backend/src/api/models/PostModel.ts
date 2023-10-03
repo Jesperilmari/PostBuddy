@@ -1,15 +1,13 @@
 import { model, Schema } from "mongoose"
 import Post from "../interfaces/Post"
 
-const postSchema = new Schema<Post>({
+const PostSchema = new Schema<Post>({
   title: {
     type: String,
-    required: false,
     minlength: 3,
   },
   description: {
     type: String,
-    required: false,
     minlength: 1,
   },
   // TODO validate platforms
@@ -31,6 +29,11 @@ const postSchema = new Schema<Post>({
         `${props.value} the date selected is in the past`,
     },
   },
+  postOwner: {
+    type: String,
+    required: true,
+    minlength: 1,
+  },
 })
 
-export default model<Post>("Post", postSchema)
+export default model<Post>("Post", PostSchema)

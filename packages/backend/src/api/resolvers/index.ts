@@ -1,3 +1,4 @@
 import userResolver from "./userResolver"
+import postResolver from "./postResolver"
 
-export default [userResolver]
+export default [userResolver, postResolver]
