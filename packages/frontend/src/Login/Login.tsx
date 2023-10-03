@@ -1,24 +1,30 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useEffect } from 'react'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Link from '@mui/material/Link'
+import Paper from '@mui/material/Paper'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Typography from '@mui/material/Typography'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useMutation } from '@apollo/client'
+import { LOGIN } from '../queries'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { userLoggedIn } from '../reducers/userReducer'
+import { LoginResponse } from '../interfaces'
 
-const signupUrl = 'http://localhost:5173/signup';
-const resetPasswordUrl = 'http://localhost:5173/resetpassword';
+const signupUrl = 'http://localhost:5173/signup'
+const resetPasswordUrl = 'http://localhost:5173/resetpassword'
 
-function Copyright(props: any) {
+function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 5 }}>
       {'Copyright © '}
       <Link color="inherit" href="">
         PostBuddy
@@ -26,38 +32,63 @@ function Copyright(props: any) {
       {new Date().getFullYear()}
       {'.'}
     </Typography>
-  );
+  )
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+const defaultTheme = createTheme()
 
 //checks that the data is valid
-function ChecData(data: FormData){  
-  const email = data.get('email') as string; 
-  const password = data.get('password') as string;
-  const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
-  if(password === ('') || email === ('')){
-      alert('Please fill in all fields');
-      return;
-  } 
-  if(!emailRegex.test(email as string)){
-      alert('Please enter a valid email');
-      return;
-  } 
-  
+function checkData(data: FormData) {
+  const email = data.get('email') as string
+  const password = data.get('password') as string
+  const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
+  if (password === '' || email === '') {
+    alert('Please fill in all fields')
+    return false
+  }
+  if (!emailRegex.test(email as string)) {
+    alert('Please enter a valid email')
+    return false
+  }
+  return true
 }
 
 export default function SignInSide() {
+  const [login, { data, loading, error }] = useMutation<LoginResponse>(LOGIN)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (data) {
+      dispatch(userLoggedIn(data.login))
+    }
+  }, [data, dispatch])
+
+  if (error) {
+    console.log(error)
+  }
+
+  if (data && !loading) {
+    console.log('Logged in as ', data.login.user)
+    navigate('/', { replace: true })
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    ChecData(data);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
+    const ok = checkData(data)
+
+    if (ok) {
+      const variables = {
+        usernameOrEmail: data.get('email'),
+        password: data.get('password'),
+      }
+      login({
+        variables,
+      })
+    }
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -118,12 +149,7 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Sign In
               </Button>
               <Grid container>
@@ -138,11 +164,11 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
+              <Copyright />
             </Box>
           </Box>
         </Grid>
       </Grid>
     </ThemeProvider>
-  );
+  )
 }

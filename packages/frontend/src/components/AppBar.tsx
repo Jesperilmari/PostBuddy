@@ -7,18 +7,19 @@ import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../reducers/store'
+import { User } from '../interfaces'
+import { userLoggedOut } from '../reducers/userReducer'
 
 type AppBarProps = {
   currentPage: string
 }
 
 export default function MenuAppBar({ currentPage }: AppBarProps) {
-  const [auth, setAuth] = useState(true)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
-  //   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     setAuth(event.target.checked)
-  //   }
+  const user = useSelector<RootState>((state) => state.user.user) as User
+  const dispatch = useDispatch()
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -26,6 +27,11 @@ export default function MenuAppBar({ currentPage }: AppBarProps) {
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    dispatch(userLoggedOut())
+    handleClose()
   }
 
   return (
@@ -36,7 +42,7 @@ export default function MenuAppBar({ currentPage }: AppBarProps) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {currentPage}
           </Typography>
-          {auth && (
+          {user && (
             <div>
               <IconButton
                 size="large"
@@ -63,7 +69,7 @@ export default function MenuAppBar({ currentPage }: AppBarProps) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>
           )}

@@ -1,11 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MenuAppBar from './AppBar'
 import SideNav from './SideNav'
 import { pages } from '../constants'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { RootState } from '../reducers/store'
 
 function Home() {
   const [currentPage, setCurrentPage] = useState('Home')
   const page = pages.find((page) => page.name === currentPage)
+  const navigate = useNavigate()
+  const user = useSelector<RootState>((state) => state.user.user)
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+    }
+  }, [user, navigate])
 
   return (
     <>

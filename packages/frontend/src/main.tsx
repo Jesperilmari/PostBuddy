@@ -5,13 +5,20 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import { ApolloProvider } from '@apollo/client'
 import apolloClient from './apolloClient.ts'
+import { Provider } from 'react-redux'
+import store from './reducers/store.ts'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ApolloProvider client={apolloClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ApolloProvider>
+    {/* Redux store */}
+    <Provider store={store}>
+      {/* Graphql client*/}
+      <ApolloProvider client={apolloClient}>
+        {/* React router */}
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ApolloProvider>
+    </Provider>
   </React.StrictMode>,
 )
