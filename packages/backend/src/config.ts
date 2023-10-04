@@ -11,6 +11,7 @@ const variables = [
   "api_base_url",
   "twitter_client_id",
   "twitter_client_secret",
+  "azure_storage_connection_string",
 ] as const
 
 export type Config = {
@@ -39,6 +40,8 @@ function createTestConfig() {
     jwt_secret: process.env.JWT_SECRET || "secret",
     twitter_client_id: process.env.TWITTER_CLIENT_ID || "",
     twitter_client_secret: process.env.TWITTER_CLIENT_SECRET || "",
+    azure_storage_connection_string:
+      process.env.AZURE_STORAGE_CONNECTION_STRING || "",
   } as Config
   return config
 }
