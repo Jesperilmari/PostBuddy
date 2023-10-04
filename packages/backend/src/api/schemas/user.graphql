@@ -20,6 +20,7 @@ type AuthResponse {
 type Query {
   users: [User]!
   user(id: ID!): User
+  userByUsername(username: String!): User
 }
 
 input UserUpdate {

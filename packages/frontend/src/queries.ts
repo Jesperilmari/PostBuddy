@@ -24,3 +24,15 @@ export const LOGIN = gql`
     }
   }
 `
+
+export const USERBYUSERNAME = gql`
+  query UserByUsername($username: String!) {
+    userByUsername(username: $username) {
+      email
+      id
+      name
+      username
+  }
+}
+`
+
