@@ -31,12 +31,10 @@ export default {
       args: { post: Omit<Post, "id" | "_id" | "postOwner"> },
       ctx: PBContext,
     ) => {
-      console.log(args)
       const createPost = await PostsModel.create({
         ...args.post,
         postOwner: ctx.userId,
       })
-      console.log(createPost)
       return createPost
     },
     editPost: async (

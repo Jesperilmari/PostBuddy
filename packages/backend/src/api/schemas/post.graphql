@@ -32,6 +32,6 @@ type Query {
 
 type Mutation {
   createPost(post: PostInput!): Post @auth
-  deletePost(id: [ID!]!): Post @auth
+  deletePost(id: ID!): Post @auth
   editPost(id: ID!, post: EditPost!): Post @auth
 }
