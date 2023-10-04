@@ -1,0 +1,27 @@
+
+#container {
+    margin: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#welcome {
+    width: 100%;
+}
+
+#deleteIcon {
+    display: none;
+}
+
+
+@media (max-width: 900px) {
+    #deleteString {
+        display: none;
+    }
+    #deleteIcon {
+        display: block;
+    }
+
+}

@@ -12,8 +12,11 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import Copyright from '../components/Copyright'
 
+
+const loginUrl = 'https://localhost:5173/login'
+
 //checks that the data is valid
-function ChecData(data: FormData) {
+function checkData(data: FormData) {
   const email = data.get('email') as string
   const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
   if (email === '') {
@@ -34,7 +37,7 @@ export default function ResetPassword() {
     event.preventDefault()
 
     const data = new FormData(event.currentTarget)
-    ChecData(data)
+    checkData(data)
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -83,7 +86,7 @@ export default function ResetPassword() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="http://localhost:5173/login" variant="body2">
+                <Link href={loginUrl} variant="body2">
                   Back to sign in
                 </Link>
               </Grid>

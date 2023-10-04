@@ -11,13 +11,11 @@ function Home() {
   const page = pages.find((page) => page.name === currentPage)
   const navigate = useNavigate()
   const user = useSelector<RootState>((state) => state.user.user)
-
   useEffect(() => {
     if (!user) {
       navigate('/login')
     }
   }, [user, navigate])
-
   return (
     <>
       <div

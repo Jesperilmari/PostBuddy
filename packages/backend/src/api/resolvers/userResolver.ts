@@ -1,4 +1,5 @@
 import { Maybe } from "true-myth"
+import { GraphQLError } from "graphql"
 import { PBContext } from "../interfaces/PBContext"
 import UserModel from "../models/UserModel"
 import { UserInput, LoginArgs, User } from "../interfaces/User"
@@ -9,6 +10,13 @@ export default {
   Query: {
     users: async () => UserModel.find(),
     user: async (_p: User, { id }: { id: string }) => UserModel.findById(id),
+    userByUsername: async (_p: undefined, args: { username: string }) => {
+      const user = await UserModel.findOne({ username: args.username })
+      if (!user) {
+        throw new GraphQLError("User not found")
+      }
+      return user
+    },
   },
   Mutation: {
     updateUser: async (
