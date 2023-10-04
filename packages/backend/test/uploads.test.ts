@@ -1,6 +1,6 @@
 import express from "express"
 require("express-async-errors")
-import { createRouter } from "../src/api/controllers/uploadController"
+import { createRouter } from "../src/api/routers/fileUploadRouter"
 import containerClientInstance from "./mocks/mockContainerClient"
 import request from "supertest"
 import { StatusCodes } from "http-status-codes"
