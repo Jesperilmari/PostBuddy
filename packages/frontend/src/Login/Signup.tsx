@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useEffect } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -13,6 +13,12 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import Copyright from '../components/Copyright'
+import { RegisterResponse } from '../interfaces'
+import { REGISTER } from '../queries'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { userLoggedIn } from '../reducers/userReducer'
+import { useMutation } from '@apollo/client'
 
 const loginUrl = 'https://localhost:5173/login'
 
@@ -30,37 +36,63 @@ function ChecData(data: FormData) {
   }
   if (!emailRegex.test(email as string)) {
     alert('Please enter a valid email')
-    return
+    return false
   }
   if (!nametest.test(first) || !nametest.test(last)) {
     alert('Please enter a valid name')
-    return
+    return false
   }
 
   if (data.get('password') !== data.get('confirmPassword')) {
     alert('Passwords do not match')
-    return
+    return false
   }
   if ((data.get('password') as string).length < 5) {
     alert('Password must be at least 5 characters long')
-    return
+    return false
   }
+  return true
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 
 export default function SignUp() {
+  const [register, { data, loading, error }] = useMutation<RegisterResponse>(REGISTER)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (data) {
+      dispatch(userLoggedIn(data.register))
+    }
+  }, [data, dispatch])
+
+  if (error) {
+    console.log(error)
+  }
+
+  if (data && !loading) {
+    console.log('Logged in as ', data.register.user)
+    navigate('/', { replace: true })
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const data = new FormData(event.currentTarget)
-    ChecData(data)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-      confirmPass: data.get('confirmPassword'),
-    })
+    const ok = ChecData(data)
+    if (ok) {
+      const variables = {
+        username: 'placeholder', // TODO: implement username
+        name: `${data.get('firstName')} ${data.get('lastName')}}`,
+        email: data.get('email'),
+        password: data.get('password'),
+      }
+      register({
+        variables,
+      })
+    }
   }
 
   return (
