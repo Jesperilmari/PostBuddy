@@ -5,7 +5,6 @@ import ResetPassword from './Login/ResetPassword'
 import Home from './components/Home'
 import { useQuery } from '@apollo/client'
 import { ALL_USERS } from './queries'
-import HomePage from './Home/Homepage'
 
 function App() {
   const result = useQuery(ALL_USERS)
@@ -16,11 +15,9 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/home" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route path="/createpost" element={<div>Create Post</div>} />
         <Route path="*" element={<Navigate replace to="/login" />} />
       </Routes>
     </>

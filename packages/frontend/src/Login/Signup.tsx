@@ -21,13 +21,16 @@ function ChecData(data: FormData) {
   const first = data.get('firstName') as string
   const last = data.get('lastName') as string
   const email = data.get('email') as string
+  const username = data.get('userName') as string
   const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
   const nametest = new RegExp('^[a-zA-Z]+$')
   console.log(first, last, email)
-  if (first === '' || last === '' || email === '') {
+
+  if (first === '' || last === '' || email === '' || username === '') {
     alert('Please fill in all fields')
     return
   }
+  
   if (!emailRegex.test(email as string)) {
     alert('Please enter a valid email')
     return
@@ -102,6 +105,16 @@ export default function SignUp() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="userName"
+                  label="username"
+                  name="UserName"
+                  autoComplete="username"
                 />
               </Grid>
               <Grid item xs={12}>
