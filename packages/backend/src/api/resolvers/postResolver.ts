@@ -10,17 +10,22 @@ export default {
       args: { post: Omit<Post, "id" | "_id" | "postOwner"> },
       ctx: PBContext,
     ) => {
-      // eslint-disable-next-line no-console
-      console.log(args)
-      // eslint-disable-next-line no-console
-      console.log(ctx)
       const createPost = await PostsModel.create({
         ...args.post,
         postOwner: ctx.userId,
       })
-      // eslint-disable-next-line no-console
-      console.log(`createPost: ${createPost}`)
       return createPost
+    },
+    editPost: async (
+      _: Post,
+      args: {
+        id: Pick<Post, "id">
+        post: Omit<Post, "id" | "_id" | "postOwner">
+      },
+      _cxt: PBContext,
+    ) => {
+      const editPost = await PostsModel.findByIdAndUpdate(args.id, args.post)
+      return editPost
     },
   },
 }

@@ -18,6 +18,14 @@ input PostInput {
   dispatchTime: Date!
 }
 
+input EditPost {
+  title: String
+  description: String
+  platforms: [String]
+  media: String
+  dispatchTime: Date
+}
+
 type Query {
   postsByFilter(postName: String, platformName: String): [Post] @auth
 }
@@ -25,5 +33,5 @@ type Query {
 type Mutation {
   createPost(post: PostInput!): Post @auth
   deletePost(id: [ID!]!): [Post] @auth
-  editPost(id: ID!): Post @auth
+  editPost(id: ID!, post: EditPost): Post @auth
 }
