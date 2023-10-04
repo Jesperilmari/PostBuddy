@@ -26,6 +26,7 @@ export default {
     login: async (_: User, args: LoginArgs) => {
       const result: Maybe<User> = await UserModel.login(args)
       const user = result.unwrapOrElse(raiseAuthError("Login failed"))
+
       return {
         token: generateToken({ id: user._id }),
         user,
