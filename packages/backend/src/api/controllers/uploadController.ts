@@ -11,6 +11,8 @@ const validContentTypes = [
   // "video/mp4",
   // "video/webm",
 ]
+
+// TODO might need to resize images
 const compressor = sharp().png({ quality: 40 })
 
 // TODO: Implement video uploads
