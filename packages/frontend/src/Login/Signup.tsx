@@ -36,7 +36,7 @@ function ChecData(data: FormData) {
     alert('Please fill in all fields')
     return
   }
-  
+
   if (!emailRegex.test(email as string)) {
     alert('Please enter a valid email')
     return false
@@ -85,7 +85,7 @@ export default function SignUp() {
     if (ok) {
       const variables = {
         user: {
-          username: 'placeholder', // TODO: implement username
+          username: data.get('username'),
           name: `${data.get('firstName')} ${data.get('lastName')}}`,
           email: data.get('email'),
           password: data.get('password'),
