@@ -32,7 +32,20 @@ export const USERBYUSERNAME = gql`
       id
       name
       username
+    }
   }
-}
 `
 
+export const REGISTER = gql`
+  mutation Register($user: UserInput!) {
+    register(user: $user) {
+      token
+      user {
+        username
+        name
+        id
+        email
+      }
+    }
+  }
+`

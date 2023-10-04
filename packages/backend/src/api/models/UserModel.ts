@@ -5,14 +5,23 @@ import validator from "validator"
 import { User, LoginArgs, UserInput } from "../interfaces/User"
 import { correctPassword, createHashedPassword } from "../../util/password"
 
-interface IUserModel extends Model<User> {
+interface UserMethods {
+  changePassword(
+    // eslint-disable-next-line
+    oldPassword: string,
+    // eslint-disable-next-line
+    newPassword: string,
+  ): Promise<Result<User, GraphQLError>>
+}
+
+interface IUserModel extends Model<User, {}, UserMethods> {
   // eslint-disable-next-line
   login(creds: LoginArgs): Promise<Maybe<User>>
   // eslint-disable-next-line
   register(user: UserInput): Promise<Result<User, GraphQLError>>
 }
 
-const userSchema = new Schema<User, IUserModel>({
+const userSchema = new Schema<User, IUserModel, UserMethods>({
   username: {
     type: String,
     required: true,
@@ -82,6 +91,24 @@ userSchema.static("register", async function register(user: User): Promise<
     ? Result.ok(await created.save())
     : Result.err(new GraphQLError(`Validation failed: ${mapErrors(errors)}`))
 })
+
+userSchema.method(
+  "changePassword",
+  async function changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<Result<User, GraphQLError>> {
+    if (!correctPassword(oldPassword, this.password)) {
+      return Result.err(new GraphQLError("Incorrect password"))
+    }
+    const hashedPassword = createHashedPassword(newPassword)
+    this.password = hashedPassword
+    const errors = this.validateSync()
+    return !errors
+      ? Result.ok(await this.save())
+      : Result.err(new GraphQLError(`Validation failed: ${mapErrors(errors)}`))
+  },
+)
 
 /**
  * Creates a string from ValidationError object

@@ -11,3 +11,10 @@ export interface LoginResponse {
     token: string
   }
 }
+
+export interface RegisterResponse {
+  register: {
+    user: User
+    token: string
+  }
+}
