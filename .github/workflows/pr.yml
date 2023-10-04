@@ -36,14 +36,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Everything succeeded
-        if: ${{ success() }}
+        if: ${{ needs.lint_and_test.result == 'success' }}
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
           details: New pull request, (lint and test passed)
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Something failed
-        if: ${{ failure() }}
+        if: ${{ needs.lint_and_test.result == 'failure' }}
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
