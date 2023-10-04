@@ -44,3 +44,12 @@ export const updateUser = `mutation UpdateUser($user: UserUpdate!) {
     username
   }
 }`
+
+export const updatePassword = `mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
+  updatePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+    email
+    id
+    name
+    username
+  }
+}`

@@ -12,3 +12,9 @@ export function raiseAuthError(msg?: string): () => never | never {
     throw new GraphQLError(msg)
   }
 }
+
+export function raiseGqlError(msg: string) {
+  return () => {
+    throw new GraphQLError(msg)
+  }
+}

@@ -5,7 +5,14 @@ import config from "../src/config"
 import UserTestUtils from "./util/userFunctions"
 import request from "supertest"
 import app from "../src/app"
-import { allUsers, login, oneUser, register, updateUser } from "./queries"
+import {
+  allUsers,
+  login,
+  oneUser,
+  register,
+  updatePassword,
+  updateUser,
+} from "./queries"
 import { User } from "../src/api/interfaces/User"
 
 describe("UserResolver", () => {
@@ -134,5 +141,29 @@ describe("UserResolver", () => {
     expect(response.body.data.deleteUser).toHaveProperty("name")
     const userInDb = await UserModel.findById(user._id)
     expect(userInDb).toBeNull()
+  })
+
+  it("should change password", async () => {
+    const user = await UserTestUtils.createUser(
+      "megauser",
+      "1234",
+      "mega@mail.com",
+    )
+    const token = UserTestUtils.genToken(user._id)
+    const response = await request(app)
+      .post("/graphql")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        query: updatePassword,
+        variables: {
+          oldPassword: "1234",
+          newPassword: "4321",
+        },
+      })
+      .expect(StatusCodes.OK)
+
+    expect(response.body.data.updatePassword).toHaveProperty("username")
+    const changed = await UserModel.findById(user._id)
+    expect(changed?.password).not.toEqual(user.password)
   })
 })
