@@ -89,9 +89,10 @@ const VirtuosoTableComponents: TableComponents<Data> = {
     <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
   ),
   TableHead,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
   TableBody: React.forwardRef<HTMLTableSectionElement>((props, ref) => (
-    <TableBody {...props} ref={ref} />
+    <TableBody {...props} ref={ref}/>
   )),
 };
 

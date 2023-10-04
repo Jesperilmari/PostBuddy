@@ -1,12 +1,11 @@
 import { useState }  from 'react';
 import './Home.css';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {  Alert, Button } from '@mui/material';
 import EnhancedTable from './SecondTable';
-import store, { RootState } from '../reducers/store';
 import { useSelector } from 'react-redux';
 import { User } from '../interfaces';
 import { useNavigate } from 'react-router-dom';
+import { RootState } from '../reducers/store';
 
 
 
@@ -15,30 +14,32 @@ import { useNavigate } from 'react-router-dom';
 export default function HomePage(){
 
     const [alert, setAlert] = useState('hidden');
+    
 
     const alertMessage = 'Are you sure you want to delete the selected posts?';
 
     function handleClick() {
         location.href = '/createpost';
         console.log('The link was clicked.');
+        setAlert("hidden");
     }
 
-    function handleDelete () {
-        console.log('The link was clicked.');
-        setAlert("visible");
-        setTimeout(() => {
-            setAlert("hidden");
-        }, 5000);
+    // function handleDelete () {
+    //     console.log('The link was clicked.');
+    //     setAlert("visible");
+    //     setTimeout(() => {
+    //         setAlert("hidden");
+    //     }, 5000);
 
-    }
+    // }
 
     const user = useSelector<RootState, User | undefined>((state) => state.user.user);
-    //const nav = useNavigate();
+    const nav = useNavigate();
 
-    // if(!user) {
-    //     console.log("not logged in")
-    //     nav("/login")
-    // }
+    if(!user) {
+        console.log("not logged in")
+        nav("/login")
+    }
 
     //const getAllPosts = ()=>  {}
 

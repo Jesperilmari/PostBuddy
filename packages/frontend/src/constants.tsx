@@ -1,5 +1,4 @@
 import HomePage from './Home/Homepage'
-import { LoginPage } from './Login/LoginPage'
 import Settings from './components/Settings'
 import { Edit, Home, Settings as SettingsIcon } from '@mui/icons-material'
 import CreatePost from './createpost/CreatePost'
