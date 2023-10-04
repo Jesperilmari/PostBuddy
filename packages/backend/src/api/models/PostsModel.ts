@@ -23,6 +23,10 @@ const PostSchema = new Schema<Post>({
     type: Date,
     required: true,
   },
+  postOwner: {
+    type: String,
+    required: true,
+  },
 })
 // TODO validate platforms
 
