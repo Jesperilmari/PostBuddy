@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { PBContext } from "../interfaces/PBContext"
 import PostsModel from "../models/PostsModel"
 import Post from "../interfaces/Post"
@@ -24,8 +25,22 @@ export default {
       },
       _cxt: PBContext,
     ) => {
-      const editPost = await PostsModel.findByIdAndUpdate(args.id, args.post)
+      const editPost = await PostsModel.findByIdAndUpdate(args.id, args.post, {
+        new: true,
+      })
       return editPost
+    },
+    deletePost: async (
+      _: Post,
+      args: { id: [Pick<Post, "id" | "_id">] },
+      _ctx: PBContext,
+    ) => {
+      const deletePost = await PostsModel.find({
+        _id: { $in: args.id },
+      }).deleteMany({})
+      console.log(args.id)
+      console.log(`deletePost`, deletePost)
+      return deletePost
     },
   },
 }
