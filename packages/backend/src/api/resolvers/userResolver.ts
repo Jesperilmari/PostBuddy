@@ -49,5 +49,22 @@ export default {
         user: created,
       }
     },
+    updatePassword: async (
+      _: User,
+      {
+        newPassword,
+        oldPassword,
+      }: { newPassword: string; oldPassword: string },
+      ctx: PBContext,
+    ) => {
+      const user = await UserModel.findById(ctx.userId)
+      if (!user) {
+        return raiseAuthError("User not found")
+      }
+
+      const res = await user.changePassword(oldPassword, newPassword)
+
+      return res.unwrapOrElse(raise)
+    },
   },
 }

@@ -27,7 +27,6 @@ input UserUpdate {
   username: String
   name: String
   email: String
-  password: String
 }
 
 type Mutation {
@@ -35,4 +34,5 @@ type Mutation {
   deleteUser: User! @auth
   login(usernameOrEmail: String!, password: String!): AuthResponse!
   register(user: UserInput!): AuthResponse!
+  updatePassword(oldPassword: String!, newPassword: String!): User! @auth
 }

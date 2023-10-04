@@ -9,7 +9,7 @@ export interface User extends Document {
   // updatedAt: Date;
 }
 
-export type UserInput = Partial<Omit<User, "id" | "_id">>
+export type UserInput = Partial<Omit<User, "id" | "_id" | "password">>
 
 export interface LoginArgs {
   usernameOrEmail: string
