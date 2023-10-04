@@ -1,5 +1,5 @@
 import { PBContext } from "../interfaces/PBContext"
-import PostModel from "../models/PostModel"
+import PostsModel from "../models/PostsModel"
 import Post from "../interfaces/Post"
 
 export default {
@@ -14,7 +14,7 @@ export default {
       console.log(args)
       // eslint-disable-next-line no-console
       console.log(ctx)
-      const createPost = await PostModel.create({
+      const createPost = await PostsModel.create({
         ...args.post,
         postOwner: ctx.userId,
       })
