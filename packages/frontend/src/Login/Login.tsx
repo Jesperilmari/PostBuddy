@@ -48,18 +48,15 @@ export default function SignInSide() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (data) {
+    if (!loading && data) {
       dispatch(userLoggedIn(data.login))
+      console.log('Logged in as ', data.login.user)
+      navigate('/', { replace: true })
     }
-  }, [data, dispatch])
+  }, [data, dispatch, navigate, loading])
 
   if (error) {
     console.log(error)
-  }
-
-  if (data && !loading) {
-    console.log('Logged in as ', data.login.user)
-    navigate('/', { replace: true })
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

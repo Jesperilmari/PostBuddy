@@ -66,18 +66,15 @@ export default function SignUp() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (data) {
+    if (!loading && data) {
       dispatch(userLoggedIn(data.register))
+      console.log('Logged in as ', data.register.user)
+      navigate('/', { replace: true })
     }
-  }, [data, dispatch])
+  }, [data, dispatch, navigate, loading])
 
   if (error) {
     console.log(error)
-  }
-
-  if (data && !loading) {
-    console.log('Logged in as ', data.register.user)
-    navigate('/', { replace: true })
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -87,10 +84,12 @@ export default function SignUp() {
     const ok = ChecData(data)
     if (ok) {
       const variables = {
-        username: 'placeholder', // TODO: implement username
-        name: `${data.get('firstName')} ${data.get('lastName')}}`,
-        email: data.get('email'),
-        password: data.get('password'),
+        user: {
+          username: 'placeholder', // TODO: implement username
+          name: `${data.get('firstName')} ${data.get('lastName')}}`,
+          email: data.get('email'),
+          password: data.get('password'),
+        },
       }
       register({
         variables,
