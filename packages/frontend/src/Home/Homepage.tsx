@@ -1,14 +1,17 @@
 import "./Home.css";
 import { Button } from "@mui/material";
 import EnhancedTable from "./SecondTable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { User } from "../interfaces";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../reducers/store";
+import { changePage } from "../reducers/pageReducer";
 
 export default function HomePage() {
+  const dispatch = useDispatch();
+
   function handleClick() {
-    //TODO: redirect to create post page
+    dispatch(changePage("CreatePost"));
     console.log("The link was clicked.");
   }
 

@@ -46,18 +46,9 @@ const alertSlsice = createSlice({
       return { ...initialState };
     },
     add(_state, action) {
-      const { message, title, onClose, timeout, variant, severity } =
-        action.payload;
       table.push({
         active: true,
-        alert: {
-          severity,
-          message,
-          title,
-          onClose,
-          timeout,
-          variant,
-        },
+        alert: { ...action.payload },
       });
       return table.peek();
     },

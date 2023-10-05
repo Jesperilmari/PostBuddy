@@ -1,24 +1,36 @@
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
-import { pages } from '../constants'
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import { PageName, pages } from "../constants";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../reducers/store";
+import { changePage } from "../reducers/pageReducer";
 
-type SideNavProps = {
-  changePage: (page: string) => void
-  currentPage: string
-}
-
-export default function SideNav({ changePage, currentPage }: SideNavProps) {
+export default function SideNav() {
+  const currentPage = useSelector<RootState, PageName>(
+    (state) => state.page.name
+  );
+  const dispatch = useDispatch();
+  const handleChange = (page: PageName) => {
+    dispatch(changePage(page));
+  };
   return (
     <Drawer
       open
       variant="permanent"
       PaperProps={{
         style: {
-          position: 'relative',
+          position: "relative",
           zIndex: 0,
         },
       }}
       sx={{
-        width: '16em',
+        width: "16em",
       }}
     >
       <List>
@@ -30,7 +42,7 @@ export default function SideNav({ changePage, currentPage }: SideNavProps) {
             }}
           >
             <ListItemButton
-              onClick={() => changePage(page.name)}
+              onClick={() => handleChange(page.name)}
               selected={page.name == currentPage}
             >
               <ListItemIcon>{page.icon}</ListItemIcon>
@@ -40,5 +52,5 @@ export default function SideNav({ changePage, currentPage }: SideNavProps) {
         ))}
       </List>
     </Drawer>
-  )
+  );
 }

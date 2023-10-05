@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MenuAppBar from "./AppBar";
 import SideNav from "./SideNav";
-import { pages } from "../constants";
+import { PageName, pages } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reducers/store";
@@ -10,8 +10,11 @@ import useAlert from "../Hooks/useAlert";
 import { next } from "../reducers/alertReducer";
 
 function Home() {
-  const [currentPage, setCurrentPage] = useState("Home");
-  const page = pages.find((page) => page.name === currentPage);
+  const pageString = useSelector<RootState, PageName>(
+    (state) => state.page.name
+  );
+
+  const page = pages.find((page) => page.name === pageString);
   const navigate = useNavigate();
   const user = useSelector<RootState>((state) => state.user.user);
   const dispatch = useDispatch();
@@ -74,7 +77,7 @@ function Home() {
           ) : null}
           {alertMessage}
         </Alert>
-        <MenuAppBar currentPage={currentPage} />
+        <MenuAppBar currentPage={pageString} />
         <section
           style={{
             display: "flex",
@@ -82,7 +85,7 @@ function Home() {
             flexDirection: "row",
           }}
         >
-          <SideNav changePage={setCurrentPage} currentPage={currentPage} />
+          <SideNav />
           {page && page.elem}
         </section>
       </div>
