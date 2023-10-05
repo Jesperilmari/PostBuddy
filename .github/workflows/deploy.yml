@@ -3,7 +3,7 @@ name: Deployment workflow
 on:
   push:
     branches:
-      - main
+      - deployment
 
 jobs:
   lint_and_test:
