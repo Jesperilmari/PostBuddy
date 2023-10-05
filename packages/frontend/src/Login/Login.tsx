@@ -139,12 +139,12 @@ export default function SignInSide() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href={resetPasswordUrl} variant="body2">
+                  <Link variant="body2" onClick={() => navigate(resetPasswordUrl)}>
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href={signupUrl} variant="body2">
+                  <Link variant="body2" onClick={() => navigate(signupUrl)}>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
