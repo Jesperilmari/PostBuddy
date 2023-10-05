@@ -34,6 +34,7 @@ function Home() {
         }, 2000)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alert, dispatch]);
 
   useEffect(() => {
