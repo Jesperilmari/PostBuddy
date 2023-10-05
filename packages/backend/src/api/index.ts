@@ -1,6 +1,7 @@
 import { Router } from "express"
 import oauthRouter from "./routers/oauthRouter"
-import useGraphql from "./apolloServer"
+import fileUploadRouter from "./routers/fileUploadRouter"
+import createGqlServer from "./apolloServer"
 
 const restApi = Router()
 
@@ -10,6 +11,6 @@ restApi.get("/", (_req, res) => {
 
 restApi.use("/oauth", oauthRouter)
 
-// Later will have more exports
-// eslint-disable-next-line import/prefer-default-export
-export { restApi, useGraphql }
+restApi.use("/upload", fileUploadRouter)
+
+export { restApi, createGqlServer }

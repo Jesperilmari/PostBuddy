@@ -25,6 +25,7 @@ export async function connectPlatform(
   req: Request<{ platformName: string }>,
   res: Response,
 ) {
+  // TODO fix this
   const user = req.user as User
   const { platformName } = req.params
 

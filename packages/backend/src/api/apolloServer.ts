@@ -5,7 +5,6 @@ import {
 } from "@apollo/server/plugin/landingPage/default"
 import { expressMiddleware } from "@apollo/server/express4"
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import { Express } from "express"
 import resolvers from "./resolvers"
 import typeDefs from "./schemas"
 import { info } from "../util/logger"
@@ -22,7 +21,7 @@ const schema = authDirectiveTransformer(executableSchema, "auth")
 /**
  * Creates an ApolloServer instance and mounts it on the Express app on the given path.
  */
-export default async function useGraphql(path: string, app: Express) {
+export default async function createGqlServer() {
   const server = new ApolloServer<BaseContext>({
     schema,
     introspection: true,
@@ -37,8 +36,7 @@ export default async function useGraphql(path: string, app: Express) {
   })
   await server.start()
   info("Apollo graphql server started")
-  const middleware = expressMiddleware(server, {
+  return expressMiddleware(server, {
     context: async ({ req }) => ({ req }),
   })
-  app.use(path, middleware)
 }
