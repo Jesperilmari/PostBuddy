@@ -5,39 +5,24 @@ import Post from "../interfaces/Post"
 
 export default {
   Query: {
-    // TODO find a more efficient way to filter posts
     postsByFilter: async (
       _: Post,
       args: { postTitle: String; platformName: String },
       ctx: PBContext,
     ) => {
-      let filteredPosts
-      if (args.postTitle === undefined && args.platformName === undefined) {
-        filteredPosts = await PostsModel.find({
-          postOwner: { $in: ctx.userId },
-        })
+      const query: Record<string, unknown> = {
+        postOwner: ctx.userId,
       }
-      if (args.postTitle !== undefined && args.platformName === undefined) {
-        filteredPosts = await PostsModel.find({
-          postOwner: { $in: ctx.userId },
-          title: { $in: args.postTitle },
-        })
+
+      if (args.postTitle) {
+        query.title = { $in: args.postTitle }
       }
-      if (args.postTitle !== undefined && args.platformName !== undefined) {
-        filteredPosts = await PostsModel.find({
-          postOwner: { $in: ctx.userId },
-          title: { $in: args.postTitle },
-          platforms: { $in: [args.platformName] },
-        })
+
+      if (args.platformName) {
+        query.platforms = { $in: [args.platformName] }
       }
-      console.log(
-        "postTitle:",
-        args.postTitle,
-        "platformName:",
-        args.platformName,
-      )
-      console.log(filteredPosts)
-      return filteredPosts
+
+      return PostsModel.find(query)
     },
   },
   Mutation: {
