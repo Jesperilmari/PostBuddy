@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "clearDb": "ts-node src/util/clearDb.ts",
-    "build": "tsc --noEmit && esbuild src/index.ts --bundle --minify --platform=node --outfile=dist/index.js",
+    "build": "tsc",
+    "postbuild": "copyfiles --error src/api/schemas/*.graphql dist",
     "start": "node dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --verbose --randomize",
     "test:cov": "jest --detectOpenHandles --forceExit --verbose --randomize --collectCoverage",
