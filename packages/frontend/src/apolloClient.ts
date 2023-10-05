@@ -12,11 +12,10 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-// TODO: Add production URL
-const prod_url = ''
+const prod_url = 'postbuddy-api.azurewebsites.net'
 
 const uri =
-  process.env.NODE_ENV === 'production' ? `${prod_url}/grapql` : 'http://localhost:3000/graphql'
+  process.env.NODE_ENV !== 'development' ? `${prod_url}/graphql` : 'http://localhost:3000/graphql'
 
 const apolloClient = new ApolloClient({
   link: authLink.concat(createHttpLink({ uri })),
