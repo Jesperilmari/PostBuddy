@@ -11,6 +11,7 @@ env:
   PORT: ${{ secrets.PORT }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
   TEST_DB_URI: ${{ secrets.TEST_DB_URI }}
+  AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
 
 jobs:
   lint_and_test:
