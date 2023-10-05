@@ -8,7 +8,7 @@
     "clearDb": "ts-node src/util/clearDb.ts",
     "build": "tsc",
     "postbuild": "copyfiles --error src/api/schemas/*.graphql dist",
-    "start": "node dist/index.js",
+    "start": "node src/index.js",
     "test": "jest --detectOpenHandles --forceExit --verbose --randomize",
     "test:cov": "jest --detectOpenHandles --forceExit --verbose --randomize --collectCoverage",
     "lint": "eslint src/ --ext .ts",
