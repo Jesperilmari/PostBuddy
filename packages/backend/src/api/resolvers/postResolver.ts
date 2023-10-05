@@ -35,6 +35,7 @@ export default {
         ...args.post,
         postOwner: ctx.userId,
       })
+      console.log(createPost)
       return createPost
     },
     editPost: async (
