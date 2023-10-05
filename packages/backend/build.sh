@@ -2,8 +2,9 @@
 
 set -e
 
+cd packages/backend
 # Build the backend
-npm run build
+npm run build 
 echo "Build complete"
 
 # Copy package json
