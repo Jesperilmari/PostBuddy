@@ -65,6 +65,7 @@ jobs:
         run: |
           npm install --prefix ./packages/frontend
           npm run build --prefix ./packages/frontend
+          zip -r packages/frontend/dist.zip packages/frontend/dist
       - name: Upload frontend artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
