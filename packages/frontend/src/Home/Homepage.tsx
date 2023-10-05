@@ -21,7 +21,7 @@ export default function HomePage() {
     console.log("not logged in");
     nav("/login");
   }
-
+  //const getAllPosts = ()=>  {}
   //const getAllPosts = ()=>  {}
 
   //props is the username
