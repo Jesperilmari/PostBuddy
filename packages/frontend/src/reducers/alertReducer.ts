@@ -1,4 +1,4 @@
-import { Stack } from "../interfaces";
+import { Stack } from "../stack";
 import { createSlice } from "@reduxjs/toolkit";
 
 const table = new Stack<AlertState>();

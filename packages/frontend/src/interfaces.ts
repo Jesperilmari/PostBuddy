@@ -68,15 +68,3 @@ export class Stack<T> implements IStack<T> {
     return false;
   }
 }
-
-export interface AlertInput {
-  active: boolean;
-  alert: {
-    severity: "success" | "info" | "warning" | "error";
-    message?: string | "alert";
-    title?: string | null;
-    onClose?: boolean;
-    timeout?: number;
-    variant?: "outlined" | "filled" | "standard";
-  };
-}

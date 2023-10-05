@@ -8,7 +8,7 @@ import { RootState } from "../reducers/store";
 
 export default function HomePage() {
   function handleClick() {
-    location.href = "/createpost";
+    //TODO: redirect to create post page
     console.log("The link was clicked.");
   }
 
