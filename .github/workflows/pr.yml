@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - name: 'Lint'
+      - name: 'Lint & test'
         run: |
           npm install --prefix ./packages/backend
           npm run lint --prefix ./packages/backend && npm run test --prefix ./packages/backend
@@ -46,6 +46,6 @@ jobs:
         if: ${{ needs.lint_and_test.result == 'failure' }}
         uses: rjstone/discord-webhook-notify@v1
         with:
-          severity: info
+          severity: warn
           details: New pull request, (some checks didn't pass)
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
