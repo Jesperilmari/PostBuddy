@@ -14,4 +14,4 @@ cp package.json dist/package.json
 
 npm install --prefix ./dist --omit=dev
 
-zip -r backend.zip dist
+zip -r ../../dist.zip dist
