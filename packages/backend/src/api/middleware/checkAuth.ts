@@ -32,7 +32,7 @@ export default async function checkAuth(
 
 function getToken(req: Request) {
   const authHeader = req.headers.authorization
-  return Maybe.of(authHeader).map((header) => header.split(" ")[1])
+  return Maybe.of(authHeader).map((header) => header.slice(7))
 }
 
 function verifySafe(token: string): Maybe<TokenPayload> {

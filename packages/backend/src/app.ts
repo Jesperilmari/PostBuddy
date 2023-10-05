@@ -7,7 +7,7 @@ import cors from "cors"
 import helmet from "helmet"
 import notFound from "./api/middleware/notFound"
 import errorHandler from "./api/middleware/errorHandler"
-import { restApi, useGraphql } from "./api"
+import { restApi, createGqlServer } from "./api"
 
 const app = express()
 
@@ -33,7 +33,8 @@ app.use("/api/v1", restApi)
 
 // eslint-disable-next-line
 ;(async () => {
-  await useGraphql("/graphql", app)
+  const graphqlMiddleware = await createGqlServer()
+  app.use("/graphql", graphqlMiddleware)
   app.use(notFound, errorHandler)
 })()
 
