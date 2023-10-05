@@ -100,15 +100,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
-      - name: Download backend artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: backend
-      - name: Deploy
-        run: |
-          ls -la
-          echo "Deploy backend"
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: backend
