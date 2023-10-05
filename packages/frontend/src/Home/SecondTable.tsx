@@ -56,7 +56,7 @@ const rows = [
   createData('Marshmallow', 318, 0, 81, 2.0),
   createData('Nougat', 360, 19.0, 9, 37.0),
   createData('Oreo', 437, 18.0, 63, 4.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
+  createData('fdsfsdfsdf', 437, 18.0, 63, 4.0),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
