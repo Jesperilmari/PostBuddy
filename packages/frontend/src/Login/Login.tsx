@@ -20,8 +20,8 @@ import { userLoggedIn } from '../reducers/userReducer'
 import { LoginResponse } from '../interfaces'
 import Copyright from '../components/Copyright'
 
-const signupUrl = 'http://localhost:5173/signup'
-const resetPasswordUrl = 'http://localhost:5173/resetpassword'
+const signupUrl = '/signup'
+const resetPasswordUrl = '/resetpassword'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
