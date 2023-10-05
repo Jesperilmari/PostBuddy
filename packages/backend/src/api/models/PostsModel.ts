@@ -24,7 +24,8 @@ const PostSchema = new Schema<Post>({
     required: true,
   },
   postOwner: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
 })

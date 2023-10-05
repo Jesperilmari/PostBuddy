@@ -4,7 +4,42 @@ import PostsModel from "../models/PostsModel"
 import Post from "../interfaces/Post"
 
 export default {
-  Query: {},
+  Query: {
+    // TODO find a more efficient way to filter posts
+    postsByFilter: async (
+      _: Post,
+      args: { postTitle: String; platformName: String },
+      ctx: PBContext,
+    ) => {
+      let filteredPosts
+      if (args.postTitle === undefined && args.platformName === undefined) {
+        filteredPosts = await PostsModel.find({
+          postOwner: { $in: ctx.userId },
+        })
+      }
+      if (args.postTitle !== undefined && args.platformName === undefined) {
+        filteredPosts = await PostsModel.find({
+          postOwner: { $in: ctx.userId },
+          title: { $in: args.postTitle },
+        })
+      }
+      if (args.postTitle !== undefined && args.platformName !== undefined) {
+        filteredPosts = await PostsModel.find({
+          postOwner: { $in: ctx.userId },
+          title: { $in: args.postTitle },
+          platforms: { $in: [args.platformName] },
+        })
+      }
+      console.log(
+        "postTitle:",
+        args.postTitle,
+        "platformName:",
+        args.platformName,
+      )
+      console.log(filteredPosts)
+      return filteredPosts
+    },
+  },
   Mutation: {
     createPost: async (
       _: Post,
@@ -15,6 +50,7 @@ export default {
         ...args.post,
         postOwner: ctx.userId,
       })
+      console.log(createPost)
       return createPost
     },
     editPost: async (
