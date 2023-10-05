@@ -61,8 +61,6 @@ describe("UploadRouter", () => {
       .set("Authorization", `Bearer ${token}`)
       .send(file)
 
-    console.log(response)
-    console.log(response.body)
     expect(response.status).toBe(StatusCodes.OK)
     expect(response.body).toEqual({
       message: "Upload successful",

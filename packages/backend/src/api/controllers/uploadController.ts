@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { ContainerClient } from "@azure/storage-blob"
 import sharp from "sharp"
+import crypto from "node:crypto"
 import APIError from "../classes/APIError"
 
 const validContentTypes = [
