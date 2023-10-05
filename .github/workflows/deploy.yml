@@ -1,0 +1,102 @@
+name: Deployment workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint_and_test:
+    name: 'Lint and test'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: 'Lint & test'
+        run: |
+          npm install --prefix ./packages/backend
+          npm run lint --prefix ./packages/backend && npm run test --prefix ./packages/backend
+          npm install --prefix ./packages/frontend
+          npm run lint --prefix ./packages/frontend
+
+  check_changes:
+    name: 'Check for changes'
+    runs-on: ubuntu-latest
+    outputs:
+      backend_changed: ${{ steps.changes.outputs.backend }}
+      frontend_changed: ${{ steps.changes.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Check for changes'
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            frontend:
+              - packages/frontend/**
+            backend:
+              - packages/backend/**
+
+  build:
+    name: 'Build'
+    runs-on: ubuntu-latest
+    needs: [lint_and_test, check_changes]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - if: ${{ needs.check_changes.outputs.backend_changed == 'true' }}
+        name: 'Build backend'
+        run: |
+          npm install --prefix ./packages/backend
+          npm run build --prefix ./packages/backend
+      - name: Upload backend artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend
+          path: packages/backend/dist.zip
+      - if: ${{ needs.check_changes.outputs.frontend_changed == 'true' }}
+        name: 'Build frontend'
+        run: |
+          npm install --prefix ./packages/frontend
+          npm run build --prefix ./packages/frontend
+      - name: Upload frontend artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend
+          path: packages/frontend/dist.zip
+
+  deploy_backend:
+    if: ${{ needs.check_changes.outputs.backend_changed == 'true' }}
+    name: Deploy backend
+    runs-on: ubuntu-latest
+    needs: [build, check_changes]
+    steps:
+      - name: Download backend artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: backend
+      - name: Deploy
+        run: |
+          ls -la
+          echo "Deploy backend"
+
+  deploy_frontend:
+    if: ${{ needs.check_changes.outputs.frontend_changed == 'true' }}
+    name: Deploy frontend
+    runs-on: ubuntu-latest
+    needs: [build, check_changes]
+    steps:
+      - name: Download backend artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend
+      - name: Deploy
+        run: |
+          ls -la
+          echo "Deploy frontend"
