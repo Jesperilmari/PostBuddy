@@ -11,11 +11,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../reducers/store'
 import { User } from '../interfaces'
 import { userLoggedOut } from '../reducers/userReducer'
+import { useTheme } from '@mui/material'
 
 export default function MenuAppBar({ currentPage }: { currentPage: string }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const user = useSelector<RootState>((state) => state.user.user) as User
   const dispatch = useDispatch()
+  const theme = useTheme()
+  const main = theme.palette.primary.main
+  const target = '#00363e'
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -32,7 +36,13 @@ export default function MenuAppBar({ currentPage }: { currentPage: string }) {
 
   return (
     <Box sx={{ flexGrow: 0, zIndex: 1 }}>
-      <AppBar className="bar" position="static" sx={{}}>
+      <AppBar
+        className="bar"
+        position="static"
+        sx={{
+          background: `linear-gradient(90deg, ${main} 0%, ${target} 100%)`,
+        }}
+      >
         {' '}
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
