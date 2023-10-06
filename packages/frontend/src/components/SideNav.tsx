@@ -1,36 +1,28 @@
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
-import { PageName, pages } from "../constants";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../reducers/store";
-import { changePage } from "../reducers/pageReducer";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { PageName, pages } from '../constants'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../reducers/store'
+import { changePage } from '../reducers/pageReducer'
 
 export default function SideNav() {
-  const currentPage = useSelector<RootState, PageName>(
-    (state) => state.page.name
-  );
-  const dispatch = useDispatch();
+  const currentPage = useSelector<RootState, PageName>((state) => state.page.name)
+  const dispatch = useDispatch()
   const handleChange = (page: PageName) => {
-    dispatch(changePage(page));
-  };
+    dispatch(changePage(page))
+  }
   return (
     <Drawer
       open
       variant="permanent"
       PaperProps={{
         style: {
-          position: "relative",
+          position: 'relative',
           zIndex: 0,
         },
       }}
       sx={{
-        width: "16em",
+        width: '16em',
+        minHeight: '100vh',
       }}
     >
       <List>
@@ -52,5 +44,5 @@ export default function SideNav() {
         ))}
       </List>
     </Drawer>
-  );
+  )
 }

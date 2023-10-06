@@ -3,23 +3,27 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import ResetPassword from './Login/ResetPassword'
 import Home from './components/Home'
-import { useQuery } from '@apollo/client'
-import { ALL_USERS } from './queries'
+import { ThemeProvider, CssBaseline } from '@mui/material'
+import { darkTheme, lightTheme } from './themes'
+import { useSelector } from 'react-redux'
+import { ThemeState } from './reducers/themeReducer'
+import { RootState } from './reducers/store'
 
 function App() {
-  const result = useQuery(ALL_USERS)
-  if (!result.loading) {
-    console.log(result.data)
-  }
+  const theme = useSelector<RootState, ThemeState>((state) => state.theme.name)
+  const selected = theme === 'dark' ? darkTheme : lightTheme
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route path="*" element={<Navigate replace to="/login" />} />
-      </Routes>
+      <ThemeProvider theme={selected}>
+        <CssBaseline />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="*" element={<Navigate replace to="/login" />} />
+        </Routes>
+      </ThemeProvider>
     </>
   )
 }
