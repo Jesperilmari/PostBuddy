@@ -1,0 +1,16 @@
+type Platform {
+  id: ID!
+  name: String!
+}
+
+type UserOutput {
+  id: ID!
+  username: String!
+  name: String!
+  email: String!
+}
+
+type Query {
+  me: UserOutput @auth
+  connections: [Platform]! @auth
+}

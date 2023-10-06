@@ -2,6 +2,8 @@ import UserModel from "../../src/api/models/UserModel"
 import jwt from "jsonwebtoken"
 import config from "../../src/config"
 import { createHashedPassword } from "../../src/util/password"
+import { User } from "../../src/api/interfaces/User"
+import PlatformModel from "../../src/api/models/PlatformModel"
 
 namespace UserTestUtils {
   /**
@@ -28,6 +30,15 @@ namespace UserTestUtils {
    */
   export function genToken(userId: string) {
     return jwt.sign({ id: userId }, config.jwt_secret)
+  }
+
+  export async function createPlatformFor(user: User) {
+    return PlatformModel.create({
+      name: "testplatform",
+      refresh_token: "refresh",
+      token: "token",
+      user: user._id,
+    })
   }
 }
 
