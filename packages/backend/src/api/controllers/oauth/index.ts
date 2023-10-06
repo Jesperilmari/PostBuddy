@@ -25,12 +25,11 @@ export async function connectPlatform(
   const user = req.user as User
   const { platformName } = req.params
 
-  const val = genCookieValue(platformName, user._id)
+  const key = genCookieValue(platformName, user._id)
 
   // Cache user for later use in callback
-  cache.set(val, user)
+  cache.set(key, user)
 
-  // res.cookie("connect", val, { httpOnly: true, sameSite: "none" })
   const platform = platforms[platformName]
   if (!platform) {
     res
@@ -40,8 +39,8 @@ export async function connectPlatform(
   }
   const realParams = {
     ...platform.params,
-    state: val,
-    code_challenge: val,
+    state: key,
+    code_challenge: key,
   }
 
   res.json({
@@ -55,7 +54,7 @@ export async function connectPlatform(
  */
 function genCookieValue(platform: string, userId: string) {
   const str = `${platform}-${userId}`
-  return Buffer.from(str).toString("base64")
+  return Buffer.from(str).toString("base64").substring(0, 32)
 }
 
 type CallbackRequest = Request<
@@ -88,13 +87,12 @@ export async function handleCallback(req: CallbackRequest, res: Response) {
   const connection = await createPlatformConnection(user, platform, code, state)
 
   cache.delete(state)
-  // res.clearCookie("connect")
 
   // Send response
   connection.match({
     // Connection created
     Just: () => {
-      res.redirect("http://localhost:5173")
+      res.redirect("http://localhost:5173") // TODO conditional redirect based on NODE_ENV
     },
     // Connection creation failed
     Nothing: () => {

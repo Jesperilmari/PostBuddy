@@ -7,8 +7,11 @@ import {
 
 const oauth2Mock = mock(OAuth2)
 
-when(oauth2Mock.getAuthorizeUrl(anything())).thenReturn(
-  "http://localhost:3002/authorize",
+when(oauth2Mock.getAuthorizeUrl(anything())).thenCall(
+  (params: Record<string, string>) => {
+    const queryParams = new URLSearchParams(params)
+    return `http://localhost:3002/authorize?${queryParams.toString()}`
+  },
 )
 when(
   oauth2Mock.getOAuthAccessToken(anything(), anything(), anything()),

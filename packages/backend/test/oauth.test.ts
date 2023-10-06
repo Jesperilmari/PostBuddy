@@ -44,42 +44,40 @@ describe("OAuthRouter", () => {
     expect(response.status).toBe(404)
   })
 
-  it("should redirect to oauth provider", async () => {
+  it("should return url to oauth provider", async () => {
     const response = await request(app)
       .get("/api/v1/oauth/mock")
       .set("Authorization", `Bearer ${token}`)
-    expect(response.status).toBe(302)
-    expect(response.header.location).toBe(mockPlatform.authorizeUrl)
-    expect(response.header["set-cookie"]).toBeDefined()
-  })
-
-  it("should expect a valid cookie", async () => {
-    const response = await request(app)
-      .get("/api/v1/oauth/callback/mock")
-      .query({ code: "code", state: "state" })
-    expect(response.status).toBe(400)
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(response.body.url).toBeDefined()
   })
 
   it("should expect a valid platform", async () => {
     const response = await request(app)
       .get("/api/v1/oauth/callback/invalid")
-      .set("Cookie", ["connect=invalid"])
       .query({ code: "code", state: "state" })
 
     expect(response.status).toBe(404)
   })
 
   it("should connect the platform", async () => {
-    const cookieRes = await request(app)
+    const init = await request(app)
       .get("/api/v1/oauth/mock")
       .set("Authorization", `Bearer ${token}`)
-    const cookie = cookieRes.header["set-cookie"][0].split(";")[0]
+
+    expect(init.status).toBe(StatusCodes.OK)
+    const url = init.body.url as string
+    const state = url
+      .split("?")[1]
+      .split("&")
+      .find((s) => s.startsWith("state="))
+      ?.split("=")[1]
+    expect(state).toBeDefined()
     const response = await request(app)
       .get("/api/v1/oauth/callback/mock")
-      .set("Cookie", [cookie])
-      .query({ code: "code", state: "state" })
+      .query({ code: "code", state })
 
-    expect(response.status).toBe(StatusCodes.CREATED)
+    expect(response.status).toBe(302)
     const platform = await PlatformModel.findOne({})
     expect(platform).toBeDefined()
     expect(platform?.token).toBe("accessToken")
