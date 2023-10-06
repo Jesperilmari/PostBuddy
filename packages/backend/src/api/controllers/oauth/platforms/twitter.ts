@@ -31,7 +31,7 @@ const oauthAccessTokenParams: OauthAccessTokenParams = {
   grant_type: "authorization_code",
   redirect_uri: twitterParams.redirect_uri,
   client_id: twitterParams.client_id,
-  code_verifier: twitterParams.code_challenge,
+  code_verifier: "",
 }
 
 const oauthClient = new OAuth2(
