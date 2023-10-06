@@ -12,7 +12,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const prod_url = 'postbuddy-api.azurewebsites.net'
+const prod_url = 'https://postbuddy-api.azurewebsites.net'
 
 const uri =
   process.env.NODE_ENV !== 'development' ? `${prod_url}/graphql` : 'http://localhost:3000/graphql'
