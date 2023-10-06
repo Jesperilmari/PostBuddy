@@ -49,3 +49,23 @@ export const REGISTER = gql`
     }
   }
 `
+
+export const ME = gql`
+  query Me {
+    me {
+      id
+      username
+      name
+      email
+    }
+  }
+`
+
+export const CONNECTIONS = gql`
+  query Connections {
+    connections {
+      name
+      id
+    }
+  }
+`

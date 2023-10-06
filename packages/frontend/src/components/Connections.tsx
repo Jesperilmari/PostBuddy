@@ -1,6 +1,9 @@
 import { Box, Card, IconButton, Stack, Typography } from '@mui/material'
-import { Twitter, Delete, YouTube, Instagram, Add } from '@mui/icons-material'
+import { Twitter, Delete, Add } from '@mui/icons-material'
 import { connectPlatform } from '../util/api'
+import { useQuery } from '@apollo/client'
+import { CONNECTIONS } from '../queries'
+import useAlertFactory from '../Hooks/useAlertFactory'
 
 type Connection = {
   name: string
@@ -73,16 +76,34 @@ function Media({ connection, connected }: { connection: Connection; connected: b
   )
 }
 
+type Conn = {
+  id: string
+  name: string
+}
+
 export default function Connections() {
-  const connected: string[] = []
+  const { data, loading, error } = useQuery<{ connections: Conn[] }>(CONNECTIONS)
+  const alert = useAlertFactory()
+  if (error) {
+    alert.error(error.message, undefined, true)
+  }
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+  const connected: string[] = data?.connections.map((con) => con.name) || []
+
+  const connectedMedias = connected.map((connection) => {
+    const connectionData = availableConnections.find((c) => c.name === connection)
+    if (!connectionData) {
+      return null
+    }
+    return <Media connection={connectionData} key={connection} connected={true} />
+  })
 
   const notConnectedMedias = availableConnections
     .filter((connection) => !connected.includes(connection.name))
     .map((connection) => <Media connection={connection} key={connection.name} connected={false} />)
-
-  const connectedMedias = availableConnections
-    .filter((connection) => connected.includes(connection.name))
-    .map((connection) => <Media connection={connection} key={connection.name} connected={true} />)
 
   return (
     <Box>
