@@ -1,5 +1,6 @@
 import { Box, Card, IconButton, Stack, Typography } from '@mui/material'
 import { Twitter, Delete, YouTube, Instagram, Add } from '@mui/icons-material'
+import { connectPlatform } from '../util/api'
 
 type Connection = {
   name: string
@@ -11,14 +12,14 @@ const availableConnections = [
     name: 'twitter',
     icon: <Twitter />,
   },
-  {
-    name: 'youtube',
-    icon: <YouTube />,
-  },
-  {
-    name: 'instagram',
-    icon: <Instagram />,
-  },
+  // {
+  //   name: 'youtube',
+  //   icon: <YouTube />,
+  // },
+  // {
+  //   name: 'instagram',
+  //   icon: <Instagram />,
+  // },
 ]
 
 function Media({ connection, connected }: { connection: Connection; connected: boolean }) {
@@ -26,8 +27,11 @@ function Media({ connection, connected }: { connection: Connection; connected: b
     alert(`Delete ${connection.name}, not implemented yet`)
   }
 
-  const handleAdd = () => {
-    alert(`Add ${connection.name}, not implemented yet`)
+  const handleAdd = async () => {
+    const url = await connectPlatform(connection.name)
+    if (url) {
+      window.location.href = url
+    }
   }
 
   return (
@@ -39,7 +43,7 @@ function Media({ connection, connected }: { connection: Connection; connected: b
         justifyContent: 'space-between',
         padding: 1,
         width: 200,
-        // backgroundColor: connected ? 'background.default' : 'text.disabled',
+        backgroundColor: connected ? 'background.default' : 'text.disabled',
       }}
     >
       <Box
@@ -70,7 +74,7 @@ function Media({ connection, connected }: { connection: Connection; connected: b
 }
 
 export default function Connections() {
-  const connected = ['twitter', 'youtube']
+  const connected: string[] = []
 
   const notConnectedMedias = availableConnections
     .filter((connection) => !connected.includes(connection.name))

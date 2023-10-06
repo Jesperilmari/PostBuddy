@@ -9,10 +9,7 @@ import PlatformModel from "../../models/PlatformModel"
 import { Platform } from "../../interfaces/Platform"
 import { error } from "../../../util/logger"
 
-// TODO: Implement better caching.
-// This is a temporary solution. Either use proper inMemoryCache or use redis?
-const cache: Record<string, User> = {}
-
+const cache = new Map<string, User>()
 // Platforms that are supported
 export const platforms: Record<string, OauthPlatform<BaseParams>> = {
   twitter,
@@ -31,9 +28,9 @@ export async function connectPlatform(
   const val = genCookieValue(platformName, user._id)
 
   // Cache user for later use in callback
-  cache[val] = user
+  cache.set(val, user)
 
-  res.cookie("connect", val, { httpOnly: true })
+  // res.cookie("connect", val, { httpOnly: true, sameSite: "none" })
   const platform = platforms[platformName]
   if (!platform) {
     res
@@ -41,9 +38,15 @@ export async function connectPlatform(
       .send(`Platform not found: ${platformName}`)
     return
   }
+  const realParams = {
+    ...platform.params,
+    state: val,
+    code_challenge: val,
+  }
 
-  // Redirect user to oauth provider
-  res.redirect(platform.authorizeUrl)
+  res.json({
+    url: platform.oauthClient.getAuthorizeUrl(realParams),
+  })
 }
 
 /**
@@ -65,9 +68,9 @@ type CallbackRequest = Request<
  * Handles the callback from the oauth provider
  */
 export async function handleCallback(req: CallbackRequest, res: Response) {
-  const { code } = req.query
+  const { code, state } = req.query
   const { platformName } = req.params
-  const user = cache[req.cookies.connect]
+  const user = cache.get(state)
   const platform = platforms[platformName]
 
   if (!platform) {
@@ -78,23 +81,20 @@ export async function handleCallback(req: CallbackRequest, res: Response) {
   }
 
   if (!user) {
-    error("Invalid cookie: ", req.cookies?.connect)
-    throw new APIError("Invalid cookie", StatusCodes.BAD_REQUEST)
+    error("Invalid state", state)
+    throw new APIError("Invalid state", StatusCodes.BAD_REQUEST)
   }
 
-  const connection = await createPlatformConnection(user, platform, code)
+  const connection = await createPlatformConnection(user, platform, code, state)
 
-  // Clear cache and cookies after use
-  delete cache[req.cookies.connect]
-  res.clearCookie("connect")
+  cache.delete(state)
+  // res.clearCookie("connect")
 
   // Send response
   connection.match({
     // Connection created
-    Just: (plt) => {
-      res.status(StatusCodes.CREATED).json({
-        message: `${plt.name} connection created successfully`,
-      })
+    Just: () => {
+      res.redirect("http://localhost:5173")
     },
     // Connection creation failed
     Nothing: () => {
@@ -110,11 +110,15 @@ async function createPlatformConnection<T extends BaseParams>(
   user: User,
   platform: OauthPlatform<T>,
   code: string,
+  state: string,
 ) {
   return new Promise<Maybe<Platform>>((resolve) => {
     platform.oauthClient.getOAuthAccessToken(
       code,
-      platform.oauthAccessTokenParams,
+      {
+        ...platform.oauthAccessTokenParams,
+        code_verifier: state,
+      },
       async (err, accessToken, refreshToken, _result) => {
         if (err) {
           error("Error getting access token: ", err)

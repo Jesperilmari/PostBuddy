@@ -20,7 +20,7 @@ import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../reducers/userReducer'
 import { useMutation } from '@apollo/client'
 
-const loginUrl = 'https://localhost:5173/login'
+const loginUrl = '/login'
 
 //checks that the data is valid
 function ChecData(data: FormData) {
@@ -86,7 +86,7 @@ export default function SignUp() {
       const variables = {
         user: {
           username: data.get('username'),
-          name: `${data.get('firstName')} ${data.get('lastName')}}`,
+          name: `${data.get('firstName')} ${data.get('lastName')}`,
           email: data.get('email'),
           password: data.get('password'),
         },
@@ -142,9 +142,9 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="userName"
+                  id="username"
                   label="username"
-                  name="UserName"
+                  name="username"
                   autoComplete="username"
                 />
               </Grid>
@@ -192,7 +192,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href={loginUrl} variant="body2">
+                <Link variant="body2" onClick={() => navigate(loginUrl)}>
                   Already have an account? Sign in
                 </Link>
               </Grid>
