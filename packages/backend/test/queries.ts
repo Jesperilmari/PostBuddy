@@ -53,3 +53,19 @@ export const updatePassword = `mutation UpdatePassword($oldPassword: String!, $n
     username
   }
 }`
+
+export const me = `query Me {
+  me {
+    email
+    id
+    name
+    username
+  }
+}`
+
+export const connections = `query Connections {
+  connections {
+    id
+    name
+  }
+}`
