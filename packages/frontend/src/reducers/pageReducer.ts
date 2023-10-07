@@ -1,12 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { PageName } from "../constants";
+import { createSlice } from "@reduxjs/toolkit"
+import { PageName } from "../constants"
 export type PageState = {
-  name: PageName;
-};
+  name: PageName
+}
 
 const initialState: PageState = {
-  name: "HomePage",
-};
+  name: "Home",
+}
 
 const pageSlice = createSlice({
   name: "page",
@@ -15,10 +15,10 @@ const pageSlice = createSlice({
     changePage(_state, action: { payload: PageName }) {
       return {
         name: action.payload,
-      };
+      }
     },
   },
-});
+})
 
-export const { changePage } = pageSlice.actions;
-export default pageSlice.reducer;
+export const { changePage } = pageSlice.actions
+export default pageSlice.reducer
