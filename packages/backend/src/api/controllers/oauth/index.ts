@@ -15,6 +15,11 @@ export const platforms: Record<string, OauthPlatform<BaseParams>> = {
   twitter,
 }
 
+const websiteUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://postbuddy.vercel.app/"
+    : "http://localhost:5173"
+
 /**
  * Handles initialization of the oauth flow
  */
@@ -92,7 +97,7 @@ export async function handleCallback(req: CallbackRequest, res: Response) {
   connection.match({
     // Connection created
     Just: () => {
-      res.redirect("http://localhost:5173") // TODO conditional redirect based on NODE_ENV
+      res.redirect(websiteUrl)
     },
     // Connection creation failed
     Nothing: () => {
