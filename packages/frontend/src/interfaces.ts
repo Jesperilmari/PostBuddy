@@ -23,6 +23,16 @@ export interface Connection {
   id: number;
 }
 
+export interface PostResponse {
+  id: string
+  title: string
+  description: string
+  platforms: string[]
+  media: string
+  dispatchTime: Date
+  postOwner: string
+}
+
 export interface AlertInput {
   active: boolean;
   alert: {
