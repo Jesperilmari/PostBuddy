@@ -30,7 +30,7 @@ export interface PostResponse {
   platforms: string[]
   media: string
   dispatchTime: Date
-  postOwner: String
+  postOwner: string
 }
 
 export interface AlertInput {
