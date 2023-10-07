@@ -10,7 +10,7 @@ type Post {
   postOwner: String!
 }
 
-input CreatePost {
+input PostInput {
   title: String
   description: String!
   platforms: [String]!
@@ -23,7 +23,7 @@ type Query {
 }
 
 type Mutation {
-  createPost(post: CreatePost): Post @auth
+  createPost(post: PostInput!): Post @auth
   deletePost(id: [ID!]!): [Post] @auth
   editPost(id: ID!): Post @auth
 }

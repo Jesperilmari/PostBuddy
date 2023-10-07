@@ -1,7 +1,7 @@
 import HomePage from "./Home/Homepage";
 import Settings from "./components/Settings";
 import { Edit, Home, Settings as SettingsIcon } from "@mui/icons-material";
-import CreatePost from "./createpost/CreatePost";
+import CreatePostPage from "./createpost/CreatePostPage";
 
 export type Page = {
   name: string;
@@ -23,7 +23,7 @@ export const pages = [
   {
     name: "CreatePost",
     icon: <Edit />,
-    elem: <CreatePost />,
+    elem: <CreatePostPage />,
   },
 ] as const;
 
