@@ -17,7 +17,7 @@ export const platforms: Record<string, OauthPlatform<BaseParams>> = {
 
 const websiteUrl =
   process.env.NODE_ENV === "production"
-    ? "https://postbuddy.vercel.app/"
+    ? "https://postbuddy.vercel.app"
     : "http://localhost:5173"
 
 /**
