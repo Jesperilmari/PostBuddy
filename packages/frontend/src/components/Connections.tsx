@@ -1,18 +1,19 @@
-import { Box, Card, IconButton, Stack, Typography } from '@mui/material'
-import { Twitter, Delete, Add } from '@mui/icons-material'
-import { connectPlatform } from '../util/api'
-import { useQuery } from '@apollo/client'
-import { CONNECTIONS } from '../queries'
-import useAlertFactory from '../Hooks/useAlertFactory'
+import { Box, Card, IconButton, Stack, Typography } from "@mui/material";
+import { Twitter, Delete, Add } from "@mui/icons-material";
+import { connectPlatform } from "../util/api";
+import { useQuery } from "@apollo/client";
+import { CONNECTIONS } from "../queries";
+import useAlertFactory from "../Hooks/useAlertFactory";
+import { Conn } from "../interfaces";
 
 type Connection = {
-  name: string
-  icon: JSX.Element
-}
+  name: string;
+  icon: JSX.Element;
+};
 
 const availableConnections = [
   {
-    name: 'twitter',
+    name: "twitter",
     icon: <Twitter />,
   },
   // {
@@ -23,38 +24,44 @@ const availableConnections = [
   //   name: 'instagram',
   //   icon: <Instagram />,
   // },
-]
+];
 
-function Media({ connection, connected }: { connection: Connection; connected: boolean }) {
+function Media({
+  connection,
+  connected,
+}: {
+  connection: Connection;
+  connected: boolean;
+}) {
   const handleDelete = () => {
-    alert(`Delete ${connection.name}, not implemented yet`)
-  }
+    alert(`Delete ${connection.name}, not implemented yet`);
+  };
 
   const handleAdd = async () => {
-    const url = await connectPlatform(connection.name)
+    const url = await connectPlatform(connection.name);
     if (url) {
-      window.location.href = url
+      window.location.href = url;
     }
-  }
+  };
 
   return (
     <Card
       sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         padding: 1,
         width: 200,
-        backgroundColor: connected ? 'background.default' : 'text.disabled',
+        backgroundColor: connected ? "background.default" : "text.disabled",
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'left',
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "left",
           flexGrow: 0,
           gap: 1,
           paddingLeft: 1,
@@ -65,45 +72,48 @@ function Media({ connection, connected }: { connection: Connection; connected: b
       </Box>
       {connected ? (
         <IconButton onClick={handleDelete}>
-          <Delete sx={{ color: 'error.main' }} />
+          <Delete sx={{ color: "error.main" }} />
         </IconButton>
       ) : (
         <IconButton onClick={handleAdd}>
-          <Add sx={{ color: 'success.main' }} />
+          <Add sx={{ color: "success.main" }} />
         </IconButton>
       )}
     </Card>
-  )
-}
-
-type Conn = {
-  id: string
-  name: string
+  );
 }
 
 export default function Connections() {
-  const { data, loading, error } = useQuery<{ connections: Conn[] }>(CONNECTIONS)
-  const alert = useAlertFactory()
+  const { data, loading, error } = useQuery<{ connections: Conn[] }>(
+    CONNECTIONS
+  );
+  const alert = useAlertFactory();
   if (error) {
-    alert.error(error.message, undefined, true)
+    alert.error(error.message, undefined, true);
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
-  const connected: string[] = data?.connections.map((con) => con.name) || []
+  const connected: string[] = data?.connections.map((con) => con.name) || [];
 
   const connectedMedias = connected.map((connection) => {
-    const connectionData = availableConnections.find((c) => c.name === connection)
+    const connectionData = availableConnections.find(
+      (c) => c.name === connection
+    );
     if (!connectionData) {
-      return null
+      return null;
     }
-    return <Media connection={connectionData} key={connection} connected={true} />
-  })
+    return (
+      <Media connection={connectionData} key={connection} connected={true} />
+    );
+  });
 
   const notConnectedMedias = availableConnections
     .filter((connection) => !connected.includes(connection.name))
-    .map((connection) => <Media connection={connection} key={connection.name} connected={false} />)
+    .map((connection) => (
+      <Media connection={connection} key={connection.name} connected={false} />
+    ));
 
   return (
     <Box>
@@ -113,13 +123,13 @@ export default function Connections() {
       <Stack
         spacing={1}
         sx={{
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         {connectedMedias}
         {notConnectedMedias}
       </Stack>
     </Box>
-  )
+  );
 }

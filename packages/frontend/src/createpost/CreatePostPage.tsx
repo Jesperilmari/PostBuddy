@@ -6,9 +6,13 @@ import { styled } from "@mui/material/styles";
 import DateTime from "./DateTime";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel } from "@mui/material";
+import { CONNECTIONS, CREATEPOST } from "../queries";
+import { Conn, Post, PostInput } from "../interfaces";
+import uploadFile from "../util/uploadFile";
+import useAlertFactory from "../Hooks/useAlertFactory";
+import { useMutation, useQuery } from "@apollo/client";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -22,25 +26,83 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+function checkSwitches(data: FormData, connected: string[]) {
+  const checked: string[] = [];
+  connected.forEach((mediaName) => {
+    if (data.get(mediaName) === "on") {
+      checked.push(mediaName);
+    }
+  });
+  return checked;
+}
+
+//TODO: tokeni lähtee välillä ja ei toimi
+
 export default function CreatePostPage() {
   const [value, setValue] = useState<Dayjs | null>(null);
-  const medias = [2];
-  const [file, setFile] = useState<File | null>(null);
+  const [id, setId] = useState<string>("");
+  const alert = useAlertFactory();
+  const { data, loading, error } = useQuery<{ connections: Conn[] }>(
+    CONNECTIONS
+  );
+  const [createPost] = useMutation<{ post: Post }>(CREATEPOST);
+  if (error) {
+    alert.error(error.message, undefined, true);
+  }
+  if (loading) {
+    return console.log("loading");
+  }
+  const connected: string[] = data?.connections.map((con) => con.name) || [];
 
-  const fileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(event.target.files?.item(0) ?? null);
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(data.get("twitter"));
+
     console.log(data.get("title"));
     console.log(data.get("PostContent"));
-    console.log(data.get("file"));
+    if (data.get("title") === "" || data.get("PostContent") === "") {
+      alert.error("title or content cant be empty", undefined, true);
+      return;
+    }
     console.log(value?.format());
-  };
+    console.log(connected);
 
+    if (value === null) {
+      alert.error("Please select a date", undefined, true);
+      return;
+    }
+    if (value.isBefore(Date.now())) {
+      alert.error("Please select a date in the future", undefined, true);
+      return;
+    }
+
+    const file = data.get("file") as File;
+
+    if (!(file.name === "")) {
+      console.log(file);
+      setId(await uploadFile(file));
+      if (id === "") {
+        alert.error("Error uploading file", undefined, true);
+        return;
+      }
+      alert.success("File uploaded", undefined, true);
+    }
+
+    const sendPlatforms = checkSwitches(data, connected);
+    const post: PostInput = {
+      title: data.get("title") as string,
+      description: data.get("PostContent") as string,
+      dispatchTime: value.toDate(),
+      media: id,
+      platforms: sendPlatforms,
+    };
+
+    const response = await createPost({ variables: { post: post } });
+    console.log(response);
+    if (response) {
+      alert.success("Post created", undefined, true);
+    }
+  };
   return (
     <>
       <div
@@ -93,12 +155,12 @@ export default function CreatePostPage() {
               listStyle: "none",
             }}
           >
-            {medias.map(() => {
+            {connected.map((mediaName) => {
               return (
                 <li>
                   <FormControlLabel
-                    control={<Switch name="twitter" />}
-                    label="Twitter"
+                    control={<Switch name={mediaName} />}
+                    label={mediaName}
                   />
                 </li>
               );

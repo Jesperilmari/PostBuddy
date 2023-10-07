@@ -36,7 +36,7 @@ function Home() {
         setTimeout(() => {
           dispatch(next());
           console.log("close");
-        }, 2000)
+        }, alert.alert.timeout || 5000)
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

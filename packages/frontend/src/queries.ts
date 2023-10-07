@@ -69,3 +69,17 @@ export const CONNECTIONS = gql`
     }
   }
 `;
+
+export const CREATEPOST = gql`
+  mutation CreatePost($post: PostInput!) {
+    createPost(post: $post) {
+      description
+      dispatchTime
+      id
+      media
+      platforms
+      postOwner
+      title
+    }
+  }
+`;

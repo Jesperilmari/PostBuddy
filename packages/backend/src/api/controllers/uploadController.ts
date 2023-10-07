@@ -38,6 +38,7 @@ export default function uploadHandler(containerClient: ContainerClient) {
     const out = req.pipe(compressor)
     blobClient.uploadStream(out)
     req.on("end", () => {
+      // TODO: req succees if compression fails
       res.json({
         message: "Upload successful",
         fileId,
