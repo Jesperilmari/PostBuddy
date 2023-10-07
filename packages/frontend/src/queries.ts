@@ -83,3 +83,16 @@ export const CREATEPOST = gql`
     }
   }
 `;
+export const ALLPOSTSBYUSER = gql`
+query Query($postTitle: String, $platformName: String) {
+  postsByFilter(postTitle: $postTitle, platformName: $platformName) {
+    description
+    dispatchTime
+    id
+    media
+    platforms
+    postOwner
+    title
+  }
+}
+`
