@@ -1,30 +1,29 @@
-import * as React from 'react'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import Copyright from '../components/Copyright'
+import * as React from "react"
+import Avatar from "@mui/material/Avatar"
+import Button from "@mui/material/Button"
+import CssBaseline from "@mui/material/CssBaseline"
+import TextField from "@mui/material/TextField"
+import Link from "@mui/material/Link"
+import Grid from "@mui/material/Grid"
+import Box from "@mui/material/Box"
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
+import Typography from "@mui/material/Typography"
+import Container from "@mui/material/Container"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import Copyright from "../components/Copyright"
 
-
-const loginUrl = 'https://localhost:5173/login'
+const loginUrl = "/login"
 
 //checks that the data is valid
 function checkData(data: FormData) {
-  const email = data.get('email') as string
-  const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-  if (email === '') {
-    alert('Please fill in all fields')
+  const email = data.get("email") as string
+  const emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+  if (email === "") {
+    alert("Please fill in all fields")
     return
   }
   if (!emailRegex.test(email)) {
-    alert('Please enter a valid email')
+    alert("Please enter a valid email")
     return
   }
 }
@@ -39,9 +38,9 @@ export default function ResetPassword() {
     const data = new FormData(event.currentTarget)
     checkData(data)
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-      confirmPass: data.get('confirmPassword'),
+      email: data.get("email"),
+      password: data.get("password"),
+      confirmPass: data.get("confirmPassword"),
     })
   }
 
@@ -52,22 +51,28 @@ export default function ResetPassword() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Reset password
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={2}>
               <article>
                 <p>
-                  Enter your email address below and we will send you a link to reset your password.
+                  Enter your email address below and we will send you a link to
+                  reset your password.
                 </p>
               </article>
               <Grid item xs={12}>
@@ -81,7 +86,12 @@ export default function ResetPassword() {
                 />
               </Grid>
             </Grid>
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Send
             </Button>
             <Grid container justifyContent="flex-end">

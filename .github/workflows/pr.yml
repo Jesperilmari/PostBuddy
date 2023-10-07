@@ -29,6 +29,10 @@ jobs:
           npm run lint --prefix ./packages/backend && npm run test --prefix ./packages/backend
           npm install --prefix ./packages/frontend
           npm run lint --prefix ./packages/frontend
+      - name: 'Check if builds'
+        run: |
+          tsc --noEmit --project ./packages/backend
+          tsc --noEmit --project ./packages/frontend
 
   notify:
     if: ${{ always() }}
