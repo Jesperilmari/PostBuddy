@@ -1,4 +1,4 @@
-import TextField from "@mui/material/TextField"
+import {TextField, Container, Typography, Paper} from "@mui/material"
 import { Box } from "@mui/system"
 import Button from "@mui/material/Button"
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
@@ -15,7 +15,7 @@ import useAlertFactory from "../Hooks/useAlertFactory"
 import { useMutation, useQuery } from "@apollo/client"
 import { Twitter, YouTube, Instagram, Send } from "@mui/icons-material"
 import dayjs from "dayjs"
-import { useNavigate } from "react-router-dom"
+import CreatePostForm from './CreatePostForm.tsx'
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -154,10 +154,18 @@ export default function CreatePostPage() {
   }
   return (
     <>
+    <Container>
+    <Typography variant="h2" gutterBottom>
+        Create post
+      </Typography>
+      <Paper>
+        <CreatePostForm/>
+      </Paper>
+    </Container>
       <div
         id="createContainer"
         style={{
-          width: "100%",
+          width: "50%",
         }}
       >
         <Box
@@ -179,17 +187,21 @@ export default function CreatePostPage() {
             autoComplete="Title"
             autoFocus
           />
-          <TextareaAutosize
+          <TextField
             title="description"
             aria-label="description"
             id="description"
             name="description"
+            multiline
             style={{
               backgroundColor: theme.palette.background.default,
               borderRadius: "5px",
               outlineColor: theme.palette.text.primary,
               borderColor: theme.palette.text.disabled,
+              height: 100,
+              marginBottom: 10, 
             }}
+            
           />
           <FormControlLabel
             control={<Switch name="isScheduled" />}
