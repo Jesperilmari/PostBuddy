@@ -1,10 +1,11 @@
 import "./Home.css"
 import { Button } from "@mui/material"
-import EnhancedTable from "./SecondTable"
+// import EnhancedTable from "./SecondTable"
 import { useDispatch, useSelector } from "react-redux"
 import { User } from "../interfaces"
 import { RootState } from "../reducers/store"
 import { changePage } from "../reducers/pageReducer"
+import SimplePostTable from "../components/SimplePostTable"
 
 export default function HomePage() {
   const dispatch = useDispatch()
@@ -34,7 +35,7 @@ export default function HomePage() {
       >
         Create new post
       </Button>
-      <EnhancedTable></EnhancedTable>
+      <SimplePostTable />
     </div>
   )
 }
