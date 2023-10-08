@@ -2,18 +2,15 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { Maybe } from "true-myth"
 import { User } from "../../interfaces/User"
-import twitter from "./platforms/twitter"
 import { OauthPlatform, BaseParams } from "../../interfaces/OauthPlatform"
 import APIError from "../../classes/APIError"
 import PlatformModel from "../../models/PlatformModel"
 import { Platform } from "../../interfaces/Platform"
 import { error } from "../../../util/logger"
+import { PlatformName, platforms } from "./platforms"
 
+// Cache for connecting callback to specific user
 const cache = new Map<string, User>()
-// Platforms that are supported
-export const platforms: Record<string, OauthPlatform<BaseParams>> = {
-  twitter,
-}
 
 const websiteUrl =
   process.env.NODE_ENV === "production"
@@ -24,7 +21,7 @@ const websiteUrl =
  * Handles initialization of the oauth flow
  */
 export async function connectPlatform(
-  req: Request<{ platformName: string }>,
+  req: Request<{ platformName: PlatformName }>,
   res: Response,
 ) {
   const user = req.user as User
@@ -63,7 +60,7 @@ function genCookieValue(platform: string, userId: string) {
 }
 
 type CallbackRequest = Request<
-  { platformName: string },
+  { platformName: PlatformName },
   {},
   {},
   { code: string; state: string }

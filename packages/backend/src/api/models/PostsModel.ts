@@ -1,5 +1,9 @@
 import { model, Schema } from "mongoose"
 import Post from "../interfaces/Post"
+import {
+  implementedPlatforms,
+  PlatformName,
+} from "../controllers/oauth/platforms"
 
 const PostSchema = new Schema<Post>({
   title: {
@@ -15,6 +19,11 @@ const PostSchema = new Schema<Post>({
   platforms: {
     type: [String],
     required: true,
+    validate: {
+      validator: (v: string[]) =>
+        v.every((p) => implementedPlatforms.includes(p as PlatformName)),
+      message: (props) => `${props.value} is not a valid platform`,
+    },
   },
   media: {
     type: String,
@@ -29,6 +38,5 @@ const PostSchema = new Schema<Post>({
     required: true,
   },
 })
-// TODO validate platforms
 
 export default model<Post>("Post", PostSchema)

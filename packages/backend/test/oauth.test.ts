@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes"
 import UserModel from "../src/api/models/UserModel"
 import PlatformModel from "../src/api/models/PlatformModel"
 import config from "../src/config"
-import { platforms } from "../src/api/controllers/oauth"
+import { platforms } from "../src/api/controllers/oauth/platforms"
 import { mockPlatform } from "./mocks/mockPlatform"
 import request from "supertest"
 import app from "../src/app"
@@ -13,6 +13,7 @@ describe("OAuthRouter", () => {
   let token: string
   let user
   beforeAll(async () => {
+    // @ts-ignore is needed for testing
     platforms["mock"] = mockPlatform
     await mongoose.connect(config.test_db_uri)
     await UserModel.deleteMany({})
