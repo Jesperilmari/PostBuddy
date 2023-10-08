@@ -6,7 +6,7 @@ import ChangeUserInfo from './ChangeUserInfo'
 export default function Settings() {
   return (
     <Container>
-      <Typography variant="h1" gutterBottom>
+      <Typography variant="h2" gutterBottom>
         Settings
       </Typography>
       <Grid container spacing={3}>

@@ -57,6 +57,7 @@ export default function SignInSide() {
 
   if (error) {
     console.log(error)
+    alert("Email or password incorrect")
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
