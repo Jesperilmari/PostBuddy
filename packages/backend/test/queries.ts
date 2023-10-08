@@ -69,3 +69,17 @@ export const connections = `query Connections {
     name
   }
 }`
+
+export const createPost = `
+  mutation CreatePost($post: PostInput!) {
+    createPost(post: $post) {
+      description
+      dispatchTime
+      id
+      media
+      platforms
+      postOwner
+      title
+    }
+  }
+`
