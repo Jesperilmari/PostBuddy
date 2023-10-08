@@ -16,6 +16,8 @@ import { useMutation, useQuery } from "@apollo/client"
 import { Twitter, YouTube, Instagram, Send } from "@mui/icons-material"
 import dayjs from "dayjs"
 
+let filename: string;
+
 const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -37,7 +39,7 @@ const VisuallyHiddenInput = styled("input")({
     })
     return checked
   }
-  
+
   function mediaListEntry(mediaName: string) {
     const IconArray: string[] = ["twitter", "youtube", "instagram"]
     function chooseIcon(mediaName: string) {
@@ -70,6 +72,11 @@ const VisuallyHiddenInput = styled("input")({
     return (
       <FormControlLabel control={<Switch name={mediaName} />} label={label} />
     )
+  }
+
+  function GetFileName(name: string){
+    filename = name;
+    return filename;
   }
   
   //TODO: tokeni lähtee välillä ja ei toimi
@@ -111,7 +118,7 @@ const VisuallyHiddenInput = styled("input")({
       }
       return value.toDate()
     }
-  
+    
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       const data = new FormData(event.currentTarget)
@@ -152,6 +159,7 @@ const VisuallyHiddenInput = styled("input")({
         alert.success("Post created", undefined, true)
       }
     }
+
     return (<div
     id="createContainer"
     style={{
@@ -210,9 +218,12 @@ const VisuallyHiddenInput = styled("input")({
           type="file"
           accept=".txt,audio/*,video/*,image/*"
           name="file"
+          onClick={GetFileName(event?.currentTarget.files)}
         />
         Upload File
       </Button>
+        <p>
+        </p>
       <Button
         endIcon={<Send />}
         type="submit"
