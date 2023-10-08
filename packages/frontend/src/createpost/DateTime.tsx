@@ -12,7 +12,8 @@ export default function DateTime(props: {
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Stack spacing={2} sx={{ minWidth: 305 }}>
+      <Stack spacing={2} sx={{ minWidth: 305,
+      paddingTop: 1 }}>
         <DateTimePicker
           value={props.value}
           onChange={props.onChange}
@@ -20,7 +21,7 @@ export default function DateTime(props: {
           ampm={false}
         />
         <Typography>
-          Post set at: {props.value == null ? "null" : props.value.format()}
+          Post set at: {props.value == null ? "none" : props.value.format()}
         </Typography>
       </Stack>
     </LocalizationProvider>
