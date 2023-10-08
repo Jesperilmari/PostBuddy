@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client"
 
 export const ALL_USERS = gql`
   query Query {
@@ -9,7 +9,7 @@ export const ALL_USERS = gql`
       email
     }
   }
-`;
+`
 
 export const LOGIN = gql`
   mutation Login($usernameOrEmail: String!, $password: String!) {
@@ -23,7 +23,7 @@ export const LOGIN = gql`
       }
     }
   }
-`;
+`
 
 export const USERBYUSERNAME = gql`
   query UserByUsername($username: String!) {
@@ -34,7 +34,7 @@ export const USERBYUSERNAME = gql`
       username
     }
   }
-`;
+`
 
 export const REGISTER = gql`
   mutation Register($user: UserInput!) {
@@ -48,7 +48,7 @@ export const REGISTER = gql`
       }
     }
   }
-`;
+`
 
 export const ME = gql`
   query Me {
@@ -59,7 +59,7 @@ export const ME = gql`
       email
     }
   }
-`;
+`
 
 export const CONNECTIONS = gql`
   query Connections {
@@ -68,7 +68,7 @@ export const CONNECTIONS = gql`
       id
     }
   }
-`;
+`
 
 export const CREATEPOST = gql`
   mutation CreatePost($post: PostInput!) {
@@ -82,17 +82,17 @@ export const CREATEPOST = gql`
       title
     }
   }
-`;
+`
 export const ALLPOSTSBYUSER = gql`
-query Query($postTitle: String, $platformName: String) {
-  postsByFilter(postTitle: $postTitle, platformName: $platformName) {
-    description
-    dispatchTime
-    id
-    media
-    platforms
-    postOwner
-    title
+  query Query($postTitle: String, $platformName: String) {
+    postsByFilter(postTitle: $postTitle, platformName: $platformName) {
+      description
+      dispatchTime
+      id
+      media
+      platforms
+      postOwner
+      title
+    }
   }
-}
 `

@@ -14,7 +14,7 @@ input PostInput {
   title: String
   description: String!
   platforms: [String]!
-  media: String
+  media: String!
   dispatchTime: Date!
 }
 
@@ -31,7 +31,7 @@ type Query {
 }
 
 type Mutation {
-  createPost(post: EditPost): [Post] @auth
-  deletePost(id: [ID!]!): [Post] @auth
-  editPost(id: ID!, post: EditPost): Post @auth
+  createPost(post: PostInput!): Post @auth
+  deletePost(id: [ID!]!): Post @auth
+  editPost(id: ID!, post: EditPost!): Post @auth
 }
