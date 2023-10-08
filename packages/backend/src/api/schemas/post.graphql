@@ -30,8 +30,12 @@ type Query {
   postsByFilter(postTitle: String, platformName: String): [Post] @auth
 }
 
+type DeleteMessage {
+  message: String
+}
+
 type Mutation {
   createPost(post: PostInput!): Post @auth
-  deletePost(id: [ID!]!): Post @auth
+  deletePost(id: [ID!]!): DeleteMessage @auth
   editPost(id: ID!, post: EditPost!): Post @auth
 }

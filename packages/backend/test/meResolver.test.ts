@@ -6,6 +6,7 @@ import { connections, me } from "./queries"
 import { StatusCodes } from "http-status-codes"
 import { Platform } from "../src/api/interfaces/Platform"
 import { User } from "../src/api/interfaces/User"
+import mongoose from "mongoose"
 
 describe("meResolver", () => {
   let user: User
@@ -16,6 +17,10 @@ describe("meResolver", () => {
     user = await UserTestUtils.createUser()
     token = UserTestUtils.genToken(user._id)
     platform = await UserTestUtils.createPlatformFor(user)
+  })
+
+  afterAll(async () => {
+    await mongoose.connection.close()
   })
 
   it("should return user", async () => {

@@ -83,3 +83,32 @@ export const createPost = `
     }
   }
 `
+
+export const deletePost = `
+mutation Mutation($deletePostId: [ID!]!) {
+  deletePost(id: $deletePostId) {
+    message
+  }
+}`
+
+export const editPost = `
+mutation Mutation($editPostId: ID!, $post: EditPost!) {
+  editPost(id: $editPostId, post: $post) {
+    title
+    id
+    dispatchTime
+    description
+  }
+}`
+
+export const postsByFilter = `query Query($platformName: String, $postTitle: String) {
+  postsByFilter(platformName: $platformName, postTitle: $postTitle) {
+    description
+    dispatchTime
+    id
+    media
+    postOwner
+    title
+    platforms
+  }
+}`

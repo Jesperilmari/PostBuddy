@@ -23,7 +23,7 @@ describe("OAuthRouter", () => {
   })
 
   afterAll(async () => {
-    await mongoose.disconnect()
+    await mongoose.connection.close()
   })
 
   it("should expect a bearer token", async () => {

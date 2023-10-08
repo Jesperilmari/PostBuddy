@@ -26,7 +26,7 @@ describe("UserResolver", () => {
   })
 
   afterAll(async () => {
-    await mongoose.disconnect()
+    await mongoose.connection.close()
   })
 
   it("should return all users", async () => {

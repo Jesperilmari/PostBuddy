@@ -25,6 +25,10 @@ describe("UploadRouter", () => {
     token = UserTestUtils.genToken(user._id)
   })
 
+  afterAll(async () => {
+    await mongoose.connection.close()
+  })
+
   it("should require authentication", async () => {
     const response = await request(app)
       .post("/api/v1/upload")
