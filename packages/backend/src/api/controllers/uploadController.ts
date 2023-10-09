@@ -36,14 +36,22 @@ export default function uploadHandler(containerClient: ContainerClient) {
     const blobClient = containerClient.getBlockBlobClient(fileId)
     const out = req.pipe(compressor)
     blobClient.uploadStream(out)
-    req.on("end", () => {
-      // TODO: req succees if compression fails
+    out.on("end", async () => {
+      await waitFor(1)
       res.json({
         message: "Upload successful",
         fileId,
       })
     })
   }
+}
+
+async function waitFor(seconds: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, seconds * 1000)
+  })
 }
 
 function isValidContentType(mime: string) {

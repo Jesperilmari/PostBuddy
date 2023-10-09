@@ -44,6 +44,7 @@
     "qs": "^6.11.2",
     "sharp": "^0.32.6",
     "true-myth": "^7.1.0",
+    "twitter": "^1.7.1",
     "twitter-api-sdk": "^1.2.1",
     "twitter-api-v2": "^1.15.1",
     "validator": "^13.11.0"
@@ -62,6 +63,7 @@
     "@types/passport": "^1.0.13",
     "@types/qs": "^6.9.8",
     "@types/supertest": "^2.0.13",
+    "@types/twitter": "^1.7.2",
     "@types/validator": "^13.11.2",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.0.0",

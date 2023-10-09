@@ -1,20 +1,15 @@
-import path from "path"
 import { Maybe, Result } from "true-myth"
-import axios from "axios"
-import qs from "qs"
-import { Client } from "twitter-api-sdk"
-import { TwitterApi } from "twitter-api-v2"
+import Twitter from "twitter"
 import { info, error } from "../../util/logger"
 import Post from "../interfaces/Post"
 import PlatformModel from "../models/PlatformModel"
 import { Platform } from "../interfaces/Platform"
 import storageClient from "../controllers/storageClient"
-import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
 import config from "../../config"
 
 type TwitterBody = {
-  text: string
-  media?: { media_ids: string[] }
+  status: string
+  media_ids?: string
 }
 export default async function createTwitterPost(
   post: Post,
@@ -29,39 +24,40 @@ export default async function createTwitterPost(
   if (!initialConnection) {
     return Result.err("No twitter token found")
   }
-  const connection = await refreshOldToken(initialConnection)
 
-  const text = formatText(post)
-  const body: TwitterBody = {
-    text,
-  }
-
-  const client = new Client(connection.token)
-  const { data } = await client.users.findMyUser({ "user.fields": ["id"] })
-  if (!data) {
-    return Result.err("Error getting user id")
-  }
-
-  if (post.media && post.media !== "") {
-    const mediaId = await uploadImageToTwitter(data.id, post.media)
-
-    console.log(mediaId)
-
-    if (!mediaId) {
-      return Result.err("Error uploading image to twitter")
+  const client = new Twitter({
+    consumer_key: config.twitter_api_key,
+    consumer_secret: config.twitter_api_key_secret,
+    access_token_secret: config.twitter_access_token_secret as string,
+    access_token_key: config.twitter_access_token,
+  })
+  try {
+    const status = formatText(post)
+    const body: TwitterBody = {
+      status,
     }
-    info("Uploaded image to twitter", mediaId)
-    body.media = { media_ids: [mediaId] }
+    if (post.media) {
+      const mediaId = await uploadMedia(post, client)
+      body.media_ids = mediaId
+      await createTweet(body, client)
+    }
+    return Result.ok(undefined)
+  } catch (err) {
+    return Result.err((err as Error).message)
   }
+}
 
-  console.log(body)
-  const success = await createTweet(body, connection.token)
-  if (!success) {
-    return Result.err("Error while sending post to twitter")
-  }
-
-  info("Created twitter post")
-  return Result.ok(undefined)
+async function createTweet(body: any, client: Twitter) {
+  return new Promise((resolve, reject) => {
+    client.post("statuses/update", body, (err, tweet, _res) => {
+      if (err) {
+        error("Error creating tweet", err)
+        return reject(err)
+      }
+      info("Created tweet", tweet)
+      return resolve(tweet)
+    })
+  })
 }
 
 function formatText(post: Post) {
@@ -71,45 +67,23 @@ function formatText(post: Post) {
   return `${post.title} ${post.description}`
 }
 
-// function isOldToken(platform: Platform) {
-//   const ONE_WEEK = 1000 * 60 * 60 * 24 * 7
-//   const now = Date.now()
-//   const diff = now - platform.updatedAt.getTime()
-//   return diff > ONE_WEEK
-// }
-//
-type RefreshTokenRes = {
-  access_token: string
-  refresh_token: string
-}
-
-async function refreshOldToken(platform: Platform) {
-  info("Refreshing old token")
-  const url = "https://api.twitter.com/2/oauth2/token"
-  const data = {
-    refresh_token: platform.refresh_token,
-    grant_type: "refresh_token",
-  }
-  const res = await axios.post<RefreshTokenRes>(url, qs.stringify(data), {
-    headers: {
-      Authorization: `Basic ${twitterBasicToken}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  })
-  platform.token = res.data.access_token
-  platform.refresh_token = res.data.refresh_token
-  info("Saving new token")
-  return platform.save()
-}
-
-async function uploadImageToTwitter(_userId: string, media: string) {
-  const uploadClient = new TwitterApi(config.twitter_bearer_token)
-  const buf = await getBlob(media)
+async function uploadMedia(post: Post, client: Twitter): Promise<string> {
+  const buf = await getBlob(post.media as string)
   if (buf.isNothing) {
-    return null
+    return Promise.reject(new Error("No blob found"))
   }
-  const file = path.join(__dirname, "../../../test/files/postBuddy.png")
-  return uploadClient.v1.uploadMedia(file)
+
+  const endPoint = "media/upload" as const
+  return new Promise((resolve, reject) => {
+    client.post(endPoint, { media: buf.value }, (err, media, _res) => {
+      if (err) {
+        error("Error uploading media", err)
+        return reject(err)
+      }
+      info("Uploaded media", media.media_id_string)
+      return resolve(media.media_id_string as string)
+    })
+  })
 }
 
 async function getBlob(media: string): Promise<Maybe<Buffer>> {
@@ -120,20 +94,4 @@ async function getBlob(media: string): Promise<Maybe<Buffer>> {
   }
   const buf = await blobClient.downloadToBuffer()
   return Maybe.of(buf)
-}
-
-async function createTweet(body: TwitterBody, token: string) {
-  const url = "https://api.twitter.com/2/tweets"
-  try {
-    const res = await axios.post(url, body, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    info("Created tweet", res.data)
-    return true
-  } catch (e) {
-    error(e)
-    return false
-  }
 }

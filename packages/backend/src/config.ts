@@ -13,6 +13,11 @@ const variables = [
   "twitter_client_secret",
   "azure_storage_connection_string",
   "twitter_bearer_token",
+  "website_url",
+  "twitter_api_key",
+  "twitter_api_key_secret",
+  "twitter_access_token",
+  "twitter_access_token_secret",
 ] as const
 
 export type Config = {
