@@ -14,7 +14,7 @@ input PostInput {
   title: String
   description: String!
   platforms: [String]!
-  media: String!
+  media: String
   dispatchTime: Date!
 }
 
