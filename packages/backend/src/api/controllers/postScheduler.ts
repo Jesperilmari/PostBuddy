@@ -3,23 +3,25 @@ import { Result } from "true-myth"
 import Post from "../interfaces/Post"
 import PostsModel from "../models/PostsModel"
 import { error, info } from "../../util/logger"
-import handlePostCreationFor from "../handlers"
+import { PostCreator } from "../handlers"
 
 const jobs = new Map<string, CronJob>()
 
-export function schedulePost(post: Post): Result<undefined, Error> {
+const postCreator = new PostCreator()
+
+export function schedulePost(post: Post): Result<CronJob, Error> {
   const pObj = post.toObject()
   const { id, dispatchTime } = pObj
   try {
     const job = new CronJob(
       dispatchTime,
-      async () => handlePostCreationFor(pObj),
+      async () => postCreator.handlePostCreationFor(pObj),
       null,
       true,
     )
     jobs.set(id, job)
     info(`New post scheduled at ${dispatchTime}`)
-    return Result.ok(undefined)
+    return Result.ok(job)
   } catch (e) {
     error(`Error while scheduling post ${id}: ${e}`)
     return Result.err(e as Error)
@@ -41,6 +43,7 @@ export async function doStartUpPostRescheduling() {
   } else {
     error(`Rescheduling done for ${len} posts, some errors occurred`)
   }
+  return false
 }
 
 export function getScheduledPosts() {
@@ -55,4 +58,11 @@ export function removeScheduledPost(postId: string): boolean {
     return true
   }
   return false
+}
+
+export function updateScheduledPost(newPost: Post): boolean {
+  if (!removeScheduledPost(newPost._id)) {
+    return false
+  }
+  return schedulePost(newPost).isOk
 }

@@ -21,6 +21,7 @@ const PostSchema = new Schema<Post>({
     required: true,
     validate: {
       validator: (v: string[]) =>
+        v.length > 0 &&
         v.every((p) => implementedPlatforms.includes(p as PlatformName)),
       message: (props) => `${props.value} is not a valid platform`,
     },

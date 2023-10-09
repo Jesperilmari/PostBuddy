@@ -1,12 +1,8 @@
 import { Router } from "express"
 import { ContainerClient } from "@azure/storage-blob"
-import config from "../../config"
 import checkAuth from "../middleware/checkAuth"
 import uploadHandler from "../controllers/uploadController"
-
-const storageClient = new ContainerClient(
-  config.azure_storage_connection_string,
-)
+import storageClient from "../controllers/storageClient"
 
 // This makes testing easier
 export function createRouter(containerClient: ContainerClient) {

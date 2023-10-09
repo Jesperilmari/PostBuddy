@@ -8,12 +8,12 @@ import {
 
 interface TwitterParams extends BaseParams {}
 
-const basicToken = Buffer.from(
+export const twitterBasicToken = Buffer.from(
   `${config.twitter_client_id}:${config.twitter_client_secret}`,
 ).toString("base64")
 
 const customHeaders = {
-  Authorization: `Basic ${basicToken}`,
+  Authorization: `Basic ${twitterBasicToken}`,
 }
 
 const twitterParams: TwitterParams = {

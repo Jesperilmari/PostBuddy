@@ -2,6 +2,9 @@
 import { PBContext } from "../interfaces/PBContext"
 import PostsModel from "../models/PostsModel"
 import Post from "../interfaces/Post"
+import { schedulePost } from "../controllers/postScheduler"
+import { raiseGqlError } from "../../util/errors"
+import { handlePostCreationFor } from "../handlers"
 
 export default {
   Query: {
@@ -31,11 +34,20 @@ export default {
       args: { post: Omit<Post, "id" | "_id" | "postOwner"> },
       ctx: PBContext,
     ) => {
-      const createPost = await PostsModel.create({
+      const createdPost = await PostsModel.create({
         ...args.post,
         postOwner: ctx.userId,
       })
-      return createPost
+      if (isMoreThan5MinInTheFuture(createdPost.dispatchTime)) {
+        schedulePost(createdPost).unwrapOrElse(
+          raiseGqlError("Error scheduling post"),
+        )
+
+        const result = await handlePostCreationFor(createdPost)
+        return result.isOk ? createdPost : raiseGqlError(result.error.join(","))
+      }
+
+      return createdPost
     },
     editPost: async (
       _: Post,
@@ -67,4 +79,10 @@ export default {
       }
     },
   },
+}
+
+function isMoreThan5MinInTheFuture(date: Date): boolean {
+  const now = new Date()
+  const fiveMinFromNow = new Date(now.getTime() + 1000 * 60 * 5)
+  return date.getTime() > fiveMinFromNow.getTime()
 }
