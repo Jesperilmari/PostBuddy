@@ -1,4 +1,4 @@
-import { Document } from "mongoose"
+import { Document, Types } from "mongoose"
 import { PlatformName } from "../controllers/oauth/platforms"
 
 export default interface Post extends Document {
@@ -8,7 +8,7 @@ export default interface Post extends Document {
   platforms: PlatformName[]
   media?: string
   dispatchTime: Date
-  postOwner: string
+  postOwner: Types.ObjectId
 }
 
 // export { Post }

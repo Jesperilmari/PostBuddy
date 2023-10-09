@@ -12,12 +12,19 @@ import config from "../../config"
 import { PlatformName } from "../controllers/oauth/platforms"
 import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
 
+// TODO Add tests
+// TODO Ensure all errors are handled
+// TODO Delete media after posting
+
 export default async function createTwitterPost(
   post: Post,
 ): Promise<Result<undefined, string>> {
   info("Creating twitter post", post)
 
-  const maybeCon = await findAndRefreshToken("twitter", post.postOwner)
+  const maybeCon = await findAndRefreshToken(
+    "twitter",
+    post.postOwner.toString(),
+  )
 
   if (maybeCon.isNothing) {
     return Result.err("No connection found")

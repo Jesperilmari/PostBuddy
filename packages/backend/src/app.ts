@@ -4,25 +4,24 @@ import express from "express"
 require("express-async-errors")
 import morgan from "morgan"
 import cors from "cors"
-// import helmet from "helmet"
+import helmet from "helmet"
 import notFound from "./api/middleware/notFound"
 import errorHandler from "./api/middleware/errorHandler"
 import { restApi, createGqlServer } from "./api"
 
 const app = express()
 
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: false,
-//     crossOriginEmbedderPolicy: false,
-//     crossOriginOpenerPolicy: false,
-//     crossOriginResourcePolicy: false,
-//   }),
-// )
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
+  }),
+)
 app.use(
   cors({
     origin: "*",
-    exposedHeaders: ["set-cookie"],
   }),
 )
 
