@@ -1,13 +1,16 @@
+import path from "path"
 import { Maybe, Result } from "true-myth"
-import FormData from "form-data"
 import axios from "axios"
 import qs from "qs"
+import { Client } from "twitter-api-sdk"
+import { TwitterApi } from "twitter-api-v2"
 import { info, error } from "../../util/logger"
 import Post from "../interfaces/Post"
 import PlatformModel from "../models/PlatformModel"
 import { Platform } from "../interfaces/Platform"
 import storageClient from "../controllers/storageClient"
 import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
+import config from "../../config"
 
 type TwitterBody = {
   text: string
@@ -33,8 +36,16 @@ export default async function createTwitterPost(
     text,
   }
 
+  const client = new Client(connection.token)
+  const { data } = await client.users.findMyUser({ "user.fields": ["id"] })
+  if (!data) {
+    return Result.err("Error getting user id")
+  }
+
   if (post.media && post.media !== "") {
-    const mediaId = await uploadImageToTwitter(connection.token, post.media)
+    const mediaId = await uploadImageToTwitter(data.id, post.media)
+
+    console.log(mediaId)
 
     if (!mediaId) {
       return Result.err("Error uploading image to twitter")
@@ -43,6 +54,7 @@ export default async function createTwitterPost(
     body.media = { media_ids: [mediaId] }
   }
 
+  console.log(body)
   const success = await createTweet(body, connection.token)
   if (!success) {
     return Result.err("Error while sending post to twitter")
@@ -90,29 +102,14 @@ async function refreshOldToken(platform: Platform) {
   return platform.save()
 }
 
-async function uploadImageToTwitter(
-  token: string,
-  media: string,
-): Promise<string | null> {
-  try {
-    const url = "https://upload.twitter.com/1.1/media/upload.json"
-    const buf = await getBlob(media)
-    if (buf.isNothing) {
-      return null
-    }
-    const form = new FormData()
-    form.append("media", buf.value)
-    const res = await axios.post<{ media_id_string: string }>(url, form, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        ...form.getHeaders(),
-      },
-    })
-    return res.data.media_id_string
-  } catch (err) {
-    error("Error uploading image to twitter", err)
+async function uploadImageToTwitter(_userId: string, media: string) {
+  const uploadClient = new TwitterApi(config.twitter_bearer_token)
+  const buf = await getBlob(media)
+  if (buf.isNothing) {
     return null
   }
+  const file = path.join(__dirname, "../../../test/files/postBuddy.png")
+  return uploadClient.v1.uploadMedia(file)
 }
 
 async function getBlob(media: string): Promise<Maybe<Buffer>> {
