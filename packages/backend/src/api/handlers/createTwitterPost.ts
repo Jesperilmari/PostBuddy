@@ -1,7 +1,5 @@
 import { Maybe, Result } from "true-myth"
-import { Client } from "twitter-api-sdk"
 import FormData from "form-data"
-import { Readable } from "stream"
 import axios from "axios"
 import qs from "qs"
 import { info, error } from "../../util/logger"
@@ -30,15 +28,12 @@ export default async function createTwitterPost(
   }
   const connection = await refreshOldToken(initialConnection)
 
-  const client = new Client(connection.token, {
-    max_retries: 1,
-  })
   const text = formatText(post)
   const body: TwitterBody = {
     text,
   }
 
-  if (post.media) {
+  if (post.media && post.media !== "") {
     const mediaId = await uploadImageToTwitter(connection.token, post.media)
 
     if (!mediaId) {
@@ -48,10 +43,9 @@ export default async function createTwitterPost(
     body.media = { media_ids: [mediaId] }
   }
 
-  const { errors } = await client.tweets.createTweet(body)
-
-  if (errors) {
-    return Result.err(JSON.stringify(errors))
+  const success = await createTweet(body, connection.token)
+  if (!success) {
+    return Result.err("Error while sending post to twitter")
   }
 
   info("Created twitter post")
@@ -71,21 +65,29 @@ function formatText(post: Post) {
 //   const diff = now - platform.updatedAt.getTime()
 //   return diff > ONE_WEEK
 // }
+//
+type RefreshTokenRes = {
+  access_token: string
+  refresh_token: string
+}
 
 async function refreshOldToken(platform: Platform) {
+  info("Refreshing old token")
   const url = "https://api.twitter.com/2/oauth2/token"
   const data = {
     refresh_token: platform.refresh_token,
     grant_type: "refresh_token",
   }
-  const res = await axios.post(url, qs.stringify(data), {
+  const res = await axios.post<RefreshTokenRes>(url, qs.stringify(data), {
     headers: {
       Authorization: `Basic ${twitterBasicToken}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
   })
-  info("Refreshed token", res.data)
-  return platform
+  platform.token = res.data.access_token
+  platform.refresh_token = res.data.refresh_token
+  info("Saving new token")
+  return platform.save()
 }
 
 async function uploadImageToTwitter(
@@ -94,12 +96,12 @@ async function uploadImageToTwitter(
 ): Promise<string | null> {
   try {
     const url = "https://upload.twitter.com/1.1/media/upload.json"
-    const stream = await getBlobStreamFromAzure(media)
-    if (stream.isNothing) {
+    const buf = await getBlob(media)
+    if (buf.isNothing) {
       return null
     }
     const form = new FormData()
-    form.append("media", stream.value)
+    form.append("media", buf.value)
     const res = await axios.post<{ media_id_string: string }>(url, form, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -113,12 +115,28 @@ async function uploadImageToTwitter(
   }
 }
 
-async function getBlobStreamFromAzure(media: string): Promise<Maybe<Readable>> {
+async function getBlob(media: string): Promise<Maybe<Buffer>> {
   const blobClient = storageClient.getBlockBlobClient(media)
   const exists = await blobClient.exists()
   if (!exists) {
     return Maybe.nothing()
   }
-  const stream = await blobClient.download()
-  return Maybe.of(stream.readableStreamBody as Readable)
+  const buf = await blobClient.downloadToBuffer()
+  return Maybe.of(buf)
+}
+
+async function createTweet(body: TwitterBody, token: string) {
+  const url = "https://api.twitter.com/2/tweets"
+  try {
+    const res = await axios.post(url, body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    info("Created tweet", res.data)
+    return true
+  } catch (e) {
+    error(e)
+    return false
+  }
 }

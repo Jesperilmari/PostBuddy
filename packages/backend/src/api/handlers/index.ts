@@ -1,6 +1,7 @@
 import { Result } from "true-myth"
 import Post from "../interfaces/Post"
 import createTwitterPost from "./createTwitterPost"
+import { error, info } from "../../util/logger"
 
 export const defaultMethods = {
   createTwitterPost,
@@ -29,12 +30,14 @@ export class PostCreator {
 
       const errors: string[] = []
       results.forEach((r) => r.isErr && errors.push(r.error))
+      info(errors)
 
       if (errors.length > 0) {
         return Result.err(errors)
       }
     } catch (e) {
       const err = e as Error
+      error("Error creating post", err)
       return Result.err([err.message])
     }
 
@@ -52,8 +55,8 @@ export class PostCreator {
         default:
           return Result.err("Platform not supported")
       }
-    } catch (error) {
-      return Result.err((error as Error).message)
+    } catch (err) {
+      return Result.err((err as Error).message)
     }
   }
 }

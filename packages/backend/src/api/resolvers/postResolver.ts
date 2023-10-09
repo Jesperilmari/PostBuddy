@@ -42,11 +42,11 @@ export default {
         schedulePost(createdPost).unwrapOrElse(
           raiseGqlError("Error scheduling post"),
         )
-
-        const result = await handlePostCreationFor(createdPost)
-        return result.isOk ? createdPost : raiseGqlError(result.error.join(","))
+        return createdPost
       }
 
+      const res = await handlePostCreationFor(createdPost)
+      res.unwrapOrElse(raiseGqlError("Error creating post"))
       return createdPost
     },
     editPost: async (

@@ -21,7 +21,7 @@ const twitterParams: TwitterParams = {
   client_id: config.twitter_client_id,
   response_type: "code",
   redirect_uri: `${config.api_base_url}/api/v1/oauth/callback/twitter`,
-  scope: "tweet.write offline.access",
+  scope: "tweet.write offline.access tweet.read users.read",
   state: "asdf",
   code_challenge: "asdf",
   code_challenge_method: "plain",

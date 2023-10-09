@@ -13,12 +13,11 @@ const validContentTypes = [
   // "video/webm",
 ]
 
-// TODO might need to resize images
-const compressor = sharp().png({ quality: 40 })
-
 // TODO: Implement video uploads
 export default function uploadHandler(containerClient: ContainerClient) {
   return (req: Request, res: Response) => {
+    // TODO might need to resize images
+    const compressor = sharp().png({ quality: 40 })
     const contentType = req.headers["content-type"]
     if (!contentType) {
       throw new APIError("Missing content-type header", StatusCodes.BAD_REQUEST)
