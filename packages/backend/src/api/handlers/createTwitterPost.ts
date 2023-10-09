@@ -1,26 +1,28 @@
 import { Maybe, Result } from "true-myth"
+import qs from "qs"
 import Twitter from "twitter"
 import { Client } from "twitter-api-sdk"
+import axios from "axios"
 import { info, error } from "../../util/logger"
 import Post from "../interfaces/Post"
 import PlatformModel from "../models/PlatformModel"
 import { Platform } from "../interfaces/Platform"
 import storageClient from "../controllers/storageClient"
 import config from "../../config"
+import { PlatformName } from "../controllers/oauth/platforms"
+import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
 
 export default async function createTwitterPost(
   post: Post,
 ): Promise<Result<undefined, string>> {
   info("Creating twitter post", post)
 
-  const initialConnection: Platform | null = await PlatformModel.findOne({
-    name: "twitter",
-    user: post.postOwner,
-  })
+  const maybeCon = await findAndRefreshToken("twitter", post.postOwner)
 
-  if (!initialConnection) {
-    return Result.err("No twitter token found")
+  if (maybeCon.isNothing) {
+    return Result.err("No connection found")
   }
+  const connection = maybeCon.value
 
   // Used for uploading the media to twitter
   const uploadClient = new Twitter({
@@ -31,7 +33,7 @@ export default async function createTwitterPost(
   })
 
   // Used for posting the tweet
-  const postClient = new Client(initialConnection.token)
+  const postClient = new Client(connection.token)
   const result = await postClient.users.findMyUser()
   const twitterUserId = result.data?.id
   if (!twitterUserId) {
@@ -115,4 +117,55 @@ async function getBlob(media: string): Promise<Maybe<Buffer>> {
   }
   const buf = await blobClient.downloadToBuffer()
   return Maybe.of(buf)
+}
+
+async function findAndRefreshToken(
+  platform: PlatformName,
+  userId: string,
+): Promise<Maybe<Platform>> {
+  const connection = await PlatformModel.findOne({
+    name: platform,
+    user: userId,
+  })
+  if (!connection) {
+    return Maybe.nothing()
+  }
+  if (shouldRefresh(connection)) {
+    const refreshed = await refresh(connection)
+    return Maybe.of(refreshed)
+  }
+  return Maybe.just(connection)
+}
+
+function shouldRefresh(platform: Platform) {
+  const TWO_HOURS = 1000 * 60 * 60 * 2
+  return Date.now() - platform.updatedAt.getTime() > TWO_HOURS
+}
+
+async function refresh(platform: Platform) {
+  const url = "https://api.twitter.com/2/oauth2/token"
+  const data = qs.stringify({
+    grant_type: "refresh_token",
+    client_id: config.twitter_client_id,
+    refresh_token: platform.refresh_token,
+  })
+  try {
+    const res = await axios.post<{
+      refresh_token: string
+      access_token: string
+    }>(url, data, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${twitterBasicToken}`,
+      },
+    })
+    info("Refreshed token", res.data)
+    const { access_token, refresh_token } = res.data
+    platform.token = access_token
+    platform.refresh_token = refresh_token
+    return await platform.save()
+  } catch (e) {
+    error("Error refreshing token", e)
+    return null
+  }
 }

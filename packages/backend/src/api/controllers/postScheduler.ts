@@ -32,9 +32,8 @@ export async function doStartUpPostRescheduling() {
   info("Rescheduling posts after startup")
   const posts = await PostsModel.find({ date: { $gt: new Date() } })
 
-  const promises = posts.map(schedulePost)
+  const results = posts.map(schedulePost)
 
-  const results = await Promise.all(promises)
   const errors = results.filter((r) => r.isErr)
   const len = errors.length > 0 ? posts.length - errors.length : posts.length
 

@@ -8,7 +8,7 @@ export default interface Post extends Document {
   platforms: PlatformName[]
   media?: string
   dispatchTime: Date
-  postOwner: String
+  postOwner: string
 }
 
 // export { Post }

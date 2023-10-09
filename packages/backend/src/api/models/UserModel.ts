@@ -14,14 +14,14 @@ interface UserMethods {
   ): Promise<Result<User, GraphQLError>>
 }
 
-interface IUserModel extends Model<User, {}, UserMethods> {
+interface UserStatics extends Model<User, {}, UserMethods> {
   // eslint-disable-next-line
   login(creds: LoginArgs): Promise<Maybe<User>>
   // eslint-disable-next-line
   register(user: UserInput): Promise<Result<User, GraphQLError>>
 }
 
-const userSchema = new Schema<User, IUserModel, UserMethods>({
+const userSchema = new Schema<User, UserStatics, UserMethods>({
   username: {
     type: String,
     required: true,
@@ -120,6 +120,6 @@ function mapErrors({ errors }: Error.ValidationError) {
     .join(" ")
 }
 
-const UserModel = model<User, IUserModel>("User", userSchema)
+const UserModel = model<User, UserStatics>("User", userSchema)
 
 export default UserModel
