@@ -1,9 +1,16 @@
-import api from "./api";
+import { NavigateFunction } from "react-router-dom"
+import api from "./api"
 
-export default async function uploadFile(file: File) {
-  const token = localStorage.getItem("user-token");
+export default async function uploadFile(
+  file: File,
+  navigate: NavigateFunction,
+) {
+  const token = localStorage.getItem("user-token")
   if (!token) {
-    return "";
+    navigate("/login")
+  }
+  if (file.name === "") {
+    return ""
   }
   try {
     const res = await api.post<{ fileId: string }>("/api/v1/upload", file, {
@@ -11,10 +18,10 @@ export default async function uploadFile(file: File) {
         Authorization: "Bearer " + token,
         "Content-Type": file.type,
       },
-    });
-    return res.data.fileId;
+    })
+    return res.data.fileId
   } catch (err) {
-    console.log(err);
-    return "";
+    console.log(err)
+    return ""
   }
 }

@@ -15,6 +15,7 @@ import useAlertFactory from "../Hooks/useAlertFactory"
 import { useMutation, useQuery } from "@apollo/client"
 import { Twitter, YouTube, Instagram, Send } from "@mui/icons-material"
 import dayjs from "dayjs"
+import { useNavigate } from "react-router-dom"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -75,8 +76,8 @@ function mediaListEntry(mediaName: string) {
 //TODO: tokeni lähtee välillä ja ei toimi
 
 export default function CreatePostPage() {
+  const navigate = useNavigate()
   const [value, setValue] = useState<Dayjs | null>(null)
-  const [id, setId] = useState<string>("")
   const [isScheduled, setIsScheduled] = useState<boolean>(false)
   const alert = useAlertFactory()
   const theme = useTheme()
@@ -128,14 +129,7 @@ export default function CreatePostPage() {
       return
     }
 
-    if (!(file.name === "")) {
-      setId(await uploadFile(file))
-      if (id === "") {
-        alert.error("Error uploading file", undefined, true)
-        return
-      }
-      alert.success("File uploaded", undefined, true)
-    }
+    const id = await uploadFile(file, navigate)
 
     const sendPlatforms = checkSwitches(data, connected)
     const post: PostInput = {
@@ -146,6 +140,12 @@ export default function CreatePostPage() {
       platforms: sendPlatforms,
     }
 
+    if (id === "") {
+      alert.info("no file uploaded", undefined, true)
+      delete post.media
+    }
+
+    console.log(post)
     const response = await createPost({ variables: { post: post } })
 
     if (response) {
@@ -186,6 +186,8 @@ export default function CreatePostPage() {
             name="description"
             style={{
               backgroundColor: theme.palette.background.default,
+              borderRadius: "5px",
+              outlineColor: theme.palette.text.primary,
               borderColor: theme.palette.text.disabled,
             }}
           />
