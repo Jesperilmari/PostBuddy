@@ -1,11 +1,11 @@
-import {TextField, TextareaAutosize,} from "@mui/material"
+import {TextField,} from "@mui/material"
 import { Box } from "@mui/system"
 import Button from "@mui/material/Button"
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { styled } from "@mui/material/styles"
 import DateTime from "./DateTime"
 import { Dayjs } from "dayjs"
-import { useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import Switch from "@mui/material/Switch"
 import { FormControlLabel, useTheme } from "@mui/material"
 import { CONNECTIONS, CREATEPOST } from "../queries"
@@ -15,8 +15,6 @@ import useAlertFactory from "../Hooks/useAlertFactory"
 import { useMutation, useQuery } from "@apollo/client"
 import { Twitter, YouTube, Instagram, Send } from "@mui/icons-material"
 import dayjs from "dayjs"
-
-let filename: string;
 
 const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -73,11 +71,6 @@ const VisuallyHiddenInput = styled("input")({
       <FormControlLabel control={<Switch name={mediaName} />} label={label} />
     )
   }
-
-  function GetFileName(name: string){
-    filename = name;
-    return filename;
-  }
   
   //TODO: tokeni lähtee välillä ja ei toimi
   
@@ -118,8 +111,8 @@ const VisuallyHiddenInput = styled("input")({
       }
       return value.toDate()
     }
-    
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       const data = new FormData(event.currentTarget)
   
@@ -158,6 +151,19 @@ const VisuallyHiddenInput = styled("input")({
       if (response) {
         alert.success("Post created", undefined, true)
       }
+    }
+
+    let fileName = "Null"
+
+    const getFileName = (event: ChangeEvent<HTMLInputElement>) => {
+      const data = event.target.files?.item(0)?.name
+      console.log(data)
+      fileName = String(data)
+      const p = document.getElementById("filename");
+      if(p){
+        p.innerHTML = "Selected File: " + fileName
+      }
+      
     }
 
     return (<div
@@ -218,12 +224,11 @@ const VisuallyHiddenInput = styled("input")({
           type="file"
           accept=".txt,audio/*,video/*,image/*"
           name="file"
-          onClick={GetFileName(event?.currentTarget.files)}
+          onChange={getFileName}
         />
         Upload File
       </Button>
-        <p>
-        </p>
+      <p id="filename">Selected file: None</p>
       <Button
         endIcon={<Send />}
         type="submit"
