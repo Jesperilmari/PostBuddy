@@ -1,5 +1,6 @@
 import { Maybe, Result } from "true-myth"
 import Twitter from "twitter"
+import { Client } from "twitter-api-sdk"
 import { info, error } from "../../util/logger"
 import Post from "../interfaces/Post"
 import PlatformModel from "../models/PlatformModel"
@@ -7,10 +8,6 @@ import { Platform } from "../interfaces/Platform"
 import storageClient from "../controllers/storageClient"
 import config from "../../config"
 
-type TwitterBody = {
-  status: string
-  media_ids?: string
-}
 export default async function createTwitterPost(
   post: Post,
 ): Promise<Result<undefined, string>> {
@@ -25,39 +22,55 @@ export default async function createTwitterPost(
     return Result.err("No twitter token found")
   }
 
-  const client = new Twitter({
+  // Used for uploading the media to twitter
+  const uploadClient = new Twitter({
     consumer_key: config.twitter_api_key,
     consumer_secret: config.twitter_api_key_secret,
     access_token_secret: config.twitter_access_token_secret as string,
     access_token_key: config.twitter_access_token,
   })
+
+  // Used for posting the tweet
+  const postClient = new Client(initialConnection.token)
+  const result = await postClient.users.findMyUser()
+  const twitterUserId = result.data?.id
+  if (!twitterUserId) {
+    return Result.err("No twitter id found")
+  }
+
   try {
-    const status = formatText(post)
-    const body: TwitterBody = {
-      status,
+    const text = formatText(post)
+    const body: Tweet = {
+      text,
     }
     if (post.media) {
-      const mediaId = await uploadMedia(post, client)
-      body.media_ids = mediaId
-      await createTweet(body, client)
+      const mediaId = await uploadMedia(post, twitterUserId, uploadClient)
+      body.media = { media_ids: [mediaId] }
     }
-    return Result.ok(undefined)
+    const ok = await createTweet(body, postClient)
+    return ok ? Result.ok(undefined) : Result.err("Error creating tweet")
   } catch (err) {
+    error("Error creating tweet", err)
     return Result.err((err as Error).message)
   }
 }
 
-async function createTweet(body: any, client: Twitter) {
-  return new Promise((resolve, reject) => {
-    client.post("statuses/update", body, (err, tweet, _res) => {
-      if (err) {
-        error("Error creating tweet", err)
-        return reject(err)
-      }
-      info("Created tweet", tweet)
-      return resolve(tweet)
-    })
-  })
+type Tweet = {
+  text: string
+  media?: {
+    media_ids: string[]
+  }
+}
+
+async function createTweet(content: Tweet, client: Client) {
+  info("Creating tweet")
+  const { errors } = await client.tweets.createTweet(content)
+  if (errors) {
+    error("Error creating tweet", errors)
+    return false
+  }
+  info("Created tweet")
+  return true
 }
 
 function formatText(post: Post) {
@@ -67,7 +80,11 @@ function formatText(post: Post) {
   return `${post.title} ${post.description}`
 }
 
-async function uploadMedia(post: Post, client: Twitter): Promise<string> {
+async function uploadMedia(
+  post: Post,
+  userId: string,
+  client: Twitter,
+): Promise<string> {
   const buf = await getBlob(post.media as string)
   if (buf.isNothing) {
     return Promise.reject(new Error("No blob found"))
@@ -75,14 +92,18 @@ async function uploadMedia(post: Post, client: Twitter): Promise<string> {
 
   const endPoint = "media/upload" as const
   return new Promise((resolve, reject) => {
-    client.post(endPoint, { media: buf.value }, (err, media, _res) => {
-      if (err) {
-        error("Error uploading media", err)
-        return reject(err)
-      }
-      info("Uploaded media", media.media_id_string)
-      return resolve(media.media_id_string as string)
-    })
+    client.post(
+      endPoint,
+      { media: buf.value, additional_owners: userId },
+      (err, media, _res) => {
+        if (err) {
+          error("Error uploading media", err)
+          return reject(err)
+        }
+        info("Uploaded media", media.media_id_string)
+        return resolve(media.media_id_string as string)
+      },
+    )
   })
 }
 

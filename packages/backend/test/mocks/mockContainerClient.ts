@@ -1,6 +1,6 @@
 import { ContainerClient, BlockBlobClient } from "@azure/storage-blob"
 import { anyString, anything, instance, mock, when } from "ts-mockito"
-import { Readable } from "stream"
+import { Readable, PassThrough } from "stream"
 // import fs from "fs"
 
 const containerClientMock = mock(ContainerClient)
@@ -18,8 +18,9 @@ when(containerClientMock.getBlockBlobClient(anyString())).thenReturn(
 when(blockBlobClientMock.uploadStream(anything())).thenCall(
   (stream: Readable) => {
     expect(stream).toBeDefined()
-    // const out = fs.createWriteStream("./test/files/uploaded.png")
-    // stream.pipe(out)
+    // Simulate stream going somewhere
+    const passThrough = new PassThrough()
+    stream.pipe(passThrough)
   },
 )
 

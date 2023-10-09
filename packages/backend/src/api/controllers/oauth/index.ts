@@ -4,6 +4,7 @@ import { User } from "../../interfaces/User"
 import APIError from "../../classes/APIError"
 import { error } from "../../../util/logger"
 import { PlatformName, platforms } from "./platforms"
+import config from "../../../config"
 
 // Cache for connecting callback to specific user
 const cache = new Map<string, User>()
@@ -42,14 +43,19 @@ type CallbackRequest = Request<
     state?: string
     oauth_token?: string
     oauth_verifier?: string
+    error?: string
   }
 >
 /**
  * Handles the callback from the oauth provider
  */
 export async function handleCallback(req: CallbackRequest, res: Response) {
-  const { state, oauth_token } = req.query
+  const { state, oauth_token, error: failed } = req.query
   const { platformName } = req.params
+  if (failed) {
+    res.redirect(config.website_url)
+    return
+  }
 
   const key = state || (oauth_token as string)
   const user = cache.get(key)

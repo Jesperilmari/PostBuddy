@@ -1,9 +1,8 @@
 import { Document, Types } from "mongoose"
 import { User } from "./User"
-import { PlatformName } from "../controllers/oauth/platforms"
 
 export interface Platform extends Document {
-  name: PlatformName
+  name: string
   token: string
   refresh_token?: string
   secret?: string

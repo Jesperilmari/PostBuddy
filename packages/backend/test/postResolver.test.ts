@@ -8,6 +8,12 @@ import mongoose from "mongoose"
 import PostsModel from "../src/api/models/PostsModel"
 import UserModel from "../src/api/models/UserModel"
 
+function longInTheFuture() {
+  const d = new Date()
+  d.setFullYear(d.getFullYear() + 1)
+  return d
+}
+
 describe("postResolver", () => {
   let user: User
   let token: string
@@ -36,7 +42,7 @@ describe("postResolver", () => {
             title: "title",
             description: "desc",
             platforms: ["twitter"],
-            dispatchTime: new Date(),
+            dispatchTime: longInTheFuture(),
           },
         },
       },
@@ -55,7 +61,7 @@ describe("postResolver", () => {
             title: "title",
             description: "desc",
             platforms: ["twitter"],
-            dispatchTime: new Date(),
+            dispatchTime: longInTheFuture(),
             media: "media",
           },
         },
@@ -101,7 +107,7 @@ describe("postResolver", () => {
             title: "new title",
             description: "new desc",
             platforms: ["twitter"],
-            dispatchTime: new Date(),
+            dispatchTime: longInTheFuture(),
           },
         },
       },

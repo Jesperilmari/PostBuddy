@@ -7,7 +7,7 @@ namespace PostTestUtils {
     title: string = "title",
     description: string = "desc",
     platforms: string[] = ["twitter"],
-    dispatchTime: Date = new Date(),
+    dispatchTime: Date = new Date(Date.now() + 100000),
     media?: string,
   ) {
     return PostsModel.create({

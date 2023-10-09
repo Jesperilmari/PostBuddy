@@ -2,6 +2,7 @@ import { Result } from "true-myth"
 import Post from "../interfaces/Post"
 import createTwitterPost from "./createTwitterPost"
 import { error, info } from "../../util/logger"
+import { PlatformName } from "../controllers/oauth/platforms"
 
 export const defaultMethods = {
   createTwitterPost,
@@ -49,7 +50,7 @@ export class PostCreator {
     post: Post,
   ): Promise<Result<undefined, string>> {
     try {
-      switch (platform) {
+      switch (platform as PlatformName) {
         case "twitter":
           return this.methods.createTwitterPost(post)
         default:

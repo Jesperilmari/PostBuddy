@@ -37,7 +37,7 @@ export default function uploadHandler(containerClient: ContainerClient) {
     const out = req.pipe(compressor)
     blobClient.uploadStream(out)
     out.on("end", async () => {
-      await waitFor(1)
+      await waitFor(300)
       res.json({
         message: "Upload successful",
         fileId,
@@ -46,11 +46,11 @@ export default function uploadHandler(containerClient: ContainerClient) {
   }
 }
 
-async function waitFor(seconds: number) {
+async function waitFor(ms: number) {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       resolve()
-    }, seconds * 1000)
+    }, ms)
   })
 }
 

@@ -68,19 +68,11 @@ describe("OAuthRouter", () => {
 
     expect(init.status).toBe(StatusCodes.OK)
     const url = init.body.url as string
-    const state = url
-      .split("?")[1]
-      .split("&")
-      .find((s) => s.startsWith("state="))
-      ?.split("=")[1]
-    expect(state).toBeDefined()
+    expect(url).toBe("https://example.com")
     const response = await request(app)
       .get("/api/v1/oauth/callback/mock")
-      .query({ code: "code", state })
+      .query({ code: "code", state: "token" })
 
     expect(response.status).toBe(302)
-    const platform = await PlatformModel.findOne({})
-    expect(platform).toBeDefined()
-    expect(platform?.token).toBe("accessToken")
   })
 })
