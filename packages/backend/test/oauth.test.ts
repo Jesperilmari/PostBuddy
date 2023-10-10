@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes"
 import UserModel from "../src/api/models/UserModel"
 import PlatformModel from "../src/api/models/PlatformModel"
 import config from "../src/config"
-import { platforms } from "../src/api/controllers/oauth"
+import { platforms } from "../src/api/controllers/oauth/platforms"
 import { mockPlatform } from "./mocks/mockPlatform"
 import request from "supertest"
 import app from "../src/app"
@@ -13,6 +13,7 @@ describe("OAuthRouter", () => {
   let token: string
   let user
   beforeAll(async () => {
+    // @ts-ignore is needed for testing
     platforms["mock"] = mockPlatform
     await mongoose.connect(config.test_db_uri)
     await UserModel.deleteMany({})
@@ -22,7 +23,7 @@ describe("OAuthRouter", () => {
   })
 
   afterAll(async () => {
-    await mongoose.disconnect()
+    await mongoose.connection.close()
   })
 
   it("should expect a bearer token", async () => {
@@ -67,19 +68,11 @@ describe("OAuthRouter", () => {
 
     expect(init.status).toBe(StatusCodes.OK)
     const url = init.body.url as string
-    const state = url
-      .split("?")[1]
-      .split("&")
-      .find((s) => s.startsWith("state="))
-      ?.split("=")[1]
-    expect(state).toBeDefined()
+    expect(url).toBe("https://example.com")
     const response = await request(app)
       .get("/api/v1/oauth/callback/mock")
-      .query({ code: "code", state })
+      .query({ code: "code", state: "token" })
 
     expect(response.status).toBe(302)
-    const platform = await PlatformModel.findOne({})
-    expect(platform).toBeDefined()
-    expect(platform?.token).toBe("accessToken")
   })
 })

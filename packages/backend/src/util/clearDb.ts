@@ -4,14 +4,15 @@ import UserModel from "../api/models/UserModel"
 import PlatformModel from "../api/models/PlatformModel"
 import config from "../config"
 import { info } from "./logger"
+import PostsModel from "../api/models/PostsModel"
 
 async function clearDb() {
   await confirmDelete()
   info("Clearing database")
-  await mongoose.connection.close()
   await mongoose.connect(config.db_uri)
   await UserModel.deleteMany({})
   await PlatformModel.deleteMany({})
+  await PostsModel.deleteMany({})
   await mongoose.connection.close()
   info("Database cleared")
 }

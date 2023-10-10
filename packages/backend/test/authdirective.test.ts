@@ -5,10 +5,15 @@ import { updateUser } from "./queries"
 import connectDb from "../src/util/db"
 import config from "../src/config"
 import UserTestUtils from "./util/userFunctions"
+import mongoose from "mongoose"
 
 describe("AuthDirective", () => {
   beforeAll(async () => {
     await connectDb(config.test_db_uri)
+  })
+
+  afterAll(async () => {
+    await mongoose.connection.close()
   })
 
   it("should require authentication", async () => {

@@ -13,12 +13,11 @@ const validContentTypes = [
   // "video/webm",
 ]
 
-// TODO might need to resize images
-const compressor = sharp().png({ quality: 40 })
-
 // TODO: Implement video uploads
 export default function uploadHandler(containerClient: ContainerClient) {
   return (req: Request, res: Response) => {
+    // TODO might need to resize images
+    const compressor = sharp().png({ quality: 40 })
     const contentType = req.headers["content-type"]
     if (!contentType) {
       throw new APIError("Missing content-type header", StatusCodes.BAD_REQUEST)
@@ -37,14 +36,22 @@ export default function uploadHandler(containerClient: ContainerClient) {
     const blobClient = containerClient.getBlockBlobClient(fileId)
     const out = req.pipe(compressor)
     blobClient.uploadStream(out)
-    req.on("end", () => {
-      // TODO: req succees if compression fails
+    out.on("end", async () => {
+      await waitFor(300)
       res.json({
         message: "Upload successful",
         fileId,
       })
     })
   }
+}
+
+async function waitFor(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
+  })
 }
 
 function isValidContentType(mime: string) {

@@ -69,3 +69,46 @@ export const connections = `query Connections {
     name
   }
 }`
+
+export const createPost = `
+  mutation CreatePost($post: PostInput!) {
+    createPost(post: $post) {
+      description
+      dispatchTime
+      id
+      media
+      platforms
+      postOwner
+      title
+    }
+  }
+`
+
+export const deletePost = `
+mutation Mutation($deletePostId: [ID!]!) {
+  deletePost(id: $deletePostId) {
+    message
+  }
+}`
+
+export const editPost = `
+mutation Mutation($editPostId: ID!, $post: EditPost!) {
+  editPost(id: $editPostId, post: $post) {
+    title
+    id
+    dispatchTime
+    description
+  }
+}`
+
+export const postsByFilter = `query Query($platformName: String, $postTitle: String) {
+  postsByFilter(platformName: $platformName, postTitle: $postTitle) {
+    description
+    dispatchTime
+    id
+    media
+    postOwner
+    title
+    platforms
+  }
+}`

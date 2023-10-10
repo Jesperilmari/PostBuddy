@@ -1,46 +1,46 @@
-import { useEffect, useState } from "react";
-import MenuAppBar from "./AppBar";
-import SideNav from "./SideNav";
-import { PageName, pages } from "../constants";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../reducers/store";
-import { Alert, AlertTitle } from "@mui/material";
-import useAlert from "../Hooks/useAlert";
-import { next } from "../reducers/alertReducer";
+import { useEffect, useState } from "react"
+import MenuAppBar from "./AppBar"
+import SideNav from "./SideNav"
+import { PageName, pages } from "../constants"
+import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../reducers/store"
+import { Alert, AlertTitle } from "@mui/material"
+import useAlert from "../Hooks/useAlert"
+import { next } from "../reducers/alertReducer"
 
-function Home() {
+function MainContent() {
   const pageString = useSelector<RootState, PageName>(
     (state) => state.page.name
-  );
+  )
 
-  const page = pages.find((page) => page.name === pageString);
-  const navigate = useNavigate();
+  const page = pages.find((page) => page.name === pageString)
+  const navigate = useNavigate()
   const token = useSelector<RootState, string | undefined>(
     (state) => state.user.token
-  );
-  const dispatch = useDispatch();
+  )
+  const dispatch = useDispatch()
 
-  const alert = useAlert();
+  const alert = useAlert()
 
   if (!token) {
-    navigate("/login");
+    navigate("/login")
   }
-  const [time, setTime] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [time, setTime] = useState<NodeJS.Timeout | undefined>(undefined)
 
   //sets timeout for alerts
   useEffect(() => {
-    clearTimeout(time);
+    clearTimeout(time)
     if (alert.active) {
       setTime(
         setTimeout(() => {
-          dispatch(next());
-          console.log("close");
+          dispatch(next())
+          console.log("close")
         }, alert.alert.timeout || 5000)
-      );
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alert, dispatch]);
+  }, [alert, dispatch])
 
   // useEffect(() => {
   //   if (!user) {
@@ -48,7 +48,7 @@ function Home() {
   //   }
   // }, [user, navigate]);
 
-  const alertMessage = alert.alert.message;
+  const alertMessage = alert.alert.message
   return (
     <>
       <div
@@ -63,8 +63,8 @@ function Home() {
           onClose={
             alert.alert.onClose
               ? () => {
-                  dispatch(next());
-                  console.log("close");
+                  dispatch(next())
+                  console.log("close")
                 }
               : undefined
           }
@@ -96,7 +96,7 @@ function Home() {
         </section>
       </div>
     </>
-  );
+  )
 }
 
-export default Home;
+export default MainContent

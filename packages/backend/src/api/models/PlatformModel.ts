@@ -9,7 +9,7 @@ const platformSchema = new Schema<Platform>(
     },
     refresh_token: {
       type: String,
-      required: true,
+      required: false,
     },
     token: {
       type: String,
@@ -19,6 +19,10 @@ const platformSchema = new Schema<Platform>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    secret: {
+      type: String,
+      required: false,
     },
   },
   {

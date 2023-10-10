@@ -2,6 +2,9 @@
 import { PBContext } from "../interfaces/PBContext"
 import PostsModel from "../models/PostsModel"
 import Post from "../interfaces/Post"
+import { schedulePost } from "../controllers/postScheduler"
+import { raiseGqlError } from "../../util/errors"
+import { handlePostCreationFor } from "../handlers"
 
 export default {
   Query: {
@@ -31,13 +34,20 @@ export default {
       args: { post: Omit<Post, "id" | "_id" | "postOwner"> },
       ctx: PBContext,
     ) => {
-      console.log(args)
-      const createPost = await PostsModel.create({
+      const createdPost = await PostsModel.create({
         ...args.post,
         postOwner: ctx.userId,
       })
-      console.log(createPost)
-      return createPost
+      if (isMoreThan5MinInTheFuture(createdPost.dispatchTime)) {
+        schedulePost(createdPost).unwrapOrElse(
+          raiseGqlError("Error scheduling post"),
+        )
+        return createdPost
+      }
+
+      const res = await handlePostCreationFor(createdPost)
+      res.unwrapOrElse(raiseGqlError("Error creating post"))
+      return createdPost
     },
     editPost: async (
       _: Post,
@@ -45,24 +55,34 @@ export default {
         id: Pick<Post, "id">
         post: Omit<Post, "id" | "_id" | "postOwner">
       },
-      _cxt: PBContext,
+      ctx: PBContext,
     ) => {
-      const editPost = await PostsModel.findByIdAndUpdate(args.id, args.post, {
-        new: true,
-      })
+      const editPost = await PostsModel.findOneAndUpdate(
+        { _id: args.id, postOwner: ctx.userId },
+        args.post,
+        {
+          new: true,
+        },
+      )
       return editPost
     },
     deletePost: async (
       _: Post,
       args: { id: [Pick<Post, "id" | "_id">] },
-      _ctx: PBContext,
+      ctx: PBContext,
     ) => {
-      const deletePost = await PostsModel.find({
+      const { deletedCount } = await PostsModel.find({
         _id: { $in: args.id },
-      }).deleteMany({})
-      console.log(args.id)
-      console.log(`deletePost`, deletePost)
-      return deletePost
+      }).deleteMany({ postOwner: ctx.userId })
+      return {
+        message: `Deleted ${deletedCount} posts`,
+      }
     },
   },
+}
+
+function isMoreThan5MinInTheFuture(date: Date): boolean {
+  const now = new Date()
+  const fiveMinFromNow = new Date(now.getTime() + 1000 * 60 * 5)
+  return date.getTime() > fiveMinFromNow.getTime()
 }
