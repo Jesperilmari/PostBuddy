@@ -14,13 +14,10 @@ import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
 
 // TODO Add tests
 // TODO Ensure all errors are handled
-// TODO Delete media after posting
 
 export default async function createTwitterPost(
   post: Post,
 ): Promise<Result<undefined, string>> {
-  info("Creating twitter post", post)
-
   const maybeCon = await findAndRefreshToken(
     "twitter",
     post.postOwner.toString(),
@@ -30,7 +27,6 @@ export default async function createTwitterPost(
     return Result.err("No connection found")
   }
   const connection = maybeCon.value
-
   // Used for uploading the media to twitter
   const uploadClient = new Twitter({
     consumer_key: config.twitter_api_key,
@@ -38,9 +34,17 @@ export default async function createTwitterPost(
     access_token_secret: config.twitter_access_token_secret as string,
     access_token_key: config.twitter_access_token,
   })
-
   // Used for posting the tweet
   const postClient = new Client(connection.token)
+  return createTwitterPostImpl(post, uploadClient, postClient)
+}
+
+export async function createTwitterPostImpl(
+  post: Post,
+  uploadClient: Twitter,
+  postClient: Client,
+): Promise<Result<undefined, string>> {
+  info("Creating twitter post")
   const result = await postClient.users.findMyUser()
   const twitterUserId = result.data?.id
   if (!twitterUserId) {
@@ -61,6 +65,8 @@ export default async function createTwitterPost(
   } catch (err) {
     error("Error creating tweet", err)
     return Result.err((err as Error).message)
+  } finally {
+    await cleanUp(post)
   }
 }
 
@@ -174,5 +180,12 @@ async function refresh(platform: Platform) {
   } catch (e) {
     error("Error refreshing token", e)
     return null
+  }
+}
+
+async function cleanUp(post: Post) {
+  if (post.media) {
+    const blobClient = storageClient.getBlockBlobClient(post.media as string)
+    await blobClient.deleteIfExists()
   }
 }

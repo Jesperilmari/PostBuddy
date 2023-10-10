@@ -9,11 +9,13 @@ const containerClientInstance = instance(containerClientMock)
 
 const blockBlobClientMock = mock(BlockBlobClient)
 
-const blockBlobClientInstance = instance(blockBlobClientMock)
+export const blockBlobClientInstance = instance(blockBlobClientMock)
 
 when(containerClientMock.getBlockBlobClient(anyString())).thenReturn(
   blockBlobClientInstance,
 )
+
+when(blockBlobClientMock.exists()).thenResolve(false)
 
 when(blockBlobClientMock.uploadStream(anything())).thenCall(
   (stream: Readable) => {

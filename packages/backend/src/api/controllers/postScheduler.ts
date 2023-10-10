@@ -10,14 +10,15 @@ const jobs = new Map<string, CronJob>()
 const postCreator = new PostCreator()
 
 export function schedulePost(post: Post): Result<CronJob, Error> {
-  const pObj = post.toObject()
-  const { id, dispatchTime } = pObj
+  const { id, dispatchTime } = post
+  const onComplete = null
+  const start = true // This does not run the job immediately, but schedules it
   try {
     const job = new CronJob(
       dispatchTime,
-      async () => postCreator.handlePostCreationFor(pObj),
-      null,
-      true,
+      async () => postCreator.handlePostCreationFor(post),
+      onComplete,
+      start,
     )
     jobs.set(id, job)
     info(`New post scheduled at ${dispatchTime}`)
@@ -30,7 +31,7 @@ export function schedulePost(post: Post): Result<CronJob, Error> {
 
 export async function doStartUpPostRescheduling() {
   info("Rescheduling posts after startup")
-  const posts = await PostsModel.find({ date: { $gt: new Date() } })
+  const posts = await PostsModel.find({ dispatchTime: { $gt: new Date() } })
 
   const results = posts.map(schedulePost)
 
@@ -39,28 +40,28 @@ export async function doStartUpPostRescheduling() {
 
   if (!errors) {
     info(`Rescheduling done for ${len} posts`)
-  } else {
-    error(`Rescheduling done for ${len} posts, some errors occurred`)
+    return true
   }
+  error(`Rescheduling done for ${len} posts, some errors occurred`)
   return false
 }
 
 export function getScheduledPosts() {
-  return jobs.values()
+  return jobs
 }
 
-export function removeScheduledPost(postId: string): boolean {
-  const job = jobs.get(postId)
+export function removeScheduledPost(post: Post): boolean {
+  const job = jobs.get(post.id)
   if (job) {
     job.stop()
-    jobs.delete(postId)
+    jobs.delete(post.id)
     return true
   }
   return false
 }
 
 export function updateScheduledPost(newPost: Post): boolean {
-  if (!removeScheduledPost(newPost._id)) {
+  if (!removeScheduledPost(newPost)) {
     return false
   }
   return schedulePost(newPost).isOk
