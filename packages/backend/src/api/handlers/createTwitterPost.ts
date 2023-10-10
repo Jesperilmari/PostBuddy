@@ -98,6 +98,7 @@ async function uploadMedia(
   client: Twitter,
 ): Promise<string> {
   const buf = await getBlob(post.media as string)
+  console.log(buf)
   if (buf.isNothing) {
     return Promise.reject(new Error("No blob found"))
   }
@@ -188,6 +189,22 @@ async function cleanUp(post: Post) {
       info("Deleted post media from storage")
     } catch (e) {
       error("Error deleting blob", e)
+    }
+  }
+}
+
+async function uploadVideo(post: Post, twitterUID: string, client: Twitter) {
+  const endPoint = "media/upload" as const
+  const mediaId = () => {
+    try {
+      const result = client.post(endPoint, {
+        command: "INIT",
+        media_type: "video/mp4",
+        media_category: "tweet_video",
+        total_bytes: 434,
+      })
+    } catch (err) {
+      console.log(err)
     }
   }
 }
