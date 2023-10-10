@@ -9,14 +9,19 @@ const jobs = new Map<string, CronJob>()
 
 const postCreator = new PostCreator()
 
+// TODO somehow notify user that the post creation failed
+
 export function schedulePost(post: Post): Result<CronJob, Error> {
   const { id, dispatchTime } = post
-  const onComplete = null
+  const onComplete = null // Do nothing
   const start = true // This does not run the job immediately, but schedules it
   try {
     const job = new CronJob(
       dispatchTime,
-      async () => postCreator.handlePostCreationFor(post),
+      async () => {
+        await postCreator.handlePostCreationFor(post)
+        removeScheduledPost(post)
+      },
       onComplete,
       start,
     )

@@ -71,6 +71,6 @@ export interface Post {
   description: string
   platforms: string[]
   media: string
-  dispatchTime: Date
+  dispatchTime: string
   postOwner: string
 }

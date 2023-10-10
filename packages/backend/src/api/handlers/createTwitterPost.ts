@@ -12,9 +12,6 @@ import config from "../../config"
 import { PlatformName } from "../controllers/oauth/platforms"
 import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
 
-// TODO Add tests
-// TODO Ensure all errors are handled
-
 export default async function createTwitterPost(
   post: Post,
 ): Promise<Result<undefined, string>> {
@@ -97,7 +94,7 @@ function formatText(post: Post) {
 
 async function uploadMedia(
   post: Post,
-  userId: string,
+  twitterUID: string,
   client: Twitter,
 ): Promise<string> {
   const buf = await getBlob(post.media as string)
@@ -109,7 +106,7 @@ async function uploadMedia(
   return new Promise((resolve, reject) => {
     client.post(
       endPoint,
-      { media: buf.value, additional_owners: userId },
+      { media: buf.value, additional_owners: twitterUID },
       (err, media, _res) => {
         if (err) {
           error("Error uploading media", err)
@@ -185,7 +182,12 @@ async function refresh(platform: Platform) {
 
 async function cleanUp(post: Post) {
   if (post.media) {
-    const blobClient = storageClient.getBlockBlobClient(post.media as string)
-    await blobClient.deleteIfExists()
+    try {
+      const blobClient = storageClient.getBlockBlobClient(post.media as string)
+      await blobClient.deleteIfExists()
+      info("Deleted post media from storage")
+    } catch (e) {
+      error("Error deleting blob", e)
+    }
   }
 }
