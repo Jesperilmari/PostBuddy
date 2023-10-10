@@ -1,10 +1,11 @@
-import { PassThrough } from "stream"
+import { PassThrough, Readable } from "stream"
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { ContainerClient } from "@azure/storage-blob"
 import sharp from "sharp"
 import crypto from "node:crypto"
 import APIError from "../classes/APIError"
+import compressVideo from "./video"
 
 const validImageTypes = ["image/jpeg", "image/png"]
 const validVideoTypes = ["video/mp4"]
@@ -12,13 +13,14 @@ const validContentTypes = [...validImageTypes, ...validVideoTypes]
 
 // TODO: Implement video uploads
 export default function uploadHandler(containerClient: ContainerClient) {
-  return (req: Request, res: Response) => {
+  return async (req: Request, res: Response) => {
     // TODO might need to resize images
     const contentType = req.headers["content-type"]
     if (!contentType) {
       throw new APIError("Missing content-type header", StatusCodes.BAD_REQUEST)
     }
-    const compressor = getCompressor(contentType)
+
+    console.log(contentType)
 
     if (!isValidContentType(contentType)) {
       res.status(400).json({
@@ -31,24 +33,34 @@ export default function uploadHandler(containerClient: ContainerClient) {
 
     const fileId = crypto.randomUUID()
     const blobClient = containerClient.getBlockBlobClient(fileId)
-    const out = req.pipe(compressor)
+    const out = await handleCompression(req, contentType)
+
+    if (!out) {
+      throw new APIError(
+        "Error compressing video",
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      )
+    }
+
     blobClient.uploadStream(out)
     out.on("end", async () => {
       await waitFor(300)
       res.json({
         message: "Upload successful",
         fileId,
+        fileType: contentType,
       })
     })
   }
 }
 
-function getCompressor(contentType: string): sharp.Sharp | PassThrough {
+async function handleCompression(stream: Readable, contentType: string) {
   if (isImage(contentType)) {
-    return sharp().png({ quality: 40 })
+    return stream.pipe(sharp().png({ quality: 40 }))
   }
+
   if (isVideo(contentType)) {
-    return new PassThrough() // TODO implement video compression
+    return compressVideo(stream)
   }
 
   return new PassThrough()

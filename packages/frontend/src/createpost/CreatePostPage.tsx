@@ -8,7 +8,7 @@ import { Dayjs } from "dayjs"
 import { useState } from "react"
 import Switch from "@mui/material/Switch"
 import { FormControlLabel, TextareaAutosize, useTheme } from "@mui/material"
-import { CONNECTIONS, CREATEPOST } from "../queries"
+import { ALLPOSTSBYUSER, CONNECTIONS, CREATEPOST } from "../queries"
 import { Conn, Post, PostInput } from "../interfaces"
 import uploadFile from "../util/uploadFile"
 import useAlertFactory from "../Hooks/useAlertFactory"
@@ -76,13 +76,16 @@ function mediaListEntry(mediaName: string) {
 //TODO: tokeni lähtee välillä ja ei toimi
 
 export default function CreatePostPage() {
+  const { refetch: refetchPosts } = useQuery<{ postsByFilter: Post[] }>(
+    ALLPOSTSBYUSER
+  )
   const navigate = useNavigate()
   const [value, setValue] = useState<Dayjs | null>(null)
   const [isScheduled, setIsScheduled] = useState<boolean>(false)
   const alert = useAlertFactory()
   const theme = useTheme()
   const { data, loading, error } = useQuery<{ connections: Conn[] }>(
-    CONNECTIONS,
+    CONNECTIONS
   )
   const [createPost] = useMutation<{ post: Post }>(CREATEPOST)
   if (error) {
@@ -106,7 +109,7 @@ export default function CreatePostPage() {
       alert.error(
         "Please select a date in the future or not scheduled post",
         undefined,
-        true,
+        true
       )
       return null
     }
@@ -149,6 +152,7 @@ export default function CreatePostPage() {
     const response = await createPost({ variables: { post: post } })
 
     if (response) {
+      refetchPosts()
       alert.success("Post created", undefined, true)
     }
   }
