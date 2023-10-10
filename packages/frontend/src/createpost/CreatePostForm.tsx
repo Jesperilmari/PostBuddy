@@ -215,6 +215,7 @@ const VisuallyHiddenInput = styled("input")({
         checked={isScheduled}
         onChange={() => setIsScheduled(!isScheduled)}
       />
+      <p id="filename">Selected file: None</p>
       <Button
         endIcon={<CloudUploadIcon />}
         component="label"
@@ -228,7 +229,6 @@ const VisuallyHiddenInput = styled("input")({
         />
         Upload File
       </Button>
-      <p id="filename">Selected file: None</p>
       <Button
         endIcon={<Send />}
         type="submit"
