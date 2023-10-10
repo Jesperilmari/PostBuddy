@@ -5,7 +5,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { styled } from "@mui/material/styles"
 import DateTime from "./DateTime"
 import { Dayjs } from "dayjs"
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import Switch from "@mui/material/Switch"
 import { FormControlLabel, useTheme } from "@mui/material"
 import { CONNECTIONS, CREATEPOST } from "../queries"
@@ -14,6 +14,7 @@ import uploadFile from "../util/uploadFile"
 import useAlertFactory from "../Hooks/useAlertFactory"
 import { useMutation, useQuery } from "@apollo/client"
 import { Twitter, YouTube, Instagram, Send } from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
 import dayjs from "dayjs"
 
 const VisuallyHiddenInput = styled("input")({
@@ -74,9 +75,9 @@ const VisuallyHiddenInput = styled("input")({
   
   //TODO: tokeni lähtee välillä ja ei toimi
   
-  export default function CreatePostForm() {
+  export default function CreatePostPage() {
+    const navigate = useNavigate()
     const [value, setValue] = useState<Dayjs | null>(null)
-    const [id, setId] = useState<string>("")
     const [isScheduled, setIsScheduled] = useState<boolean>(false)
     const alert = useAlertFactory()
     const theme = useTheme()
@@ -111,8 +112,8 @@ const VisuallyHiddenInput = styled("input")({
       }
       return value.toDate()
     }
-
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       const data = new FormData(event.currentTarget)
   
@@ -128,14 +129,7 @@ const VisuallyHiddenInput = styled("input")({
         return
       }
   
-      if (!(file.name === "")) {
-        setId(await uploadFile(file))
-        if (id === "") {
-          alert.error("Error uploading file", undefined, true)
-          return
-        }
-        alert.success("File uploaded", undefined, true)
-      }
+      const id = await uploadFile(file, navigate)
   
       const sendPlatforms = checkSwitches(data, connected)
       const post: PostInput = {
@@ -146,6 +140,12 @@ const VisuallyHiddenInput = styled("input")({
         platforms: sendPlatforms,
       }
   
+      if (id === "") {
+        alert.info("no file uploaded", undefined, true)
+        delete post.media
+      }
+  
+      console.log(post)
       const response = await createPost({ variables: { post: post } })
   
       if (response) {
