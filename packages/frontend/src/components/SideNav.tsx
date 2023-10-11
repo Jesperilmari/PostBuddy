@@ -1,4 +1,4 @@
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, useTheme } from '@mui/material'
 import { PageName, pages } from '../constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../reducers/store'
@@ -7,6 +7,7 @@ import { changePage } from '../reducers/pageReducer'
 export default function SideNav() {
   const currentPage = useSelector<RootState, PageName>((state) => state.page.name)
   const dispatch = useDispatch()
+  const theme = useTheme()
   const handleChange = (page: PageName) => {
     dispatch(changePage(page))
   }
@@ -37,7 +38,13 @@ export default function SideNav() {
               onClick={() => handleChange(page.name)}
               selected={page.name == currentPage}
             >
-              <ListItemIcon>{page.icon}</ListItemIcon>
+              <ListItemIcon
+              style={{
+                color: theme.palette.text.secondary
+              }}
+              >
+                {page.icon}
+              </ListItemIcon>
               <ListItemText primary={page.name} />
             </ListItemButton>
           </ListItem>

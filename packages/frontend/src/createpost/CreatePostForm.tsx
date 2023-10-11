@@ -191,7 +191,8 @@ const VisuallyHiddenInput = styled("input")({
         autoComplete="Title"
         autoFocus
         style={{
-        width: 600,
+          backgroundColor: theme.palette.background.default,
+          borderColor: theme.palette.text.disabled,
         }}
       />
       <TextField
@@ -205,10 +206,11 @@ const VisuallyHiddenInput = styled("input")({
         style={{
           backgroundColor: theme.palette.background.default,
           borderColor: theme.palette.text.disabled,
-          width: 600,
         }}
       />
-      {isScheduled ? <DateTime value={value} onChange={setValue} /> : null}
+      {isScheduled ? 
+      <DateTime value={value} onChange={setValue} 
+      /> : null}
       <FormControlLabel
         control={<Switch name="isScheduled" />}
         label="Create scheduled post"

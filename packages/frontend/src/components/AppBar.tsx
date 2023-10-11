@@ -56,7 +56,7 @@ export default function MenuAppBar({ currentPage }: { currentPage: string }) {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
-                color="inherit"
+                style = {{color: "white"}}
               >
                 <AccountCircle />
               </IconButton>
