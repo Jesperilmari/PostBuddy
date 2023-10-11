@@ -4,6 +4,7 @@ import Twitter from "twitter"
 import { Client } from "twitter-api-sdk"
 import axios from "axios"
 import { Readable } from "stream"
+import { me } from "../../../test/queries"
 import { info, error } from "../../util/logger"
 import Post from "../interfaces/Post"
 import { Platform } from "../interfaces/Platform"
@@ -130,7 +131,9 @@ async function uploadFile(post: Post, twitterUID: string, client: Twitter) {
   if (res.isNothing) {
     return Promise.reject(new Error("No blob found"))
   }
-
+  if (!post.mediaType) {
+    return Promise.reject(new Error("No media type found"))
+  }
   const { stream, total_bytes } = res.value
   try {
     const mediaId = await doSomeStreaming(
@@ -138,6 +141,7 @@ async function uploadFile(post: Post, twitterUID: string, client: Twitter) {
       client,
       twitterUID,
       total_bytes,
+      post.mediaType,
     )
     return Promise.resolve(mediaId)
   } catch (err) {
@@ -151,6 +155,7 @@ async function doSomeStreaming(
   client: Twitter,
   twitterUID: string,
   total_bytes: number,
+  mediaType: string,
 ): Promise<string> {
   let segment_index = 0
   info("Initializing upload, bytes:", total_bytes)
@@ -158,6 +163,7 @@ async function doSomeStreaming(
     client,
     additional_owners: twitterUID,
     total_bytes,
+    mediaType,
   })
   if (!media_id) {
     throw new Error("No media id found")
@@ -202,6 +208,7 @@ type InitOptions = {
   client: Twitter
   additional_owners: string
   total_bytes: number
+  mediaType: string
 }
 
 type ChunkOptions = {
@@ -211,13 +218,14 @@ type ChunkOptions = {
 }
 
 async function initUpload(opts: InitOptions): Promise<string> {
-  const { client, total_bytes, additional_owners } = opts
+  const { client, total_bytes, additional_owners, mediaType } = opts
+  info("Initializing upload, mediatype: ", mediaType)
   return new Promise((resolve, reject) => {
     client.post(
       uploadEndpoint,
       {
         command: "INIT",
-        media_type: "video/mp4", // TODO implement media type for postmodel
+        media_type: mediaType, // TODO implement media type for postmodel
         additional_owners,
         total_bytes,
       },

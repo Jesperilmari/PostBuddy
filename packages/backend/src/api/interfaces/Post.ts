@@ -7,6 +7,7 @@ export default interface Post extends Document {
   description: string
   platforms: PlatformName[]
   media?: string
+  mediaType?: "image" | "video"
   dispatchTime: Date
   postOwner: Types.ObjectId
 }

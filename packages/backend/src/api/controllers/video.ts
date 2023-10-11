@@ -19,18 +19,22 @@ export default async function compressVideo(
     const video = await new Ffmpeg(fileName)
     const path = await video
       .setVideoFrameRate(fps)
+      .setVideoDuration(135)
       .setVideoFormat(format)
       .setVideoSize(videoSize, true, true)
       .save(tmpFilePath())
-
     // Create read stream from compressed video
-    const stream = fs.createReadStream(path)
+    const stream = fs.createReadStream(path, {
+      start: 0,
+      end: 100000000,
+    })
 
     // Delete temp file when stream is closed
     stream.on("close", () => {
       try {
         info("Deleting temp file")
         fs.unlinkSync(path)
+        fs.unlinkSync(fileName)
       } catch (err) {
         error("Error deleting temp file: ", err)
       }
