@@ -29,7 +29,7 @@ when(mockPostClient.tweets).thenReturn({
 when(mockUploadClient.post("media/upload", anything(), anyFunction())).thenCall(
   async (_, __, cb) => {
     if (process.env.FAIL_UPLOAD === "true") {
-      cb(new Error("Failed to upload media"))
+      cb(new Error("Failed to upload media"), null, null)
       return
     }
     cb(null, { media_id_string: "123" }, null)

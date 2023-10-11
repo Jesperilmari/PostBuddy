@@ -20,8 +20,6 @@ export default function uploadHandler(containerClient: ContainerClient) {
       throw new APIError("Missing content-type header", StatusCodes.BAD_REQUEST)
     }
 
-    console.log(contentType)
-
     if (!isValidContentType(contentType)) {
       res.status(400).json({
         message: "Invalid content-type",

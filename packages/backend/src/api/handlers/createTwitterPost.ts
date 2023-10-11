@@ -153,11 +153,15 @@ async function doSomeStreaming(
   total_bytes: number,
 ): Promise<string> {
   let segment_index = 0
+  info("Initializing upload, bytes:", total_bytes)
   const media_id = await initUpload({
     client,
     additional_owners: twitterUID,
     total_bytes,
   })
+  if (!media_id) {
+    throw new Error("No media id found")
+  }
 
   const uploads: Promise<void>[] = []
 
@@ -165,12 +169,6 @@ async function doSomeStreaming(
     stream.on("data", async (chunk) => {
       try {
         const current = Number(segment_index)
-        if (current === 0) {
-          info("Initializing upload, bytes:", total_bytes)
-          if (!media_id) {
-            throw new Error("No media id found")
-          }
-        }
         const promise = uploadChunk(chunk, {
           media_id,
           client,
@@ -185,9 +183,13 @@ async function doSomeStreaming(
     })
 
     stream.on("end", async () => {
-      await Promise.all(uploads) // wait for all uploads to finish
-      await finalizeUpload(media_id, client)
-      resolve(media_id)
+      try {
+        await Promise.all(uploads) // wait for all uploads to finish
+        await finalizeUpload(media_id, client)
+        resolve(media_id)
+      } catch (err) {
+        reject(err)
+      }
     })
 
     stream.on("error", (err) => reject(err))
@@ -223,7 +225,7 @@ async function initUpload(opts: InitOptions): Promise<string> {
         if (err) {
           reject(err)
         }
-        resolve(data.media_id_string as string)
+        resolve(data?.media_id_string as string)
       },
     )
   })

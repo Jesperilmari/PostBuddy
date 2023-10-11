@@ -68,6 +68,7 @@ describe("UploadRouter", () => {
     expect(response.status).toBe(StatusCodes.OK)
     expect(response.body).toEqual({
       message: "Upload successful",
+      fileType: "image/png",
       fileId: expect.any(String),
     })
   })
