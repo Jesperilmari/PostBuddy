@@ -3,7 +3,8 @@ import { Readable } from "stream"
 import storageClient from "../api/controllers/storageClient"
 import BigChungus from "./BigChungus"
 import Post from "../api/interfaces/Post"
-import { error, info } from "./logger"
+import { error } from "./logger"
+import waitFor from "./waitFor"
 
 export type BlobStuff = {
   stream: Readable
@@ -13,11 +14,17 @@ export type BlobStuff = {
 export async function getBlob(
   media: string,
   chunkSize?: number,
+  retryAmount: number = 6,
 ): Promise<Maybe<BlobStuff>> {
   const blobClient = storageClient.getBlockBlobClient(media)
   const exists = await blobClient.exists()
   if (!exists) {
-    return Maybe.nothing()
+    // Might still be processing the file
+    if (retryAmount === 0) {
+      return Maybe.nothing()
+    }
+    await waitFor(2000)
+    return getBlob(media, chunkSize, retryAmount - 1)
   }
   const props = await blobClient.getProperties()
   const total_bytes = props.contentLength
@@ -43,7 +50,6 @@ export async function cleanUp(post: Post) {
     try {
       const blobClient = storageClient.getBlockBlobClient(post.media as string)
       await blobClient.deleteIfExists()
-      info("Deleted post media from storage")
     } catch (e) {
       error("Error deleting blob", e)
     }
