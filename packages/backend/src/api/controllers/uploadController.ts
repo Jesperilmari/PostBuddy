@@ -11,10 +11,8 @@ const validImageTypes = ["image/jpeg", "image/png"]
 const validVideoTypes = ["video/mp4"]
 const validContentTypes = [...validImageTypes, ...validVideoTypes]
 
-// TODO: Implement video uploads
 export default function uploadHandler(containerClient: ContainerClient) {
   return async (req: Request, res: Response) => {
-    // TODO might need to resize images
     const contentType = req.headers["content-type"]
     if (!contentType) {
       throw new APIError("Missing content-type header", StatusCodes.BAD_REQUEST)
@@ -35,14 +33,13 @@ export default function uploadHandler(containerClient: ContainerClient) {
 
     if (!out) {
       throw new APIError(
-        "Error compressing video",
+        "Error compressing file",
         StatusCodes.INTERNAL_SERVER_ERROR,
       )
     }
 
     blobClient.uploadStream(out)
     out.on("end", async () => {
-      await waitFor(300)
       res.json({
         message: "Upload successful",
         fileId,
@@ -70,14 +67,6 @@ function isImage(contentType: string) {
 
 function isVideo(contentType: string) {
   return validVideoTypes.includes(contentType)
-}
-
-async function waitFor(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve()
-    }, ms)
-  })
 }
 
 function isValidContentType(mime: string) {

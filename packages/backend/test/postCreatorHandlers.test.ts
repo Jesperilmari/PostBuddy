@@ -53,6 +53,39 @@ describe("Post creation stuff", () => {
       ["twitter"],
       new Date(),
       "fail",
+      "video/mp4",
+    )
+    const res = await createTwitterPostImpl(post, uploadClient, postClient)
+    expect(res.isErr).toBe(true)
+    expect(res.isErr && res.error).toBe("Failed to upload media")
+    process.env.FAIL_UPLOAD = undefined
+  })
+  it("should give a correct error when no mediatype", async () => {
+    process.env.FAIL_UPLOAD = "true"
+    const post = await PostTestUtils.createPost(
+      user,
+      "fail",
+      "fail",
+      ["twitter"],
+      new Date(),
+      "fail",
+    )
+    const res = await createTwitterPostImpl(post, uploadClient, postClient)
+    expect(res.isErr).toBe(true)
+    expect(res.isErr && res.error).toBe("No media type found")
+    process.env.FAIL_UPLOAD = undefined
+  })
+
+  it("should give a correct error when upload fails", async () => {
+    process.env.FAIL_UPLOAD = "true"
+    const post = await PostTestUtils.createPost(
+      user,
+      "fail",
+      "fail",
+      ["twitter"],
+      new Date(),
+      "fail",
+      "video/mp4",
     )
     const res = await createTwitterPostImpl(post, uploadClient, postClient)
     expect(res.isErr).toBe(true)
@@ -68,6 +101,7 @@ describe("Post creation stuff", () => {
       ["twitter"],
       new Date(),
       "fail",
+      "image/png",
     )
     const res = await createTwitterPostImpl(post, uploadClient, postClient)
     expect(res.isErr).toBe(true)
