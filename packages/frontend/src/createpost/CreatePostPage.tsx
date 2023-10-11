@@ -9,7 +9,7 @@ import { useState } from "react"
 import Switch from "@mui/material/Switch"
 import { FormControlLabel, TextareaAutosize, useTheme } from "@mui/material"
 import { ALLPOSTSBYUSER, CONNECTIONS, CREATEPOST } from "../queries"
-import { Conn, Post, PostInput } from "../interfaces"
+import { Conn, Post, PostInput, uploadMessage } from "../interfaces"
 import uploadFile from "../util/uploadFile"
 import useAlertFactory from "../Hooks/useAlertFactory"
 import { useMutation, useQuery } from "@apollo/client"
@@ -132,20 +132,25 @@ export default function CreatePostPage() {
       return
     }
 
-    const id = await uploadFile(file, navigate)
+    const idMessage: uploadMessage = await uploadFile(file, navigate)
 
     const sendPlatforms = checkSwitches(data, connected)
     const post: PostInput = {
       title: data.get("title") as string,
       description: data.get("description") as string,
       dispatchTime: date,
-      media: id,
+      media: idMessage.id,
       platforms: sendPlatforms,
+      mediaType: file.type ? file.type : "",
     }
 
-    if (id === "") {
+    if (idMessage.id === "") {
       alert.info("no file uploaded", undefined, true)
+      if (idMessage.err) {
+        alert.error(idMessage.message, undefined, true)
+      }
       delete post.media
+      delete post.mediaType
     }
 
     console.log(post)
