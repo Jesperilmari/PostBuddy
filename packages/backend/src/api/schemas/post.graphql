@@ -6,6 +6,7 @@ type Post {
   description: String!
   platforms: [String]!
   media: String
+  mediaType: String
   dispatchTime: Date!
   postOwner: String!
 }
@@ -15,6 +16,7 @@ input PostInput {
   description: String!
   platforms: [String]!
   media: String
+  mediaType: String
   dispatchTime: Date!
 }
 
@@ -23,6 +25,7 @@ input EditPost {
   description: String
   platforms: [String]
   media: String
+  mediaType: String
   dispatchTime: Date
 }
 
