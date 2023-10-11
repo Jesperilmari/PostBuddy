@@ -31,7 +31,6 @@ const PostSchema = new Schema<Post>({
   },
   mediaType: {
     type: String,
-    enum: ["image", "video"],
   },
   dispatchTime: {
     type: Date,

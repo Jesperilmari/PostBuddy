@@ -4,14 +4,13 @@ import Twitter from "twitter"
 import { Client } from "twitter-api-sdk"
 import axios from "axios"
 import { Readable } from "stream"
-import { me } from "../../../test/queries"
 import { info, error } from "../../util/logger"
 import Post from "../interfaces/Post"
 import { Platform } from "../interfaces/Platform"
 import config from "../../config"
 import { twitterBasicToken } from "../controllers/oauth/platforms/twitter"
 import { findAndRefreshToken } from "../../util/platformUtils"
-import { getBlob, cleanUp } from "../../util/postCreationUtils"
+import { cleanUp, getBlob } from "../../util/postCreationUtils"
 
 export default async function createTwitterPost(
   post: Post,
@@ -25,6 +24,7 @@ export default async function createTwitterPost(
   if (maybeCon.isNothing) {
     return Result.err("No connection found")
   }
+
   const connection = maybeCon.value
   // Used for uploading the media to twitter
   const uploadClient = new Twitter({
@@ -34,7 +34,6 @@ export default async function createTwitterPost(
     access_token_key: config.twitter_access_token,
   })
   // Used for posting the tweet
-  info(connection)
   const postClient = new Client(connection.token)
   return createTwitterPostImpl(post, uploadClient, postClient)
 }
@@ -50,7 +49,6 @@ export async function createTwitterPostImpl(
   if (!twitterUserId) {
     return Result.err("No twitter id found")
   }
-  info("Found twitter user id", twitterUserId)
 
   try {
     const text = formatText(post)
@@ -58,10 +56,10 @@ export async function createTwitterPostImpl(
       text,
     }
     if (post.media) {
-      info("Uploading media")
       const mediaId = await uploadFile(post, twitterUserId, uploadClient)
       body.media = { media_ids: [mediaId] }
     }
+
     const ok = await createTweet(body, postClient)
     await cleanUp(post)
     return ok ? Result.ok(undefined) : Result.err("Error creating tweet")
@@ -80,14 +78,12 @@ type Tweet = {
 }
 
 async function createTweet(request_body: Tweet, client: Client) {
-  info("Creating tweet", request_body)
   const { errors } = await client.tweets.createTweet(request_body)
   if (errors) {
     error("Error creating tweet", errors)
     errors.forEach((e) => error(e))
     return false
   }
-  info("Created tweet")
   return true
 }
 
@@ -155,15 +151,14 @@ async function doSomeStreaming(
   client: Twitter,
   twitterUID: string,
   total_bytes: number,
-  mediaType: string,
+  media_type: string,
 ): Promise<string> {
   let segment_index = 0
-  info("Initializing upload, bytes:", total_bytes)
   const media_id = await initUpload({
     client,
     additional_owners: twitterUID,
     total_bytes,
-    mediaType,
+    media_type,
   })
   if (!media_id) {
     throw new Error("No media id found")
@@ -208,7 +203,7 @@ type InitOptions = {
   client: Twitter
   additional_owners: string
   total_bytes: number
-  mediaType: string
+  media_type: string
 }
 
 type ChunkOptions = {
@@ -218,14 +213,13 @@ type ChunkOptions = {
 }
 
 async function initUpload(opts: InitOptions): Promise<string> {
-  const { client, total_bytes, additional_owners, mediaType } = opts
-  info("Initializing upload, mediatype: ", mediaType)
+  const { client, total_bytes, additional_owners, media_type } = opts
   return new Promise((resolve, reject) => {
     client.post(
       uploadEndpoint,
       {
         command: "INIT",
-        media_type: mediaType, // TODO implement media type for postmodel
+        media_type,
         additional_owners,
         total_bytes,
       },
@@ -240,7 +234,6 @@ async function initUpload(opts: InitOptions): Promise<string> {
 }
 
 async function finalizeUpload(media_id: string, client: Twitter) {
-  info("Finalizing upload", media_id)
   return new Promise((resolve, reject) => {
     client.post(
       uploadEndpoint,
@@ -263,7 +256,6 @@ async function finalizeUpload(media_id: string, client: Twitter) {
 
 async function uploadChunk(chunk: Buffer, opts: ChunkOptions) {
   const { media_id, client, segment_index } = opts
-  info(`Uploading chunk bytes: ${chunk.length}`, segment_index)
   await client.post(uploadEndpoint, {
     command: "APPEND",
     media_id,
