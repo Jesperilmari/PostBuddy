@@ -7,13 +7,18 @@ import connectAndClearDb from "./util/connectAndClearDb"
 import PostTestUtils from "./util/postFunctions"
 import UserTestUtils from "./util/userFunctions"
 import { BlockBlobClient, ContainerClient } from "@azure/storage-blob"
+import { Stream } from "stream"
 
 jest.mock("@azure/storage-blob", () => {
   const originalModule = jest.requireActual("@azure/storage-blob")
   const m: ContainerClient = mock(originalModule.ContainerClient)
   const blockBlobThing: BlockBlobClient = mock(originalModule.BlockBlobClient)
   when(blockBlobThing.exists()).thenResolve(true)
-  when(blockBlobThing.downloadToBuffer()).thenResolve(Buffer.from("hi"))
+  when(blockBlobThing.getProperties()).thenResolve({ contentLength: 100 })
+  when(blockBlobThing.download()).thenCall(() => {
+    const stream = Stream.Readable.from([])
+    return Promise.resolve({ readableStreamBody: stream })
+  })
   when(blockBlobThing.deleteIfExists()).thenResolve({})
   when(m.getBlockBlobClient(anything())).thenReturn(instance(blockBlobThing))
   return {
