@@ -1,8 +1,12 @@
 import { Transform, TransformCallback, TransformOptions } from "stream"
+import { error } from "./logger"
 
 const FOUR_MB = 1024 * 1000 * 4
 
 // Very big chungus
+/**
+ * Used for uploading files in about `chunkSize` chunks.
+ */
 export default class BigChungus extends Transform {
   private buf: Buffer
 
@@ -14,12 +18,12 @@ export default class BigChungus extends Transform {
     this.chunkSize = chunkSize || FOUR_MB
   }
 
-  _transform(chunk: any, _encoding: any, callback: TransformCallback): void {
-    this.buf = Buffer.concat([this.buf, chunk])
-    if (this.buf.length >= this.chunkSize) {
-      this.push(this.buf)
-      this.buf = Buffer.alloc(0)
+  _transform(chunk: Buffer, _encoding: any, callback: TransformCallback): void {
+    const bufIsFull = this.buf.length + chunk.length >= this.chunkSize
+    if (bufIsFull) {
+      this.consumeBuf()
     }
+    this.appendChunk(chunk)
     callback()
   }
 
@@ -28,5 +32,17 @@ export default class BigChungus extends Transform {
       this.push(this.buf)
     }
     callback()
+  }
+
+  private appendChunk(chunk: any) {
+    this.buf = Buffer.concat([this.buf, chunk])
+  }
+
+  private consumeBuf() {
+    const ok = this.push(this.buf)
+    if (!ok) {
+      error("Error while consuming buffer")
+    }
+    this.buf = Buffer.alloc(0)
   }
 }
