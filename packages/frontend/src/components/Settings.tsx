@@ -1,19 +1,19 @@
-import { Container, Stack, Grid, Paper, Typography, Box } from '@mui/material'
-import GeneralSettings from './GeneralSettings'
-import ChangePassword from './ChangePassword'
-import ChangeUserInfo from './ChangeUserInfo'
+import { Container, Stack, Grid, Paper, Typography, Box } from "@mui/material"
+import GeneralSettings from "./GeneralSettings"
+import ChangePassword from "./ChangePassword"
+import ChangeUserInfo from "./ChangeUserInfo"
 
 export default function Settings() {
   return (
     <Container>
-      <Typography variant="h2" gutterBottom>
+      <Typography variant="h1" gutterBottom>
         Settings
       </Typography>
       <Grid container spacing={3}>
         <Grid item lg={6} sm={12} sx={{ p: 0 }}>
           <Paper
             sx={{
-              height: '100%',
+              height: "100%",
             }}
           >
             <Box

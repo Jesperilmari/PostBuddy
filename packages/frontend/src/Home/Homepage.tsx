@@ -1,11 +1,12 @@
 import "./Home.css"
-import { Button } from "@mui/material"
+import { Box, Button, Container, Typography } from "@mui/material"
 // import EnhancedTable from "./SecondTable"
 import { useDispatch, useSelector } from "react-redux"
 import { User } from "../interfaces"
 import { RootState } from "../reducers/store"
 import { changePage } from "../reducers/pageReducer"
-import SimplePostTable from "../components/SimplePostTable"
+import SentPostTable from "../components/SentPostTable"
+import PendingPostTable from "../components/PendingPostTable"
 
 export default function HomePage() {
   const dispatch = useDispatch()
@@ -25,17 +26,38 @@ export default function HomePage() {
   //props is the username
 
   return (
-    <div id="container">
-      <h1 id="welcome">Welcome {user && user.name}</h1>
+    <Container>
+      <Typography variant="h1" gutterBottom>
+        Welcome {user && user.name}
+      </Typography>
       <Button
         onClick={handleClick}
         fullWidth
         variant="contained"
-        sx={{ mt: 3, mb: 2 }}
+        sx={{ mt: 3, mb: 4 }}
       >
         Create new post
       </Button>
-      <SimplePostTable />
-    </div>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4rem",
+        }}
+      >
+        <Box>
+          <Typography component="h2" variant="h4" gutterBottom>
+            Pending posts
+          </Typography>
+          <PendingPostTable />
+        </Box>
+        <Box>
+          <Typography component="h2" variant="h4" gutterBottom>
+            Sent posts
+          </Typography>
+          <SentPostTable />
+        </Box>
+      </Box>
+    </Container>
   )
 }
