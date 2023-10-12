@@ -28,22 +28,30 @@ const resetPasswordUrl = "/resetpassword"
 const defaultTheme = createTheme()
 
 //checks that the data is valid
+
 function checkData(
   data: FormData,
   setInfo: React.Dispatch<React.SetStateAction<boolean>>,
-  setMessage: React.Dispatch<React.SetStateAction<string>>
-) {
-  const email = data.get("email") as string
-  const password = data.get("password") as string
-  const emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
-  if (password === "" || email === "") {
-    setMessage("Please fill in all fields")
+  setMessage: React.Dispatch<React.SetStateAction<string>>) {
+  const email = data.get('email') as string
+  const password = data.get('password') as string
+  const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
+  const p = document.getElementById("alert");
+  if (password === '' || email === '') {
+      if(p){
+        p.innerHTML = "Please fill in all fields "
+        setMessage("Please fill in all fields")
     setInfo(true)
+    return false
+      }
     return false
   }
   if (!emailRegex.test(email as string)) {
-    setMessage("Please enter a valid email")
+    if(p){
+      p.innerHTML = "Please enter a valid email"
+      setMessage("Please enter a valid email")
     setInfo(true)
+    }
     return false
   }
   return true
@@ -55,6 +63,7 @@ export default function SignInSide() {
   const dispatch = useDispatch()
   const [info, setInfo] = useState(false)
   const [message, setMessage] = useState("")
+  const p = document.getElementById("alert");
 
   useEffect(() => {
     if (!loading && data) {
@@ -71,6 +80,12 @@ export default function SignInSide() {
       setMessage("wrong password or email")
     }
   }, [error])
+  if (error) {
+    console.log(error)
+    if(p){
+      p.innerHTML = "Email or password incorrect"
+    }
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -178,6 +193,13 @@ export default function SignInSide() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
+              </Button>
+              <p id='alert'
+              style={{color: "red"}}
+              >
+                &nbsp;
+              </p>
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Sign In
               </Button>
               <Grid container>
