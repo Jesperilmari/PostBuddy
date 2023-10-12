@@ -29,6 +29,9 @@ const PostSchema = new Schema<Post>({
   media: {
     type: String,
   },
+  mediaType: {
+    type: String,
+  },
   dispatchTime: {
     type: Date,
     required: true,

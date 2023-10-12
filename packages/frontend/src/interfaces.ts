@@ -23,12 +23,19 @@ export interface Connection {
   id: number
 }
 
+export type UploadMessage = {
+  message: string
+  id?: string
+  err?: Error
+}
+
 export interface PostResponse {
   id: string
   title: string
   description: string
   platforms: string[]
   media: string
+  mediaType?: string
   dispatchTime: Date
   postOwner: string
 }
@@ -62,6 +69,7 @@ export interface PostInput {
   description: string
   platforms: string[]
   media?: string
+  mediaType?: string
   dispatchTime: Date
 }
 
@@ -71,6 +79,7 @@ export interface Post {
   description: string
   platforms: string[]
   media: string
+  mediatype?: string
   dispatchTime: string
   postOwner: string
 }

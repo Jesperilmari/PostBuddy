@@ -9,6 +9,7 @@ namespace PostTestUtils {
     platforms: string[] = ["twitter"],
     dispatchTime: Date = new Date(Date.now() + 100000),
     media?: string,
+    mediaType?: string,
   ) {
     return PostsModel.create({
       title,
@@ -17,6 +18,7 @@ namespace PostTestUtils {
       dispatchTime,
       postOwner: user._id,
       media,
+      mediaType,
     })
   }
 }
