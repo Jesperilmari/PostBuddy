@@ -96,3 +96,21 @@ export const ALLPOSTSBYUSER = gql`
     }
   }
 `
+
+export const CHANGE_PASSWORD = gql`
+  mutation UpdatePassword($oldPassword: String!, $newPassword: String!) {
+    updatePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+      username
+    }
+  }
+`
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($user: UserUpdate!) {
+    updateUser(user: $user) {
+      email
+      name
+      username
+    }
+  }
+`
