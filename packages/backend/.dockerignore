@@ -1,0 +1,6 @@
+tests
+coverage
+jest.config.jest
+.env
+.eslintrc
+.prettierrc
