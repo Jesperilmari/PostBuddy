@@ -49,51 +49,30 @@ jobs:
             backend:
               - packages/backend/**
 
-  build_backend:
-    if: ${{ needs.check_changes.outputs.backend_changed == 'true' }}
-    name: 'Build backend'
-    runs-on: ubuntu-latest
-    needs: [lint_and_test, check_changes]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-      - name: 'Build backend'
-        run: |
-          npm install --prefix ./packages/backend
-          ./packages/backend/build.sh
-      - name: Upload backend artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: backend
-          path: ./dist.zip
-
   deploy_backend:
     if: ${{ needs.check_changes.outputs.backend_changed == 'true' }}
-    name: Deploy backend
+    name: Build and push
     runs-on: ubuntu-latest
-    needs: [build_backend, check_changes]
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
         with:
-          name: backend
-      - name: Unzip artifact
-        run: unzip dist.zip && mv dist/* . && rm -rf dist dist.zip
-
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
         with:
-          app-name: 'postbuddy-api'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C7190BF5B21E4CFBBE09A130C724085D }}
-          package: .
+          file: ./packages/backend/
+          push: true
+          tags: ollivarila/postbuddy-api:latest
+          secrets: |
+            "sas_token=${{ secrets.SAS_TOKEN }}"
+      - name: Notify Azure about deployment
+        run: curl -X POST ${{ secrets.AZURE_DEPLOYMENT_HOOK }} > /dev/null
 
   deploy_frontend:
     if: ${{ needs.check_changes.outputs.frontend_changed == 'true' }}
