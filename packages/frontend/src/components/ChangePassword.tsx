@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material"
+import { Button, Stack, TextField, Typography, useTheme } from "@mui/material"
 import { CHANGE_PASSWORD } from "../queries"
 import { useMutation } from "@apollo/client"
 import { useEffect, useState } from "react"
@@ -62,7 +55,7 @@ export default function ChangePassword() {
 
   return (
     <>
-      <Box
+      <Stack
         sx={{ padding: 2 }}
         component="form"
         noValidate
@@ -107,7 +100,7 @@ export default function ChangePassword() {
         <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
           Change password
         </Button>
-      </Box>
+      </Stack>
     </>
   )
 }
