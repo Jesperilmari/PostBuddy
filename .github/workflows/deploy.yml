@@ -69,8 +69,6 @@ jobs:
           file: ./packages/backend/
           push: true
           tags: ollivarila/postbuddy-api:latest
-          secrets: |
-            "sas_token=${{ secrets.SAS_TOKEN }}"
       - name: Notify Azure about deployment
         run: curl -X POST ${{ secrets.AZURE_DEPLOYMENT_HOOK }} > /dev/null
 
