@@ -8,6 +8,10 @@ import { RootState } from "../reducers/store"
 import { Alert, AlertTitle } from "@mui/material"
 import useAlert from "../Hooks/useAlert"
 import { next } from "../reducers/alertReducer"
+import { User } from "../interfaces"
+import { useQuery } from "@apollo/client"
+import { ME } from "../queries"
+import { userLoggedIn } from "../reducers/userReducer"
 
 function MainContent() {
   const pageString = useSelector<RootState, PageName>(
@@ -20,12 +24,41 @@ function MainContent() {
     (state) => state.user.token
   )
   const dispatch = useDispatch()
+  const { data, loading, error, refetch } = useQuery<{ me: User }>(ME)
 
   const alert = useAlert()
 
   if (!token) {
     navigate("/login")
   }
+
+  // If we have the token but not user data, refetch
+  const user = useSelector<RootState, User | undefined>(
+    (state) => state.user.user
+  )
+  if (!user) {
+    refetch()
+  }
+
+  useEffect(() => {
+    if (loading) {
+      return
+    }
+    if (error) {
+      navigate("/login")
+      return
+    }
+
+    if (data) {
+      dispatch(
+        userLoggedIn({
+          user: data.me,
+          token: token,
+        })
+      )
+    }
+  }, [data, loading, error, navigate, dispatch, token])
+
   const [time, setTime] = useState<NodeJS.Timeout | undefined>(undefined)
 
   //sets timeout for alerts
@@ -35,18 +68,11 @@ function MainContent() {
       setTime(
         setTimeout(() => {
           dispatch(next())
-          console.log("close")
         }, alert.alert.timeout || 5000)
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alert, dispatch])
-
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //   }
-  // }, [user, navigate]);
 
   const alertMessage = alert.alert.message
   return (

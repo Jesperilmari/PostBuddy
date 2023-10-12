@@ -1,7 +1,15 @@
-import { Button, Stack, TextField, Typography, useTheme } from "@mui/material"
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material"
 import { CHANGE_PASSWORD } from "../queries"
 import { useMutation } from "@apollo/client"
 import { useEffect, useState } from "react"
+import useAlertFactory from "../Hooks/useAlertFactory"
 
 type ChangePasswordRes = {
   changePassword: {
@@ -19,6 +27,7 @@ export default function ChangePassword() {
   const [changePassword, { data, loading, error }] =
     useMutation<ChangePasswordRes>(CHANGE_PASSWORD)
   const [submitted, setSubmitted] = useState(false)
+  const alert = useAlertFactory()
 
   useEffect(() => {
     if (loading || submitted) {
@@ -27,14 +36,14 @@ export default function ChangePassword() {
 
     setSubmitted(true)
     if (error) {
-      alert(error.message)
+      alert.error(error.message, undefined, true)
       return
     }
 
     if (data) {
-      alert("Password changed")
+      alert.success("Password changed", undefined, true)
     }
-  }, [loading, error, data, submitted])
+  }, [loading, error, data, submitted, alert])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -53,7 +62,7 @@ export default function ChangePassword() {
 
   return (
     <>
-      <Stack
+      <Box
         sx={{ padding: 2 }}
         component="form"
         noValidate
@@ -65,7 +74,7 @@ export default function ChangePassword() {
         <TextField
           margin="normal"
           required
-          name="Previous password"
+          name="old"
           label="old"
           type="password"
           style={{
@@ -76,7 +85,7 @@ export default function ChangePassword() {
         <TextField
           margin="normal"
           required
-          name="New password"
+          name="new"
           label="new"
           type="password"
           style={{
@@ -98,7 +107,7 @@ export default function ChangePassword() {
         <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
           Change password
         </Button>
-      </Stack>
+      </Box>
     </>
   )
 }

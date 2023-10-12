@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react"
 import { UPDATE_USER } from "../queries"
 import { useMutation } from "@apollo/client"
+import useAlertFactory from "../Hooks/useAlertFactory"
 
 type UpdateUserRes = {
   updateUser: {
@@ -28,27 +29,33 @@ export default function ChangeUserInfo() {
     null
   )
 
+  const alert = useAlertFactory()
+
   useEffect(() => {
     if (loading) {
       return
     }
     if (error) {
-      alert(error.message)
+      alert.error(error.message, undefined, true)
       return
     }
 
     if (data && lastUpdated) {
-      alert(`${lastUpdated ? lastUpdated : "User info"} changed`)
+      alert.info(
+        `${lastUpdated ? lastUpdated : "User info"} changed`,
+        undefined,
+        true
+      )
       setLastUpdated(null)
     }
-  }, [data, loading, error, lastUpdated])
+  }, [data, loading, error, lastUpdated, alert])
 
   const changeEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
     const email = data.get("email")
     if (!email) {
-      alert("Please enter an email")
+      alert.error("Please enter an email", undefined, true)
       return
     }
 
@@ -67,7 +74,7 @@ export default function ChangeUserInfo() {
     const data = new FormData(e.currentTarget)
     const username = data.get("username")
     if (!username) {
-      alert("Please enter a name")
+      alert.error("Please enter a name", undefined, true)
       return
     }
 
@@ -152,7 +159,12 @@ function TogglabbleTextField({
           />
           {!disabled && (
             <Box sx={{ alignSelf: "center" }}>
-              <IconButton type="submit" onClick={() => setDisabled(true)}>
+              <IconButton
+                type="submit"
+                onSubmit={() => {
+                  setDisabled(!disabled)
+                }}
+              >
                 <Check />
               </IconButton>
             </Box>
@@ -171,14 +183,6 @@ function TogglabbleTextField({
           </Box>
         ) : (
           <Box sx={{ alignSelf: "center" }}>
-            <IconButton
-              onClick={onClick}
-              style={{
-                color: theme.palette.text.secondary,
-              }}
-            >
-              <Check />
-            </IconButton>
             <IconButton
               onClick={() => setDisabled(!disabled)}
               style={{
