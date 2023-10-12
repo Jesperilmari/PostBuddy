@@ -53,6 +53,7 @@ jobs:
     if: ${{ needs.check_changes.outputs.backend_changed == 'true' }}
     name: Build and push
     runs-on: ubuntu-latest
+    needs: [lint_and_test, check_changes]
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
