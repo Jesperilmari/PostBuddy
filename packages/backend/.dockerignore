@@ -1,6 +1,7 @@
-tests
+test
 coverage
-jest.config.jest
+jest.config.js
 .env
 .eslintrc
 .prettierrc
+build.sh
