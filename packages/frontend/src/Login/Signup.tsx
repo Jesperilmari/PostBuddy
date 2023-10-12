@@ -36,32 +36,38 @@ function ChecData(
   const emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
   const nametest = new RegExp("^[a-zA-Z]+$")
   console.log(first, last, email)
+  const p = document.getElementById("alert");
 
-  if (first === "" || last === "" || email === "" || username === "") {
-    setMessage("Please fill in all fields")
-    setInfo(true)
-    return false
+  if (first === '' || last === '' || email === '' || username === '') {
+    if(p){
+      p.innerHTML = "Please fill in all fields"
+    }
+    return
   }
 
   if (!emailRegex.test(email as string)) {
-    setMessage("Please enter a valid email")
-    setInfo(true)
+    if(p){
+      p.innerHTML = "Please enter a valid email"
+    }
     return false
   }
   if (!nametest.test(first) || !nametest.test(last)) {
-    setMessage("Please enter a valid name")
-    setInfo(true)
+    if(p){
+      p.innerHTML = "Please enter a valid name"
+    }
     return false
   }
 
-  if (data.get("password") !== data.get("confirmPassword")) {
-    setMessage("Passwords do not match")
-    setInfo(true)
+  if (data.get('password') !== data.get('confirmPassword')) {
+    if(p){
+      p.innerHTML = "Passwords do not match"
+    }
     return false
   }
-  if ((data.get("password") as string).length < 5) {
-    setMessage("Password must be at least 5 characters long")
-    setInfo(true)
+  if ((data.get('password') as string).length < 5) {
+    if(p){
+      p.innerHTML = "Password must be at least 5 characters long"
+    }
     return false
   }
   return true
@@ -223,12 +229,12 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <p id='alert'
+              style={{color: "red"}}
+              >
+                &nbsp;
+              </p>
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
