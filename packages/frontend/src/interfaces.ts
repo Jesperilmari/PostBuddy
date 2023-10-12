@@ -23,10 +23,10 @@ export interface Connection {
   id: number
 }
 
-export type uploadMessage = {
+export type UploadMessage = {
   message: string
-  id: string
-  err: boolean
+  id?: string
+  err?: Error
 }
 
 export interface PostResponse {

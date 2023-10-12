@@ -1,21 +1,20 @@
 import { NavigateFunction } from "react-router-dom"
 import api from "./api"
-import { uploadMessage } from "../interfaces"
+import { UploadMessage } from "../interfaces"
 
 export default async function uploadFile(
-  file: File,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
+  file?: File
 ) {
   const token = localStorage.getItem("user-token")
   if (!token) {
     navigate("/login")
   }
-  if (file.name === "") {
+  if (!file) {
     return {
       message: "No file found",
-      id: "",
-      err: true,
-    } as uploadMessage
+      err: new Error("No file found"),
+    } as UploadMessage
   }
   try {
     const res = await api.post<{ fileId: string }>("/api/v1/upload", file, {
@@ -25,16 +24,14 @@ export default async function uploadFile(
       },
     })
     return {
-      message: "upload successful",
+      message: "Upload successful",
       id: res.data.fileId,
-      err: false,
-    } as uploadMessage
+    } as UploadMessage
   } catch (err) {
     console.log(err)
     return {
-      message: err,
-      id: "",
-      err: true,
-    } as uploadMessage
+      message: (err as Error).message,
+      err,
+    } as UploadMessage
   }
 }
