@@ -77,11 +77,11 @@ const twitter: OauthStuff = {
   },
 }
 
-function genState() {
+export function genState() {
   return crypto.randomUUID() as string
 }
 
-async function createPlatformConnection(
+export async function createPlatformConnection(
   user: User,
   code: string,
   state: string,
