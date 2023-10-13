@@ -36,22 +36,14 @@ function checkData(
   const email = data.get('email') as string
   const password = data.get('password') as string
   const emailRegex = new RegExp('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-  const p = document.getElementById("alert");
   if (password === '' || email === '') {
-      if(p){
-        p.innerHTML = "Please fill in all fields "
-        setMessage("Please fill in all fields")
+    setMessage("Please fill in all the fields")
     setInfo(true)
-    return false
-      }
     return false
   }
   if (!emailRegex.test(email as string)) {
-    if(p){
-      p.innerHTML = "Please enter a valid email"
-      setMessage("Please enter a valid email")
+    setMessage("Please enter a valid email")
     setInfo(true)
-    }
     return false
   }
   return true
@@ -187,18 +179,6 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-              </Button>
-              <p id='alert'
-              style={{color: "red"}}
-              >
-                &nbsp;
-              </p>
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Sign In
               </Button>
