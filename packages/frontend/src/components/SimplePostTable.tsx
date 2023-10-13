@@ -105,7 +105,7 @@ function sortByDateDesc(post: Post, post2: Post) {
   return date2.getTime() - date.getTime()
 }
 
-type TableCol = {
+export type TableCol = {
   name: string
   btn?: React.ReactNode
 }
@@ -135,7 +135,7 @@ function SortButton({ sortAsc, setSortAsc }: SortButtonProps) {
   )
 }
 
-function PostTableHead({ cols }: { cols: TableCol[] }) {
+export function PostTableHead({ cols }: { cols: TableCol[] }) {
   const theme = useTheme()
   return (
     <TableHead
