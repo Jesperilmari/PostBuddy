@@ -124,8 +124,8 @@ export const DELETE_POST = gql`
 `
 
 export const DELETE_CONNECTION = gql`
-  mutation Mutation($platform: String!) {
-    deleteConnection(name: $platform) {
+  mutation Mutation($name: String!) {
+    deleteConnection(name: $name) {
       message
       ok
     }

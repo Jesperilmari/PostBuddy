@@ -5,6 +5,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material"
 import { Twitter, Delete, Add } from "@mui/icons-material"
 import { connectPlatform } from "../util/api"
@@ -43,6 +44,7 @@ function Media({
   connected: boolean
   onDelete?: (name: string) => void
 }) {
+  const theme = useTheme()
   const handleAdd = async () => {
     const url = await connectPlatform(connection.name)
     if (url) {
@@ -50,7 +52,11 @@ function Media({
     }
   }
   const onClick = connected ? () => onDelete?.(connection.name) : handleAdd
-  const btnIcon = connected ? <Delete sx={{ color: "error.main" }} /> : <Add />
+  const btnIcon = connected ? (
+    <Delete sx={{ color: theme.palette.error.main }} />
+  ) : (
+    <Add sx={{ color: theme.palette.text.secondary }} />
+  )
 
   return (
     <Card

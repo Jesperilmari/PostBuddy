@@ -3,6 +3,7 @@ import SimplePostTable from "./SimplePostTable"
 import { Post } from "../interfaces"
 import useAlertFactory from "../Hooks/useAlertFactory"
 import { ALLPOSTSBYUSER } from "../queries"
+import SkeletonTable from "./SkeletonTable"
 
 export default function SentPostTable() {
   const { data, loading, error, refetch } = useQuery<{ postsByFilter: Post[] }>(
@@ -11,7 +12,7 @@ export default function SentPostTable() {
   const alert = useAlertFactory()
 
   if (loading) {
-    return <p>Loading...</p>
+    return <SkeletonTable />
   }
   if (error) {
     alert.error(error.message)
