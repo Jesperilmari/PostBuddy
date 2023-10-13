@@ -1,7 +1,4 @@
-import { useQuery } from "@apollo/client"
-import useAlertFactory from "../Hooks/useAlertFactory"
 import { Post } from "../interfaces"
-import { ALLPOSTSBYUSER } from "../queries"
 import {
   Box,
   IconButton,
@@ -12,46 +9,83 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useTheme,
 } from "@mui/material"
-import { Delete, Twitter, QuestionMark, Instagram } from "@mui/icons-material"
+import {
+  Delete,
+  Twitter,
+  QuestionMark,
+  Instagram,
+  ArrowUpward,
+  CheckCircle,
+  HourglassTop,
+} from "@mui/icons-material"
+import { useEffect, useState } from "react"
+import { DELETE_POST } from "../queries"
+import { useMutation } from "@apollo/client"
+import useAlertFactory from "../Hooks/useAlertFactory"
 
-const onePost: Post = {
-  description: "This is a description",
-  dispatchTime: new Date().toString(),
-  id: "1",
-  platforms: ["twitter", "instagram"],
-  media: "adsfsdf",
-  postOwner: "1",
-  title: "This is a title",
+type TableProps = {
+  posts: Post[]
+  refetch: () => void
 }
 
-export default function SimplePostTable() {
-  const { data, loading, error } = useQuery<{ postsByFilter: Post[] }>(
-    ALLPOSTSBYUSER
-  )
+export default function SimplePostTable({ posts, refetch }: TableProps) {
+  const [sortAsc, setSortAsc] = useState<boolean>(true)
   const alert = useAlertFactory()
+  const [deletePost, { data, loading, error }] = useMutation<{
+    deletePost: { message: string }
+  }>(DELETE_POST)
 
-  if (loading) {
-    return <p>Loading...</p>
+  const onDelete = (post: Post) => {
+    const variables = {
+      deletePostId: [post.id],
+    }
+    deletePost({
+      variables,
+    })
   }
+  useEffect(() => {
+    if (loading) {
+      return
+    }
+    if (error) {
+      alert.error(error.message, undefined, true)
+    }
+    if (data) {
+      alert.success(data.deletePost.message, undefined, true)
+      refetch()
+    }
+  }, [loading, error, data, alert, refetch])
 
-  if (error) {
-    alert.error(error.message)
-  }
-  console.log(data)
+  const sortedPosts = [...posts].sort(sortAsc ? sortByDateAsc : sortByDateDesc)
 
-  const posts = data?.postsByFilter || [onePost]
+  const cols: TableCol[] = [
+    {
+      name: "Title",
+    },
+    {
+      name: "Platforms",
+    },
+    {
+      name: "Status",
+    },
+    {
+      name: "Release time",
+      btn: <SortButton sortAsc={sortAsc} setSortAsc={setSortAsc} />,
+    },
+    {
+      name: "Actions",
+    },
+  ]
 
-  if (posts.length === 0) {
-    return <p>No posts found</p>
-  }
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={8}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <PostTableHead />
+        <PostTableHead cols={cols} />
         <TableBody>
-          {posts.map((post) => (
-            <PostTableRow key={post.dispatchTime} post={post} />
+          {sortedPosts.map((post) => (
+            <PostTableRow key={post.id} post={post} onDelete={onDelete} />
           ))}
         </TableBody>
       </Table>
@@ -59,24 +93,87 @@ export default function SimplePostTable() {
   )
 }
 
-const cols = ["Title", "Platforms", "Status", "Release time", "Actions"]
+function sortByDateAsc(post: Post, post2: Post) {
+  const date = new Date(post.dispatchTime)
+  const date2 = new Date(post2.dispatchTime)
+  return date.getTime() - date2.getTime()
+}
 
-function PostTableHead() {
+function sortByDateDesc(post: Post, post2: Post) {
+  const date = new Date(post.dispatchTime)
+  const date2 = new Date(post2.dispatchTime)
+  return date2.getTime() - date.getTime()
+}
+
+export type TableCol = {
+  name: string
+  btn?: React.ReactNode
+}
+
+type SortButtonProps = {
+  sortAsc: boolean
+  setSortAsc: (sortAsc: boolean) => void
+}
+
+function SortButton({ sortAsc, setSortAsc }: SortButtonProps) {
+  const theme = useTheme()
   return (
-    <TableHead>
+    <IconButton
+      aria-label="sort"
+      onClick={() => setSortAsc(!sortAsc)}
+      sx={{
+        transform: sortAsc ? "rotate(0deg)" : "rotate(180deg)",
+        transition: "transform ease 0.2s",
+      }}
+    >
+      <ArrowUpward
+        sx={{
+          color: theme.palette.text.secondary,
+        }}
+      />
+    </IconButton>
+  )
+}
+
+export function PostTableHead({ cols }: { cols: TableCol[] }) {
+  const theme = useTheme()
+  return (
+    <TableHead
+      sx={{
+        ".MuiTableCell-root": {
+          borderBottomColor: theme.palette.secondary.main,
+        },
+      }}
+    >
       <TableRow>
         {cols.map((col) => (
-          <TableCell key={col}>{col}</TableCell>
+          <TableCell key={col.name}>
+            {col.name}
+            {col.btn && col.btn}
+          </TableCell>
         ))}
       </TableRow>
     </TableHead>
   )
 }
 
-function PostTableRow({ post }: { post: Post }) {
+type PostTableRowProps = {
+  post: Post
+  onDelete: (post: Post) => void
+}
+
+function PostTableRow({ post, onDelete }: PostTableRowProps) {
   const platFormIcons = platformsToIcons(post.platforms)
+  const theme = useTheme()
   return (
-    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+    <TableRow
+      sx={{
+        "&:last-child td, &:last-child th": { border: 0 },
+        ".MuiTableCell-root": {
+          borderBottomColor: theme.palette.secondary.main,
+        },
+      }}
+    >
       <TableCell component="th" scope="row">
         {post.title}
       </TableCell>
@@ -92,21 +189,61 @@ function PostTableRow({ post }: { post: Post }) {
         </Box>
       </TableCell>
       <TableCell align="left">
-        {hasBeenPosted(post) ? "sent" : "waiting"}
+        {hasBeenPosted(post) ? <Sent /> : <Waiting />}
       </TableCell>
-      <TableCell align="left">{post.dispatchTime}</TableCell>
       <TableCell align="left">
-        <IconButton aria-label="delete">
-          <Delete />
+        {new Date(post.dispatchTime).toLocaleString()}
+      </TableCell>
+      <TableCell align="left">
+        <IconButton aria-label="delete" onClick={() => onDelete(post)}>
+          <Delete
+            sx={{
+              color: theme.palette.text.secondary,
+            }}
+          />
         </IconButton>
       </TableCell>
     </TableRow>
   )
 }
 
+function Sent() {
+  const theme = useTheme()
+  return (
+    <CheckCircle
+      sx={{
+        color: theme.palette.text.secondary,
+      }}
+    />
+  )
+}
+
+function Waiting() {
+  const theme = useTheme()
+  const [rotation, setRotation] = useState<number>(0)
+  useEffect(() => {
+    if (rotation == 0) {
+      return setRotation(180)
+    }
+    const timeout = setTimeout(() => {
+      setRotation((rotation) => rotation + 180)
+    }, 1000)
+    return () => clearTimeout(timeout)
+  }, [rotation, setRotation])
+  return (
+    <HourglassTop
+      sx={{
+        color: theme.palette.text.secondary,
+        transform: `rotate(${rotation}deg)`,
+        transition: "transform ease-in-out 0.5s",
+      }}
+    />
+  )
+}
+
 function platformsToIcons(platforms: string[]) {
   const icons: Record<string, React.ReactNode> = {
-    twitter: <Twitter key="twitter" />,
+    twitter: <Twitter key="twitter" sx={{ color: "#26a7de" }} />,
     instagram: <Instagram key="instagram" />,
   }
   return platforms.map((platform) => icons[platform] || <QuestionMark />)

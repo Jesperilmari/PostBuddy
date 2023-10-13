@@ -1,11 +1,19 @@
-import { TextField } from "@mui/material"
+import {
+  Backdrop,
+  Chip,
+  CircularProgress,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { Box } from "@mui/system"
 import Button from "@mui/material/Button"
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { styled } from "@mui/material/styles"
 import DateTime from "./DateTime"
 import { Dayjs } from "dayjs"
-import { ChangeEvent, useState } from "react"
+import { useState } from "react"
 import Switch from "@mui/material/Switch"
 import { FormControlLabel, useTheme } from "@mui/material"
 import { CONNECTIONS, CREATEPOST } from "../queries"
@@ -46,7 +54,13 @@ function mediaListEntry(mediaName: string) {
       return
     }
     if (mediaName === IconArray[0]) {
-      return <Twitter />
+      return (
+        <Twitter
+          sx={{
+            color: "#26a7de",
+          }}
+        />
+      )
     }
     if (mediaName === IconArray[1]) {
       return <YouTube />
@@ -62,10 +76,11 @@ function mediaListEntry(mediaName: string) {
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        gap: "4px",
       }}
     >
       {chooseIcon(mediaName)}
-      <p>Twitter</p>
+      <Typography>Twitter</Typography>
     </div>
   )
   return (
@@ -73,12 +88,13 @@ function mediaListEntry(mediaName: string) {
   )
 }
 
-//TODO: tokeni lähtee välillä ja ei toimi
-
 export default function CreatePostPage() {
   const navigate = useNavigate()
   const [value, setValue] = useState<Dayjs | null>(null)
   const [isScheduled, setIsScheduled] = useState<boolean>(false)
+  const [file, setFile] = useState<File | undefined | null>(undefined)
+  const [showBackDrop, setShowBackDrop] = useState<boolean>(false)
+  const [fileInputKey, setFileInputKey] = useState<string>(randomKey())
   const alert = useAlertFactory()
   const theme = useTheme()
   const { data, loading, error } = useQuery<{ connections: Conn[] }>(
@@ -113,6 +129,10 @@ export default function CreatePostPage() {
     return value.toDate()
   }
 
+  const resetFileInput = () => {
+    setFileInputKey(randomKey())
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -122,20 +142,22 @@ export default function CreatePostPage() {
       return
     }
 
-    const file = data.get("file") as File | undefined
-
     const date = checkDate() as Date
     if (!date) {
       return
     }
+    const sendPlatforms = checkSwitches(data, connected)
 
+    if (sendPlatforms.length === 0) {
+      return alert.error("Please select at least one platform", undefined, true)
+    }
+    setShowBackDrop(true)
     const { id, message, err } = await uploadFile(navigate, file)
 
-    if (err) {
+    if (file && err) {
       alert.error(err.message, undefined, true)
     }
 
-    const sendPlatforms = checkSwitches(data, connected)
     const post: PostInput = {
       title: data.get("title") as string,
       description: data.get("description") as string,
@@ -153,30 +175,14 @@ export default function CreatePostPage() {
 
     const response = await createPost({ variables: { post: post } })
 
+    setShowBackDrop(false)
     if (response) {
       alert.success("Post created", undefined, true)
     }
   }
 
-  let fileName = "Null"
-
-  const getFileName = (event: ChangeEvent<HTMLInputElement>) => {
-    const data = event.target.files?.item(0)?.name
-    console.log(data)
-    fileName = String(data)
-    const p = document.getElementById("filename")
-    if (p) {
-      p.innerHTML = "Selected File: " + fileName
-    }
-  }
-
   return (
-    <div
-      id="createContainer"
-      style={{
-        width: "50%",
-      }}
-    >
+    <>
       <Box
         component="form"
         noValidate
@@ -184,74 +190,121 @@ export default function CreatePostPage() {
         sx={{
           display: "flex",
           flexDirection: "column",
-          mt: 1,
-          margin: "10px",
+          p: 2,
+          gap: "2rem",
         }}
       >
-        <TextField
-          margin="normal"
-          id="title"
-          label="title"
-          name="title"
-          autoComplete="Title"
-          autoFocus
-          style={{
-            backgroundColor: theme.palette.background.default,
-            borderColor: theme.palette.text.disabled,
-          }}
-        />
-        <TextField
-          title="description"
-          aria-label="description"
-          id="description"
-          name="description"
-          label="description"
-          multiline
-          autoComplete="Description"
-          style={{
-            backgroundColor: theme.palette.background.default,
-            borderColor: theme.palette.text.disabled,
-          }}
-        />
-        {isScheduled ? <DateTime value={value} onChange={setValue} /> : null}
-        <FormControlLabel
-          control={<Switch name="isScheduled" />}
-          label="Create scheduled post"
-          checked={isScheduled}
-          onChange={() => setIsScheduled(!isScheduled)}
-        />
-        <p id="filename">Selected file: None</p>
-        <Button
-          endIcon={<CloudUploadIcon />}
-          component="label"
-          variant="contained"
-        >
-          <VisuallyHiddenInput
-            type="file"
-            accept=".txt,audio/*,video/*,image/*"
-            name="file"
-            onChange={getFileName}
+        <Stack spacing={1}>
+          <TextField
+            margin="normal"
+            id="title"
+            label="title"
+            name="title"
+            autoComplete="Title"
+            autoFocus
+            style={{
+              backgroundColor: theme.palette.background.default,
+              borderColor: theme.palette.text.disabled,
+            }}
           />
-          Upload File
-        </Button>
-        <Button
-          endIcon={<Send />}
-          type="submit"
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
+          <TextField
+            title="description"
+            aria-label="description"
+            id="description"
+            name="description"
+            label="description"
+            multiline
+            autoComplete="Description"
+            style={{
+              backgroundColor: theme.palette.background.default,
+              borderColor: theme.palette.text.disabled,
+            }}
+          />
+          {isScheduled && <DateTime value={value} onChange={setValue} />}
+          <FormControlLabel
+            control={<Switch name="isScheduled" />}
+            label="Send this post later?"
+            checked={isScheduled}
+            onChange={() => setIsScheduled(!isScheduled)}
+          />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography>Upload files</Typography>
+          <Typography variant="caption">
+            Max file size is 400mb. Png, jpg and mp4 files are supported.
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <Button
+              endIcon={<CloudUploadIcon />}
+              component="label"
+              variant={file ? "outlined" : "contained"}
+            >
+              <VisuallyHiddenInput
+                id="fileInput"
+                type="file"
+                accept=".txt,audio/*,video/*,image/*"
+                name="file"
+                onChange={(e) => {
+                  setFile(e.target.files?.item(0))
+                }}
+                key={fileInputKey}
+              />
+              Add file
+            </Button>
+            {file && (
+              <Chip
+                id="filename"
+                variant="filled"
+                sx={{
+                  color: theme.palette.text.secondary,
+                }}
+                label={file.name}
+                onDelete={() => {
+                  setFile(null)
+                  resetFileInput()
+                }}
+              ></Chip>
+            )}
+          </Box>
+        </Stack>
+
+        <Box>
+          <Typography gutterBottom>Send to</Typography>
+          <Grid container>
+            {connected.map((mediaName) => {
+              return (
+                <Grid key={mediaName} item>
+                  {mediaListEntry(mediaName)}
+                </Grid>
+              )
+            })}
+          </Grid>
+        </Box>
+        <Button endIcon={<Send />} type="submit" variant="contained">
           send post
         </Button>
-        <ul
-          style={{
-            listStyle: "none",
+        <Backdrop
+          sx={{
+            color: theme.palette.primary.main,
+            zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
+          open={showBackDrop}
+          onClick={() => setShowBackDrop(false)}
         >
-          {connected.map((mediaName) => {
-            return <li key={mediaName}>{mediaListEntry(mediaName)}</li>
-          })}
-        </ul>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </Box>
-    </div>
+    </>
   )
+}
+
+function randomKey() {
+  return Math.floor(Math.random() * 100000).toString()
 }

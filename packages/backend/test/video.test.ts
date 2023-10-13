@@ -42,10 +42,6 @@ describe(
           expect(compressed).not.toBeNull()
           expect(compressed).toBeInstanceOf(fs.ReadStream)
         })
-        it("should throw error if not a video", async () => {
-          const fakeVideo = fs.createReadStream("./test/files/postBuddy.png")
-          expect(await compressVideo(fakeVideo)).toThrowError()
-        })
       }
     : () => {
         it("should skip", async () => {

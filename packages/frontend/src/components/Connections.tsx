@@ -1,15 +1,24 @@
-import { Box, Card, IconButton, Stack, Typography } from "@mui/material";
-import { Twitter, Delete, Add } from "@mui/icons-material";
-import { connectPlatform } from "../util/api";
-import { useQuery } from "@apollo/client";
-import { CONNECTIONS } from "../queries";
-import useAlertFactory from "../Hooks/useAlertFactory";
-import { Conn } from "../interfaces";
+import {
+  Box,
+  Card,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material"
+import { Twitter, Delete, Add } from "@mui/icons-material"
+import { connectPlatform } from "../util/api"
+import { useMutation, useQuery } from "@apollo/client"
+import { CONNECTIONS, DELETE_CONNECTION } from "../queries"
+import useAlertFactory from "../Hooks/useAlertFactory"
+import { Conn } from "../interfaces"
+import { useEffect } from "react"
 
 type Connection = {
-  name: string;
-  icon: JSX.Element;
-};
+  name: string
+  icon: JSX.Element
+}
 
 const availableConnections = [
   {
@@ -24,25 +33,30 @@ const availableConnections = [
   //   name: 'instagram',
   //   icon: <Instagram />,
   // },
-];
+]
 
 function Media({
   connection,
   connected,
+  onDelete,
 }: {
-  connection: Connection;
-  connected: boolean;
+  connection: Connection
+  connected: boolean
+  onDelete?: (name: string) => void
 }) {
-  const handleDelete = () => {
-    alert(`Delete ${connection.name}, not implemented yet`);
-  };
-
+  const theme = useTheme()
   const handleAdd = async () => {
-    const url = await connectPlatform(connection.name);
+    const url = await connectPlatform(connection.name)
     if (url) {
-      window.location.href = url;
+      window.location.href = url
     }
-  };
+  }
+  const onClick = connected ? () => onDelete?.(connection.name) : handleAdd
+  const btnIcon = connected ? (
+    <Delete sx={{ color: theme.palette.error.main }} />
+  ) : (
+    <Add sx={{ color: theme.palette.text.secondary }} />
+  )
 
   return (
     <Card
@@ -70,56 +84,79 @@ function Media({
         {connection.icon}
         <Typography>{connection.name}</Typography>
       </Box>
-      {connected ? (
-        <IconButton onClick={handleDelete}>
-          <Delete sx={{ color: "error.main" }} />
-        </IconButton>
-      ) : (
-        <IconButton onClick={handleAdd}>
-          <Add sx={{ color: "success.main" }} />
-        </IconButton>
-      )}
+      <IconButton onClick={onClick}>{btnIcon}</IconButton>
     </Card>
-  );
+  )
 }
 
 export default function Connections() {
-  const { data, loading, error } = useQuery<{ connections: Conn[] }>(
+  const { data, loading, error, refetch } = useQuery<{ connections: Conn[] }>(
     CONNECTIONS
-  );
-  const alert = useAlertFactory();
+  )
+
+  const [deleteCon, { data: dData, loading: dLoading, error: dErr }] =
+    useMutation<{ ok: boolean; message: string }>(DELETE_CONNECTION)
+  const alert = useAlertFactory()
+
+  useEffect(() => {
+    if (dLoading) {
+      return
+    }
+    if (dErr) {
+      alert.error(dErr.message, undefined, true)
+      return
+    }
+    if (dData) {
+      if (dData.ok) {
+        alert.success(dData.message, undefined, true)
+      } else {
+        alert.error(dData.message, undefined, true)
+      }
+    }
+  }, [dData, dLoading, dErr, alert])
+
   if (error) {
-    alert.error(error.message, undefined, true);
+    alert.error(error.message, undefined, true)
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  const connected: string[] = data?.connections.map((con) => con.name) || [];
+  const connected: string[] = data?.connections.map((con) => con.name) || []
 
+  const handleDelete = (name: string) => {
+    const variables = {
+      name,
+    }
+    deleteCon({ variables })
+    refetch()
+  }
   const connectedMedias = connected.map((connection) => {
     const connectionData = availableConnections.find(
       (c) => c.name === connection
-    );
+    )
     if (!connectionData) {
-      return null;
+      return null
     }
     return (
-      <Media connection={connectionData} key={connection} connected={true} />
-    );
-  });
+      <Media
+        connection={connectionData}
+        key={connection}
+        connected={true}
+        onDelete={handleDelete}
+      />
+    )
+  })
 
   const notConnectedMedias = availableConnections
     .filter((connection) => !connected.includes(connection.name))
     .map((connection) => (
       <Media connection={connection} key={connection.name} connected={false} />
-    ));
+    ))
 
   return (
     <Box>
       <Typography component="h3" variant="h6" gutterBottom>
         Connected medias
       </Typography>
+
       <Stack
         spacing={1}
         sx={{
@@ -127,9 +164,14 @@ export default function Connections() {
           alignItems: "center",
         }}
       >
-        {connectedMedias}
-        {notConnectedMedias}
+        {loading && <MediaSkeleton />}
+        {!loading && connectedMedias}
+        {!loading && notConnectedMedias}
       </Stack>
     </Box>
-  );
+  )
+}
+
+function MediaSkeleton() {
+  return <Skeleton variant="rounded" width={200} height={56} />
 }

@@ -5,13 +5,15 @@ import { PageName, pages } from "../constants"
 import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../reducers/store"
-import { Alert, AlertTitle } from "@mui/material"
+import { Alert, AlertTitle, Box } from "@mui/material"
 import useAlert from "../Hooks/useAlert"
 import { next } from "../reducers/alertReducer"
 import { User } from "../interfaces"
 import { useQuery } from "@apollo/client"
 import { ME } from "../queries"
 import { userLoggedIn } from "../reducers/userReducer"
+
+// TODO scary skeletons when loading stuff
 
 function MainContent() {
   const pageString = useSelector<RootState, PageName>(
@@ -81,7 +83,6 @@ function MainContent() {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "100vh",
         }}
       >
         <Alert
@@ -113,12 +114,19 @@ function MainContent() {
         <section
           style={{
             display: "flex",
-            flexGrow: 1,
             flexDirection: "row",
           }}
         >
           <SideNav />
-          {page && page.elem}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {page && page.elem}
+          </Box>
         </section>
       </div>
     </>

@@ -10,11 +10,13 @@ const PostSchema = new Schema<Post>({
     type: String,
     required: false,
     minlength: 1,
+    maxlength: 80,
   },
   description: {
     type: String,
     required: true,
     minlength: 1,
+    maxlength: 200,
   },
   platforms: {
     type: [String],
