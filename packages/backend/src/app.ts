@@ -35,6 +35,10 @@ app.get("/", (_req, res) => {
   res.send("Hello World!")
 })
 
+app.use((_req, _res, next) => {
+  setTimeout(next, 2000)
+})
+
 // Rest api
 app.use("/api/v1", restApi)
 
