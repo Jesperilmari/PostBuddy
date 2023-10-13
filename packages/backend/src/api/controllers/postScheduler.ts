@@ -26,7 +26,7 @@ export function schedulePost(post: Post): Result<CronJob, Error> {
       start,
     )
     jobs.set(id, job)
-    info(`New post scheduled at ${dispatchTime}`)
+    info(`New post scheduled at ${dispatchTime.toLocaleString()}`)
     return Result.ok(job)
   } catch (e) {
     error(`Error while scheduling post ${id}: ${e}`)
@@ -43,7 +43,7 @@ export async function doStartUpPostRescheduling() {
   const errors = results.filter((r) => r.isErr)
   const len = errors.length > 0 ? posts.length - errors.length : posts.length
 
-  if (!errors) {
+  if (posts && errors.length === 0) {
     info(`Rescheduling done for ${len} posts`)
     return true
   }

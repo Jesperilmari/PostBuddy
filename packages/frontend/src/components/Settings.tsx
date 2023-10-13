@@ -15,6 +15,7 @@ export default function Settings() {
             sx={{
               height: "100%",
             }}
+            elevation={8}
           >
             <Box
               sx={{
@@ -27,10 +28,10 @@ export default function Settings() {
         </Grid>
         <Grid item lg={4} sm={12}>
           <Stack spacing={3}>
-            <Paper>
+            <Paper elevation={8}>
               <ChangeUserInfo />
             </Paper>
-            <Paper>
+            <Paper elevation={8}>
               <ChangePassword />
             </Paper>
           </Stack>

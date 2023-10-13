@@ -2,9 +2,11 @@
 import { PBContext } from "../interfaces/PBContext"
 import PostsModel from "../models/PostsModel"
 import Post from "../interfaces/Post"
-import { schedulePost } from "../controllers/postScheduler"
+import { removeScheduledPost, schedulePost } from "../controllers/postScheduler"
 import { raiseGqlError } from "../../util/errors"
 import { handlePostCreationFor } from "../handlers"
+import storageClient from "../controllers/storageClient"
+import { error, info, warn } from "../../util/logger"
 
 export default {
   Query: {
@@ -71,14 +73,39 @@ export default {
       args: { id: [Pick<Post, "id" | "_id">] },
       ctx: PBContext,
     ) => {
-      const { deletedCount } = await PostsModel.find({
+      const posts = await PostsModel.find({
         _id: { $in: args.id },
-      }).deleteMany({ postOwner: ctx.userId })
+      }).find({ postOwner: ctx.userId })
+      posts.forEach(removeScheduledPost)
+      await Promise.all(posts.map(removeMediaIfExists))
+      const ids = posts.map((p) => p._id)
+      const { deletedCount } = await PostsModel.find({
+        _id: { $in: ids },
+      }).deleteMany({})
       return {
         message: `Deleted ${deletedCount} posts`,
       }
     },
   },
+}
+
+async function removeMediaIfExists(post: Post) {
+  try {
+    if (post.media) {
+      const res = await storageClient
+        .getBlockBlobClient(post.media)
+        .deleteIfExists()
+      if (!res.succeeded) {
+        warn(`Error deleting blob ${post.media}`)
+      }
+
+      if (res.succeeded) {
+        info(`Deleted blob ${post.media}`)
+      }
+    }
+  } catch (e) {
+    error(`Unexpected error deleting blob ${post.media}`)
+  }
 }
 
 function isMoreThan5MinInTheFuture(date: Date): boolean {

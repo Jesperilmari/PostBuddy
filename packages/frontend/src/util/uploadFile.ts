@@ -4,7 +4,7 @@ import { UploadMessage } from "../interfaces"
 
 export default async function uploadFile(
   navigate: NavigateFunction,
-  file?: File
+  file: File | undefined | null
 ) {
   const token = localStorage.getItem("user-token")
   if (!token) {

@@ -5,7 +5,7 @@ import useAlertFactory from "../Hooks/useAlertFactory"
 import { ALLPOSTSBYUSER } from "../queries"
 
 export default function PendingPostTable() {
-  const { data, loading, error } = useQuery<{ postsByFilter: Post[] }>(
+  const { data, loading, error, refetch } = useQuery<{ postsByFilter: Post[] }>(
     ALLPOSTSBYUSER,
     {
       // Always fetch because might have been updated
@@ -31,7 +31,7 @@ export default function PendingPostTable() {
     return <p>No posts found</p>
   }
 
-  return <SimplePostTable posts={sentPosts} />
+  return <SimplePostTable posts={sentPosts} refetch={refetch} />
 }
 
 function hasNotBeenPosted(post: Post) {

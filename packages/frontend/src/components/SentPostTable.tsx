@@ -26,7 +26,7 @@ export default function SentPostTable() {
     return <p>No posts found</p>
   }
 
-  return <SimplePostTable posts={sentPosts} />
+  return <SimplePostTable posts={sentPosts} refetch={refetch} />
 }
 
 function hasBeenPosted(post: Post) {
