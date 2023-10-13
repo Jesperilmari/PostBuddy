@@ -14,6 +14,7 @@ import {
   updateUser,
 } from "./queries"
 import { User } from "../src/api/interfaces/User"
+import PlatformModel from "../src/api/models/PlatformModel"
 
 describe("UserResolver", () => {
   let token: string
@@ -165,5 +166,25 @@ describe("UserResolver", () => {
     expect(response.body.data.updatePassword).toHaveProperty("username")
     const changed = await UserModel.findById(user._id)
     expect(changed?.password).not.toEqual(user.password)
+  })
+  it("should delete fields from user when converting to json", async () => {
+    const json = user.toJSON()
+    expect(json).not.toHaveProperty("password")
+    expect(json).not.toHaveProperty("_id")
+    expect(json).not.toHaveProperty("__v")
+  })
+  it("should delete fields from platforms when converting to json", async () => {
+    const platform = new PlatformModel({
+      refresh_token: "test",
+      name: "test",
+      token: "",
+      user: user,
+      secret: "",
+    })
+    const json = platform.toJSON()
+    expect(json).not.toHaveProperty("refresh_token")
+    expect(json).not.toHaveProperty("token")
+    expect(json).not.toHaveProperty("_id")
+    expect(json).not.toHaveProperty("__v")
   })
 })
