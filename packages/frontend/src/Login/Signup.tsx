@@ -38,7 +38,7 @@ function ChecData(
   console.log(first, last, email)
 
   if (first === "" || last === "" || email === "" || username === "") {
-    setMessage("Please fill in all fields")
+    setMessage("Please fill in all the fields")
     setInfo(true)
     return false
   }
@@ -223,12 +223,12 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <p id='alert'
+              style={{color: "red"}}
+              >
+                &nbsp;
+              </p>
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
