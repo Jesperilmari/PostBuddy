@@ -8,10 +8,11 @@ import { mockPlatform } from "./mocks/mockPlatform"
 import request from "supertest"
 import app from "../src/app"
 import UserTestUtils from "./util/userFunctions"
+import { User } from "../src/api/interfaces/User"
 
 describe("OAuthRouter", () => {
   let token: string
-  let user
+  let user: User
   beforeAll(async () => {
     // @ts-ignore is needed for testing
     platforms["mock"] = mockPlatform

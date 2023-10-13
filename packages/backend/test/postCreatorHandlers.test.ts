@@ -1,6 +1,9 @@
 // @ts-nocheck
 import { anything, instance, mock, when } from "ts-mockito"
-import { createTwitterPostImpl } from "../src/api/handlers/createTwitterPost"
+import {
+  createTwitterPostImpl,
+  formatText,
+} from "../src/api/handlers/createTwitterPost"
 import { User } from "../src/api/interfaces/User"
 import { uploadClient, postClient } from "./mocks/twitterMocks"
 import connectAndClearDb from "./util/connectAndClearDb"
@@ -8,6 +11,7 @@ import PostTestUtils from "./util/postFunctions"
 import UserTestUtils from "./util/userFunctions"
 import { BlockBlobClient, ContainerClient } from "@azure/storage-blob"
 import { Stream } from "stream"
+import PostsModel from "../src/api/models/PostsModel"
 
 jest.mock("@azure/storage-blob", () => {
   const originalModule = jest.requireActual("@azure/storage-blob")
@@ -106,5 +110,21 @@ describe("Post creation stuff", () => {
     const res = await createTwitterPostImpl(post, uploadClient, postClient)
     expect(res.isErr).toBe(true)
     expect(res.isErr && res.error).toBe("Error creating tweet")
+  })
+  it("should format text correctly", async () => {
+    const post = await PostTestUtils.createPost(
+      user,
+      "Title",
+      "this is description",
+      ["twitter"],
+      new Date(),
+      "fail",
+      "image/png",
+    )
+    const formatTitle = formatText(post)
+    post.title = null
+    const noTitle = formatText(post)
+    expect(formatTitle).toBe("Title this is description")
+    expect(noTitle).toBe("this is description")
   })
 })
