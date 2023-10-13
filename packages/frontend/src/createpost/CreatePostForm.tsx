@@ -13,7 +13,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { styled } from "@mui/material/styles"
 import DateTime from "./DateTime"
 import { Dayjs } from "dayjs"
-import { ChangeEvent, useState } from "react"
+import { useState } from "react"
 import Switch from "@mui/material/Switch"
 import { FormControlLabel, useTheme } from "@mui/material"
 import { CONNECTIONS, CREATEPOST } from "../queries"
@@ -92,8 +92,9 @@ export default function CreatePostPage() {
   const navigate = useNavigate()
   const [value, setValue] = useState<Dayjs | null>(null)
   const [isScheduled, setIsScheduled] = useState<boolean>(false)
-  const [filename, setFilename] = useState<string | undefined>(undefined)
+  const [file, setFile] = useState<File | undefined | null>(undefined)
   const [showBackDrop, setShowBackDrop] = useState<boolean>(false)
+  const [fileInputKey, setFileInputKey] = useState<string>(randomKey())
   const alert = useAlertFactory()
   const theme = useTheme()
   const { data, loading, error } = useQuery<{ connections: Conn[] }>(
@@ -128,6 +129,10 @@ export default function CreatePostPage() {
     return value.toDate()
   }
 
+  const resetFileInput = () => {
+    setFileInputKey(randomKey())
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -137,20 +142,22 @@ export default function CreatePostPage() {
       return
     }
 
-    const file = data.get("file") as File | undefined
-
     const date = checkDate() as Date
     if (!date) {
       return
     }
+    const sendPlatforms = checkSwitches(data, connected)
+
+    if (sendPlatforms.length === 0) {
+      return alert.error("Please select at least one platform", undefined, true)
+    }
     setShowBackDrop(true)
     const { id, message, err } = await uploadFile(navigate, file)
 
-    if (err) {
+    if (file && err) {
       alert.error(err.message, undefined, true)
     }
 
-    const sendPlatforms = checkSwitches(data, connected)
     const post: PostInput = {
       title: data.get("title") as string,
       description: data.get("description") as string,
@@ -172,10 +179,6 @@ export default function CreatePostPage() {
     if (response) {
       alert.success("Post created", undefined, true)
     }
-  }
-
-  const getFileName = (event: ChangeEvent<HTMLInputElement>) => {
-    return event.target.files?.item(0)?.name
   }
 
   return (
@@ -241,27 +244,32 @@ export default function CreatePostPage() {
             <Button
               endIcon={<CloudUploadIcon />}
               component="label"
-              variant="contained"
+              variant={file ? "outlined" : "contained"}
             >
               <VisuallyHiddenInput
+                id="fileInput"
                 type="file"
                 accept=".txt,audio/*,video/*,image/*"
                 name="file"
                 onChange={(e) => {
-                  const filename = getFileName(e)
-                  setFilename(filename)
+                  setFile(e.target.files?.item(0))
                 }}
+                key={fileInputKey}
               />
               Add file
             </Button>
-            {filename && (
+            {file && (
               <Chip
                 id="filename"
                 variant="filled"
                 sx={{
                   color: theme.palette.text.secondary,
                 }}
-                label={filename}
+                label={file.name}
+                onDelete={() => {
+                  setFile(null)
+                  resetFileInput()
+                }}
               ></Chip>
             )}
           </Box>
@@ -295,4 +303,8 @@ export default function CreatePostPage() {
       </Box>
     </>
   )
+}
+
+function randomKey() {
+  return Math.floor(Math.random() * 100000).toString()
 }

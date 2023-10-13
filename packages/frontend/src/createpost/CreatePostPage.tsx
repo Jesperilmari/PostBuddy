@@ -12,6 +12,7 @@ export default function CreatePostPage() {
           width: "fit-content",
           p: 2,
         }}
+        elevation={8}
       >
         <CreatePostForm />
       </Paper>

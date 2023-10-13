@@ -21,13 +21,42 @@ import {
   HourglassTop,
 } from "@mui/icons-material"
 import { useEffect, useState } from "react"
+import { DELETE_POST } from "../queries"
+import { useMutation } from "@apollo/client"
+import useAlertFactory from "../Hooks/useAlertFactory"
 
 type TableProps = {
   posts: Post[]
+  refetch: () => void
 }
 
-export default function SimplePostTable({ posts }: TableProps) {
+export default function SimplePostTable({ posts, refetch }: TableProps) {
   const [sortAsc, setSortAsc] = useState<boolean>(true)
+  const alert = useAlertFactory()
+  const [deletePost, { data, loading, error }] = useMutation<{
+    deletePost: { message: string }
+  }>(DELETE_POST)
+
+  const onDelete = (post: Post) => {
+    const variables = {
+      deletePostId: [post.id],
+    }
+    deletePost({
+      variables,
+    })
+  }
+  useEffect(() => {
+    if (loading) {
+      return
+    }
+    if (error) {
+      alert.error(error.message, undefined, true)
+    }
+    if (data) {
+      alert.success(data.deletePost.message, undefined, true)
+      refetch()
+    }
+  }, [loading, error, data, alert, refetch])
 
   const sortedPosts = [...posts].sort(sortAsc ? sortByDateAsc : sortByDateDesc)
 
@@ -51,12 +80,12 @@ export default function SimplePostTable({ posts }: TableProps) {
   ]
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={8}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <PostTableHead cols={cols} />
         <TableBody>
           {sortedPosts.map((post) => (
-            <PostTableRow key={post.id} post={post} />
+            <PostTableRow key={post.id} post={post} onDelete={onDelete} />
           ))}
         </TableBody>
       </Table>
@@ -107,8 +136,15 @@ function SortButton({ sortAsc, setSortAsc }: SortButtonProps) {
 }
 
 function PostTableHead({ cols }: { cols: TableCol[] }) {
+  const theme = useTheme()
   return (
-    <TableHead>
+    <TableHead
+      sx={{
+        ".MuiTableCell-root": {
+          borderBottomColor: theme.palette.secondary.main,
+        },
+      }}
+    >
       <TableRow>
         {cols.map((col) => (
           <TableCell key={col.name}>
@@ -121,11 +157,23 @@ function PostTableHead({ cols }: { cols: TableCol[] }) {
   )
 }
 
-function PostTableRow({ post }: { post: Post }) {
+type PostTableRowProps = {
+  post: Post
+  onDelete: (post: Post) => void
+}
+
+function PostTableRow({ post, onDelete }: PostTableRowProps) {
   const platFormIcons = platformsToIcons(post.platforms)
   const theme = useTheme()
   return (
-    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+    <TableRow
+      sx={{
+        "&:last-child td, &:last-child th": { border: 0 },
+        ".MuiTableCell-root": {
+          borderBottomColor: theme.palette.secondary.main,
+        },
+      }}
+    >
       <TableCell component="th" scope="row">
         {post.title}
       </TableCell>
@@ -147,7 +195,7 @@ function PostTableRow({ post }: { post: Post }) {
         {new Date(post.dispatchTime).toLocaleString()}
       </TableCell>
       <TableCell align="left">
-        <IconButton aria-label="delete">
+        <IconButton aria-label="delete" onClick={() => onDelete(post)}>
           <Delete
             sx={{
               color: theme.palette.text.secondary,
