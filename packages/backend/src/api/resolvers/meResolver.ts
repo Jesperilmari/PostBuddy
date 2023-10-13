@@ -4,6 +4,7 @@ import { User } from "../interfaces/User"
 import { raise } from "../../util/errors"
 import PlatformModel from "../models/PlatformModel"
 import UserModel from "../models/UserModel"
+import { info } from "../../util/logger"
 
 export default {
   Query: {
@@ -13,5 +14,28 @@ export default {
     },
     connections: async (_: unknown, __: {}, ctx: PBContext) =>
       PlatformModel.find({ user: ctx.userId }),
+  },
+  Mutation: {
+    deleteConnection: async (
+      _: unknown,
+      { name }: { name: string },
+      ctx: PBContext,
+    ) => {
+      const deleted = await PlatformModel.findOneAndDelete({
+        user: ctx.userId,
+        name,
+      })
+      info(deleted)
+      if (!deleted) {
+        return {
+          ok: false,
+          message: "Connection not found",
+        }
+      }
+      return {
+        ok: true,
+        message: "Connection removed",
+      }
+    },
   },
 }
