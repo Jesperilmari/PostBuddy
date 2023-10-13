@@ -36,38 +36,32 @@ function ChecData(
   const emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
   const nametest = new RegExp("^[a-zA-Z]+$")
   console.log(first, last, email)
-  const p = document.getElementById("alert");
 
-  if (first === '' || last === '' || email === '' || username === '') {
-    if(p){
-      p.innerHTML = "Please fill in all fields"
-    }
-    return
+  if (first === "" || last === "" || email === "" || username === "") {
+    setMessage("Please fill in all the fields")
+    setInfo(true)
+    return false
   }
 
   if (!emailRegex.test(email as string)) {
-    if(p){
-      p.innerHTML = "Please enter a valid email"
-    }
+    setMessage("Please enter a valid email")
+    setInfo(true)
     return false
   }
   if (!nametest.test(first) || !nametest.test(last)) {
-    if(p){
-      p.innerHTML = "Please enter a valid name"
-    }
+    setMessage("Please enter a valid name")
+    setInfo(true)
     return false
   }
 
-  if (data.get('password') !== data.get('confirmPassword')) {
-    if(p){
-      p.innerHTML = "Passwords do not match"
-    }
+  if (data.get("password") !== data.get("confirmPassword")) {
+    setMessage("Passwords do not match")
+    setInfo(true)
     return false
   }
-  if ((data.get('password') as string).length < 5) {
-    if(p){
-      p.innerHTML = "Password must be at least 5 characters long"
-    }
+  if ((data.get("password") as string).length < 5) {
+    setMessage("Password must be at least 5 characters long")
+    setInfo(true)
     return false
   }
   return true
