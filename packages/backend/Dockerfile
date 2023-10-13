@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y
 # Copy some stuff
 RUN mkdir app
 WORKDIR /app
-COPY ./packages/backend/* .
+COPY ./packages/backend/ .
 
 # Install stuff
 RUN npm install
