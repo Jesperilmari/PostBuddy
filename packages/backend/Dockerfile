@@ -8,7 +8,7 @@ RUN apt install -y ffmpeg
 # Copy some stuff
 RUN mkdir app
 WORKDIR /app
-COPY . .
+COPY ./packages/backend/* .
 
 # Build stuff
 RUN npm install
