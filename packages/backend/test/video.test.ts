@@ -5,7 +5,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const skip = true //process.env.LOCAL_TEST
+const skip = false //process.env.LOCAL_TEST
 
 describe(
   "VideoCompressor",
