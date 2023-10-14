@@ -87,7 +87,7 @@ async function createTweet(request_body: Tweet, client: Client) {
   return true
 }
 
-function formatText(post: Post) {
+export function formatText(post: Post) {
   if (!post.title) {
     return post.description
   }

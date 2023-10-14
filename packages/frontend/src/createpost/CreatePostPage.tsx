@@ -4,10 +4,16 @@ import CreatePostForm from "./CreatePostForm.tsx"
 export default function CreatePostPage() {
   return (
     <Container>
-      <Typography variant="h2" gutterBottom>
+      <Typography variant="h1" gutterBottom>
         Create post
       </Typography>
-      <Paper>
+      <Paper
+        sx={{
+          width: "fit-content",
+          p: 2,
+        }}
+        elevation={8}
+      >
         <CreatePostForm />
       </Paper>
     </Container>

@@ -1,6 +1,7 @@
 import { OAuth2 } from "oauth"
 import { Request, Response } from "express"
 import { Maybe } from "true-myth"
+import crypto from "crypto"
 import { User } from "../../../interfaces/User"
 import PlatformModel from "../../../models/PlatformModel"
 import APIError from "../../../classes/APIError"
@@ -77,11 +78,11 @@ const twitter: OauthStuff = {
   },
 }
 
-function genState() {
+export function genState() {
   return crypto.randomUUID() as string
 }
 
-async function createPlatformConnection(
+export async function createPlatformConnection(
   user: User,
   code: string,
   state: string,

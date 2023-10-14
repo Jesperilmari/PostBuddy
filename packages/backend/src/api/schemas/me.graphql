@@ -10,7 +10,16 @@ type UserOutput {
   email: String!
 }
 
+type DeleteResponse {
+  ok: Boolean!
+  message: String!
+}
+
 type Query {
   me: UserOutput @auth
   connections: [Platform]! @auth
+}
+
+type Mutation {
+  deleteConnection(name: String!): DeleteResponse! @auth
 }
