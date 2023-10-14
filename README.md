@@ -1,16 +1,27 @@
-<style>
-    #container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 4rem
-    }
-</style>
-
 <div id="container">
   <img src="./media/postBuddy.png" width="128" alt="PostBuddy" ></img>
 </div>
+
+# PostBuddy
+
+- [PostBuddy](#postbuddy)
+  - [Deployments](#deployments)
+  - [What the project does](#what-the-project-does)
+  - [Why the project is useful (include target audience)](#why-the-project-is-useful-include-target-audience)
+  - [Usage](#usage)
+    - [Backend](#backend)
+      - [Installation](#installation)
+      - [Running](#running)
+    - [Frontend](#frontend)
+      - [Installation](#installation-1)
+      - [Running](#running-1)
+  - [Demos/Screenshots](#demosscreenshots)
+  - [Technologies used](#technologies-used)
+  - [Testing](#testing)
+    - [Test coverage](#test-coverage)
+  - [Misc diagrams or other architectural stuff](#misc-diagrams-or-other-architectural-stuff)
+  - [Contributors](#contributors)
+  - [Related resources](#related-resources)
 
 ### Deployments
 
