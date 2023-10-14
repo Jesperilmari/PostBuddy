@@ -4,6 +4,8 @@
 
 # PostBuddy
 
+![Deployment status](https://github.com/Jesperilmari/PostBuddy/actions/workflows/deploy.yml/badge.svg)
+
 - [PostBuddy](#postbuddy)
   - [Deployments](#deployments)
   - [What the project does](#what-the-project-does)
@@ -23,7 +25,7 @@
   - [Contributors](#contributors)
   - [Related resources](#related-resources)
 
-### Deployments
+## Deployments
 
 The backend is deployed at Azure  
 [Graphql sandbox](https://postbuddy-api.azurewebsites.net/graphql)
@@ -133,12 +135,12 @@ are just not correctly displayed in the report.
 ![Coverage](./media/backend_test_cov.png)
 
 Jest was a obvious choice for a test framework.
-But we also exploit `ts-mock`'s ability to create mocks of
-libraries with no effort.
+But we also exploit [ts-mockito's](https://github.com/NagRock/ts-mockito) ability to create mocks of
+classes and interfaces with no effort.
 
 Jest's builtin mock function has also proven itself very useful
-when mocking entire libraries without needing dependency injection
-example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandlers.test.ts)
+when mocking entire libraries without needing dependency injection.
+Example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandlers.test.ts)
 
 ## Misc diagrams or other architectural stuff
 
