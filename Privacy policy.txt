@@ -1,8 +1,8 @@
-Privacy Policy for [Your App Name]
+Privacy Policy for PostBuddy
 
-Effective Date: [Insert Date]
+Effective Date: 13.10.2023
 
-Welcome to [Your App Name]! This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our social media dashboard application (the "App"). Please read this Privacy Policy carefully. By accessing or using the App, you agree to the terms of this Privacy Policy.
+Welcome to PostBuddy! This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our social media dashboard application PostBuddy. Please read this Privacy Policy carefully. By accessing or using the App, you agree to the terms of this Privacy Policy.
 
 1. Information We Collect
 
@@ -17,7 +17,7 @@ c. Device Information:
 We may collect information about the device you use to access the App, including device type, operating system, and device identifiers.
 d. Log Data:
 
-Our servers automatically record information ("Log Data") created by your use of the App. Log Data may include information such as your IP address, browser type, operating system, the referring web page, pages visited, location, and the time spent on each page.
+Our servers automatically record information "Log Data" created by your use of the App. Log Data may include information such as your IP address, browser type, operating system, the referring web page, pages visited, location, and the time spent on each page.
 2. How We Use Your Information
 
 a. Provide and Improve the App:
@@ -59,6 +59,6 @@ We may update this Privacy Policy from time to time. We will notify you of any c
 
 8. Contact Information
 
-If you have any questions about this Privacy Policy, please contact us at [insert contact email].
+If you have any questions about this Privacy Policy, please contact us at postbuddy.app.dev@gmail.com
 
-Thank you for using [Your App Name]!
+Thank you for using PostBuddy!
