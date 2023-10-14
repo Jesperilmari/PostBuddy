@@ -1,6 +1,7 @@
 import { OAuth2 } from "oauth"
 import { Request, Response } from "express"
 import { Maybe } from "true-myth"
+import crypto from "crypto"
 import { User } from "../../../interfaces/User"
 import PlatformModel from "../../../models/PlatformModel"
 import APIError from "../../../classes/APIError"
