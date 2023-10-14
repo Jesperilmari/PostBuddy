@@ -24,7 +24,7 @@ The website is deployed on Vercel
 
 ## Why the project is useful (include target audience)
 
-## Usage (How users can use/get started with the project)
+## Usage
 
 This repository is divided into two subprojects located in the `packages` folder. Currently this folder contains code for the backend and for the frontend.
 
@@ -105,7 +105,29 @@ most likely being http://localhost:5174.
 
 ## Technologies used
 
-## Test stuff
+## Testing
+
+Testing for the backend is comprehensive,
+containing integration tests for vital endpoints and
+unit tests for important components to ensure intended funcionality.
+
+Frontend currently has no tests. This could be a point to improve in
+the future.
+
+Parts where coverage is missing have either been manually tested or
+are just not correctly displayed in the report.
+
+### Test coverage
+
+![Coverage](./media/backend_test_cov.png)
+
+Jest was a obvious choice for a test framework.
+But we also exploit `ts-mock`'s ability to create mocks of
+libraries with no effort.
+
+Jest's builtin mock function has also proven itself very useful
+when mocking entire libraries without needing dependency injection
+example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandlers.test.ts)
 
 ## Misc diagrams or other architectural stuff
 

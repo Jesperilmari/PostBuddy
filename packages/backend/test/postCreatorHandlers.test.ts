@@ -17,6 +17,7 @@ jest.mock("@azure/storage-blob", () => {
   const originalModule = jest.requireActual("@azure/storage-blob")
   const m: ContainerClient = mock(originalModule.ContainerClient)
   const blockBlobThing: BlockBlobClient = mock(originalModule.BlockBlobClient)
+
   when(blockBlobThing.exists()).thenResolve(true)
   when(blockBlobThing.getProperties()).thenResolve({ contentLength: 100 })
   when(blockBlobThing.download()).thenCall(() => {
