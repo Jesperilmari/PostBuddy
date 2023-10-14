@@ -231,7 +231,7 @@ export default function CreatePostPage() {
         <Stack spacing={1}>
           <Typography>Upload files</Typography>
           <Typography variant="caption">
-            Max file size is 400mb. Png, jpg and mp4 files are supported.
+            Recommended file size less than 20mb. Png, jpg and mp4 files are supported.
           </Typography>
           <Box
             sx={{
