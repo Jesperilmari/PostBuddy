@@ -128,6 +128,9 @@ Connecting twitter:
 
 https://github.com/Jesperilmari/PostBuddy/assets/96197093/14595df8-3160-47fe-9edc-bda6dfe3dd77
 
+Changing user information:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/08eda110-576c-460a-9eff-5a94166d2afd
 
 
 ## Technologies used
