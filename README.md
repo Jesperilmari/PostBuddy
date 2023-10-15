@@ -1,4 +1,4 @@
-<div id="container">
+ <div id="container">
   <img src="./media/postBuddy.png" width="128" alt="PostBuddy" ></img>
 </div>
 
@@ -34,6 +34,7 @@ The website is deployed on Vercel
 [Website](https://postbuddy.vercel.app)
 
 ## What the project does
+PostBuddy is a web app designed to simplify the process of sharing content across various social media platforms by providing an intuitive and efficient dashboard solution. 
 
 ## Why the project is useful (include target audience)
 
@@ -115,6 +116,9 @@ This will also print the address where the website is hosted at,
 most likely being http://localhost:5174.
 
 ## Demos/Screenshots
+Logging in:
+
+Registering an account:
 
 ## Technologies used
 
