@@ -37,6 +37,7 @@ The website is deployed on Vercel
 [Website](https://postbuddy.vercel.app)
 
 ## What the project does
+PostBuddy is a web app designed to simplify the process of sharing content across various social media platforms by providing an intuitive and efficient dashboard solution. 
 
 ## Why the project is useful (include target audience)
 
@@ -118,6 +119,39 @@ This will also print the address where the website is hosted at,
 most likely being http://localhost:5174.
 
 ## Demos/Screenshots
+Before creating any posts you are required to connect your account to any of the supported social medias.
+
+Logging in:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/e9998b05-dffd-4449-bc1f-12ff521e62b2
+
+Registering an account:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/b4078512-1d48-4de9-93e9-b91e86c55b1f
+
+Connecting twitter:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/14595df8-3160-47fe-9edc-bda6dfe3dd77
+
+Creating a twitter post:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/1e47a52b-04d9-4cdf-b4ed-f61fc92970d8
+
+Creating a scheduled twitter post:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/d3ff2c18-cfdc-4d08-b0a2-c242d919db3e
+
+Changing user information:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/08eda110-576c-460a-9eff-5a94166d2afd
+
+Changing password:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/e99a6bed-659a-44b5-ad2f-e285898e180e
+
+Revoking PostBuddys twitter access:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/61d09ccd-8d26-4437-a0fb-fc9ea725ea6f
 
 ## Technologies used
 
