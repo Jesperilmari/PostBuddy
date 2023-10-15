@@ -9,7 +9,7 @@
 - [PostBuddy](#postbuddy)
   - [Deployments](#deployments)
   - [What the project does](#what-the-project-does)
-  - [Why the project is useful (include target audience)](#why-the-project-is-useful-include-target-audience)
+  - [What are this app's use cases and target audience](#what-are-this-apps-use-cases-and-target-audience)
   - [Usage](#usage)
     - [Backend](#backend)
       - [Installation](#installation)
@@ -24,6 +24,7 @@
   - [Testing](#testing)
     - [Test coverage](#test-coverage)
   - [Misc diagrams or other architectural stuff](#misc-diagrams-or-other-architectural-stuff)
+  - [Future plans](#future-plans)
   - [Contributors](#contributors)
   - [Related resources](#related-resources)
     - [Useful documentation](#useful-documentation)
@@ -37,11 +38,12 @@ The website is deployed on Vercel
 [Website](https://postbuddy.vercel.app)
 
 ## What the project does
-PostBuddy is a web app designed to simplify the process of sharing content across various social media platforms by providing an intuitive and efficient dashboard solution. 
+
+PostBuddy is a web app designed to simplify the process of sharing content across various social media platforms by providing an intuitive and efficient dashboard solution.
 
 ## What are this app's use cases and target audience
 
-The purpose for this project is to provide an easy and convenient way for everyone to make and save social media posts to be published simultaneously to different platforms. This app also provides a way to make posts to be published in the future, at the user’s chosen time. This in mind the app is primarily focused towards people who would use sosial media a lot and for people who want to make sure that certain posts will be uploaded at a given time. This app also provides an easy way to store and find posts that you have already made since all the posts are saved and can be also deleted (from our app). This app saves the user’s time if they want to send similar or exactly same posts to many different platforms. By using our app the user only needs to make the post one time and then select all the platforms it will be sent to.  The target audience for the app is social media influencers, content creators and companies that promote through social media.  
+The purpose for this project is to provide an easy and convenient way for everyone to make and save social media posts to be published simultaneously to different platforms. This app also provides a way to make posts to be published in the future, at the user’s chosen time. This in mind the app is primarily focused towards people who would use sosial media a lot and for people who want to make sure that certain posts will be uploaded at a given time. This app also provides an easy way to store and find posts that you have already made since all the posts are saved and can be also deleted (from our app). This app saves the user’s time if they want to send similar or exactly same posts to many different platforms. By using our app the user only needs to make the post one time and then select all the platforms it will be sent to. The target audience for the app is social media influencers, content creators and companies that promote through social media.
 
 ## Usage
 
@@ -121,6 +123,7 @@ This will also print the address where the website is hosted at,
 most likely being http://localhost:5174.
 
 ## Demos/Screenshots
+
 Before creating any posts you are required to connect your account to any of the supported social medias.
 
 Logging in:
@@ -213,7 +216,7 @@ Example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandler
 
 ## Future plans
 
-At the momen our app only supports connecting to twitter but our plan is to include all possible social media platforms so tha everyone will be able to use our app in ways that suits them the best. Our next additions will be youtube, instagram, tiktok and reddit. We would also want to provide our users some kind of data of their posting behavior in regards of using our app. A premium version of the app is also in plans that would bring in some new features including but not limited to unlimited storage for videos and posts, support for bigger and longer videos and faster upload speeds, more platforms available at same time (max 3 for non premium), full customer support access through email and many more. 
+At the momen our app only supports connecting to twitter but our plan is to include all possible social media platforms so tha everyone will be able to use our app in ways that suits them the best. Our next additions will be youtube, instagram, tiktok and reddit. We would also want to provide our users some kind of data of their posting behavior in regards of using our app. A premium version of the app is also in plans that would bring in some new features including but not limited to unlimited storage for videos and posts, support for bigger and longer videos and faster upload speeds, more platforms available at same time (max 3 for non premium), full customer support access through email and many more.
 
 ## Contributors
 
