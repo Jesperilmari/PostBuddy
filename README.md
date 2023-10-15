@@ -118,7 +118,17 @@ most likely being http://localhost:5174.
 ## Demos/Screenshots
 Logging in:
 
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/e9998b05-dffd-4449-bc1f-12ff521e62b2
+
 Registering an account:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/b4078512-1d48-4de9-93e9-b91e86c55b1f
+
+Connecting twitter:
+
+https://github.com/Jesperilmari/PostBuddy/assets/96197093/14595df8-3160-47fe-9edc-bda6dfe3dd77
+
+
 
 ## Technologies used
 
