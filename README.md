@@ -41,6 +41,8 @@ PostBuddy is a web app designed to simplify the process of sharing content acros
 
 ## Why the project is useful (include target audience)
 
+The purpose for this project is to provide an easy and convenient way for everyone to make and save social media posts to be published simultaneously to different platforms. This app also provides a way to make posts to be published in the future, at the user’s chosen time. This in mind the app is primarily focused towards people who would use sosial media a lot and for people who want to make sure that certain posts will be uploaded at a given time. This app also provides an easy way to store and find posts that you have already made since all the posts are saved and can be also deleted (from our app). This app saves the user’s time if they want to send similar or exactly same posts to many different platforms. By using our app the user only needs to make the post one time and then select all the platforms it will be sent to.  The target audience for the app is social media influencers, content creators and companies that promote through social media.  
+
 ## Usage
 
 This repository is divided into two subprojects located in the `packages` folder. Currently this folder contains code for the backend and for the frontend.
@@ -200,6 +202,14 @@ when mocking entire libraries without needing dependency injection.
 Example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandlers.test.ts)
 
 ## Misc diagrams or other architectural stuff
+
+![Database schema](db.png)
+![Use case diagram](image.png)
+![Diagrams](PostBuddy_diagrams.pdf)
+
+## Future plans
+
+At the momen our app only supports connecting to twitter but our plan is to include all possible social media platforms so tha everyone will be able to use our app in ways that suits them the best. Our next additions will be youtube, instagram, tiktok and reddit. We would also want to provide our users some kind of data of their posting behavior in regards of using our app. A premium version of the app is also in plans that would bring in some new features including but not limited to unlimited storage for videos and posts, support for bigger and longer videos and faster upload speeds, more platforms available at same time (max 3 for non premium), full customer support access through email and many more. 
 
 ## Contributors
 
