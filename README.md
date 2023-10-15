@@ -19,11 +19,14 @@
       - [Running](#running-1)
   - [Demos/Screenshots](#demosscreenshots)
   - [Technologies used](#technologies-used)
+    - [Backend](#backend-1)
+    - [Frontend](#frontend-1)
   - [Testing](#testing)
     - [Test coverage](#test-coverage)
   - [Misc diagrams or other architectural stuff](#misc-diagrams-or-other-architectural-stuff)
   - [Contributors](#contributors)
   - [Related resources](#related-resources)
+    - [Useful documentation](#useful-documentation)
 
 ## Deployments
 
@@ -118,6 +121,26 @@ most likely being http://localhost:5174.
 
 ## Technologies used
 
+### Backend
+
+- [Express](https://www.npmjs.com/package/express)
+- [Mongoose](https://www.npmjs.com/package/mongoose)
+- [Oauth](https://www.npmjs.com/package/oauth)
+- [cron](https://www.npmjs.com/package/cron)
+- [ffmpeg](https://www.npmjs.com/package/ffmpeg)
+- [Apollo server](https://www.npmjs.com/package/@apollo/server)
+- [jwt](https://www.npmjs.com/package/jsonwebtoken)
+- [and more](/packages/backend/package.json)
+
+### Frontend
+
+- [React](https://www.npmjs.com/package/react)
+- [Redux](https://redux.js.org/)
+- [axios](https://www.npmjs.com/package/axios)
+- [Material UI](https://mui.com/)
+- [dayjs](https://www.npmjs.com/package/dayjs)
+- [and more](/packages/frontend/package.json)
+
 ## Testing
 
 Testing for the backend is comprehensive,
@@ -151,3 +174,9 @@ Example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandler
 [Olli Varila](https://github.com/ollivarila)
 
 ## Related resources
+
+### Useful documentation
+
+- [Twitter api](https://developer.twitter.com/en/docs/twitter-api)
+- [Mongoose](https://mongoosejs.com/docs/)
+- [Material UI](https://mui.com/material-ui/getting-started/)
