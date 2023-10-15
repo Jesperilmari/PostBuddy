@@ -39,7 +39,7 @@ The website is deployed on Vercel
 ## What the project does
 PostBuddy is a web app designed to simplify the process of sharing content across various social media platforms by providing an intuitive and efficient dashboard solution. 
 
-## Why the project is useful (include target audience)
+## What are this app's use cases and target audience
 
 The purpose for this project is to provide an easy and convenient way for everyone to make and save social media posts to be published simultaneously to different platforms. This app also provides a way to make posts to be published in the future, at the user’s chosen time. This in mind the app is primarily focused towards people who would use sosial media a lot and for people who want to make sure that certain posts will be uploaded at a given time. This app also provides an easy way to store and find posts that you have already made since all the posts are saved and can be also deleted (from our app). This app saves the user’s time if they want to send similar or exactly same posts to many different platforms. By using our app the user only needs to make the post one time and then select all the platforms it will be sent to.  The target audience for the app is social media influencers, content creators and companies that promote through social media.  
 
