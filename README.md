@@ -204,8 +204,12 @@ Example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandler
 ## Misc diagrams or other architectural stuff
 
 ![Database schema](db.png)
-![Use case diagram](image.png)
-![Diagrams](PostBuddy_diagrams.pdf)
+![Use case diagram](useCase.png)
+![Sequence diagram for connecting to platform](connect_diagram.png)
+![Sequence diagram for registering a user](register_diagram.png)
+![Sequence diagram for logging in](login_diagram.png)
+![Sequence diagram for creating a scheduled post](create_diagram.png)
+![Package diagram](package_diagram.png)
 
 ## Future plans
 
