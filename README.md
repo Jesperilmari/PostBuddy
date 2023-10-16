@@ -216,7 +216,7 @@ Example: [postCreatorHandlers.test.ts](/packages/backend/test/postCreatorHandler
 
 ## Future plans
 
-At the momen our app only supports connecting to twitter but our plan is to include all possible social media platforms so tha everyone will be able to use our app in ways that suits them the best. Our next additions will be youtube, instagram, tiktok and reddit. We would also want to provide our users some kind of data of their posting behavior in regards of using our app. A premium version of the app is also in plans that would bring in some new features including but not limited to unlimited storage for videos and posts, support for bigger and longer videos and faster upload speeds, more platforms available at same time (max 3 for non premium), full customer support access through email and many more.
+At the momen our app only supports connecting to twitter but our plan is to include all possible social media platforms so that everyone will be able to use our app in ways that suits them the best. Our next additions will be youtube, instagram, tiktok and reddit. We would also want to provide our users some kind of data of their posting behavior in regards of using our app. A premium version of the app is also in plans that would bring in some new features including but not limited to unlimited storage for videos and posts, support for bigger and longer videos and faster upload speeds, more platforms available at same time (max 3 for non premium), full customer support access through email and many more.
 
 ## Contributors
 
