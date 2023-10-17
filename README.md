@@ -47,10 +47,12 @@ The purpose for this project is to provide an easy and convenient way for everyo
 
 ## Usage
 
-If you wish to try out the website you can create a new account and use the following twitter credentials to connect it to your PostBuddy account.
+To use the website register a new account using the registration form.
+In order to create posts using PostBuddy you will also need to connect a Twitter account.
+If you don't want to use a real one you can quickly create a throwaway account using [temp-mail](https://temp-mail.org/en/)
+service.
 
-- username: postbuddytester
-- password: postbuddytest
+[Demos/Screenshots](#demosscreenshots) also showcases the features and usage of this application.
 
 This repository is divided into two subprojects located in the `packages` folder. Currently this folder contains code for the backend and for the frontend.
 
