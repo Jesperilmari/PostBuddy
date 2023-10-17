@@ -47,6 +47,11 @@ The purpose for this project is to provide an easy and convenient way for everyo
 
 ## Usage
 
+If you wish to try out the website you can create a new account and use the following twitter credentials to connect it to your PostBuddy account.
+
+- username: postbuddytester
+- password: postbuddytest
+
 This repository is divided into two subprojects located in the `packages` folder. Currently this folder contains code for the backend and for the frontend.
 
 If you simply wish to use the site or the graphql sandbox,
@@ -68,6 +73,9 @@ _You might need to install some other required dependendies like nodemon etc man
 
 Before running create a valid `.env` file accoring to the `.env.sample`.
 You will not be able to start the development server if any of the variables are missing.
+
+To be able to run the backend you will also need to have a valid blob storage set up on Azure.  
+Video compression will not work unless you have [ffpeg](https://ffmpeg.org/) installed
 
 All of the available script are located in the `package.json`. Here are some useful scripts
 
